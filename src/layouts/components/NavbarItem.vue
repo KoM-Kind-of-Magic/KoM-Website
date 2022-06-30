@@ -7,7 +7,7 @@
 </template>
 
 <script>
-// export default {
+export default {
 //   name: 'navbar',
 //   data() {
 //     return {
@@ -27,7 +27,7 @@
 //       ]
 //     },
 //   },
-// };
+};
 </script>
 
 <style lang="scss" scoped>
