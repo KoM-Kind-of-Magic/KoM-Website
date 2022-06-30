@@ -1,12 +1,12 @@
-// <template>
-//   <nav>
-//     <div class="menu-item"><a href="#">Sample</a></div>
-//     <div class="menu-item"><a href="#">Sample</a></div>
-//     <div class="menu-item"><a href="#">Sample</a></div>
-//   </nav>
-// </template>
+<template>
+  <nav>
+    <div class="menu-item"><a href="#">Sample</a></div>
+    <div class="menu-item"><a href="#">Sample</a></div>
+    <div class="menu-item"><a href="#">Sample</a></div>
+  </nav>
+</template>
 
-// <script>
+<script>
 // export default {
 //   name: 'navbar',
 //   data() {
@@ -28,9 +28,9 @@
 //     },
 //   },
 // };
-// </script>
+</script>
 
-// <style lang="scss" scoped>
+<style lang="scss" scoped>
 // nav {
 //   display: flex;
 //   align-items: center;
@@ -55,4 +55,4 @@
 //   color: inherit;
 //   text-decoration: none;
 // }
-// </style>
+</style>
