@@ -1,8 +1,21 @@
 <template>
   <div id="app">
-    some text
+    <header>
+      <NavbarItem/>
+    </header>
   </div>
 </template>
+
+<script>
+import NavbarItem from './layouts/components/NavbarItem.vue';
+
+export default {
+  name: 'app',
+  components: {
+    NavbarItem,
+  },
+};
+</script>
 
 <style lang="scss">
 body, html {
