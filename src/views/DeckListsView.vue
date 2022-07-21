@@ -1,13 +1,13 @@
 <template>
-  <div id="home">
-
+  <div id="deckLists">
+    <p>vue avec tout les decks</p>
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'HomeView',
+  name: 'DeckListsView',
   components: {
   },
 };

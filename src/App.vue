@@ -1,18 +1,21 @@
 <template>
   <div id="app">
     <header>
-      <NavbarItem/>
+      <NavBar />
     </header>
+    <body>
+      <router-view />
+    </body>
   </div>
 </template>
 
 <script>
-import NavbarItem from './layouts/components/NavbarItem.vue';
+import NavBar from './layouts/components/NavBar/Navbar.vue';
 
 export default {
   name: 'app',
   components: {
-    NavbarItem,
+    NavBar,
   },
 };
 </script>
@@ -27,12 +30,11 @@ body, html {
 
 body {
   margin: 0;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Ubuntu";
   background-color:#0f0e13;
   background-image:
-    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
+    radial-gradient(at 0% 0%, hsla(339,49%,30%,1) 0, transparent 50%),
     radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-
+    radial-gradient(at 100% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
 }
 </style>
