@@ -31,7 +31,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .popInBackground {
   display: flex;
   flex-direction: column;
@@ -69,7 +69,7 @@ export default {
 }
 
 .title {
-  color: white;
+  color: $text-color;
   text-align: center;
   width: fit-content;
 }

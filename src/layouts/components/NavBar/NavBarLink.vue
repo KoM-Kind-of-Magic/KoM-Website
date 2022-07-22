@@ -25,14 +25,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .link {
   display: flex;
   align-items: center;
 
-  background: #ffffff44;
+  background: $medium-glass-background;
   text-decoration: none;
-  color: white;
+  color: $text-color;
   font-size: 20px;
 
   transition: 0.3s;
@@ -44,7 +44,7 @@ export default {
 }
 
 .link:hover {
-  background: #ffffff88;
+  background: $strong-glass-background;
 }
 
 .link.active {

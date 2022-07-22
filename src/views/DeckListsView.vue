@@ -35,7 +35,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .v-enter-active,
 .v-leave-active {
   transition: opacity 0.3s ease;
@@ -60,7 +60,9 @@ export default {
 
   margin: 35px 20px;
   padding: 20px;
-  background: #ffffff22;
+
+  box-shadow: 20px 50px 50px rgba(0, 0, 0, 0.5);
+  background: $light-glass-background;
 
   border-radius: 5px;
 }
@@ -71,14 +73,14 @@ export default {
   right: 0;
   margin: 0 20px 0 0;
   padding: 4px 8px;
-  border-radius: 20px;
+  border-radius: 5px;
 
-  color: white;
-  background: #ffffff44;
+  color: $text-color;
+  background: $medium-glass-background;
   transition: 0.3s;
 }
 .createDeck:hover {
   cursor: pointer;
-  background: #ffffff88;
+  background: $strong-glass-background;
 }
 </style>
