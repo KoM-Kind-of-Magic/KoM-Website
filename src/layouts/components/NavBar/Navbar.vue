@@ -1,7 +1,7 @@
 <template>
   <nav>
-    <NavBarLink class="item" to="/" icon="coffee">Home</NavBarLink>
-    <NavBarLink class="item" to="/deckLists" icon="table-list">My Decks</NavBarLink>
+    <NavBarLink class="item" to="/" icon="home">Home</NavBarLink>
+    <NavBarLink class="item" to="/deckLists" icon="clone">My Decks</NavBarLink>
     <NavBarLink class="item" to="/wip" icon="gear">WIP</NavBarLink>
     <NavBarLink class="item" to="/wip" icon="gear">WIP</NavBarLink>
   </nav>

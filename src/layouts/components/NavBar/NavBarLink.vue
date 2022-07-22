@@ -39,7 +39,7 @@ export default {
   padding: 10px;
   margin: 5px;
 
-  border-bottom: 1px solid transparent;
+  border-bottom: 4px solid transparent;
   border-radius: 5px;
 }
 
@@ -48,7 +48,7 @@ export default {
 }
 
 .link.active {
-  border-bottom: 1px solid red;
+  border-bottom: 4px solid red;
 }
 
 .link .icon {

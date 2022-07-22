@@ -2,9 +2,9 @@
   <div class="popInBackground" @click.self="closeModal" @keydown="c">
     <div id="createDeckPopIn">
       <div class="title">Create a new deck</div>
-      <button @click="closeModal">
-        close
-      </button>
+      <div class="closeModal" @click="closeModal" @keydown="c">
+        <fa class="icon" icon="xmark" />
+      </div>
     </div>
   </div>
 </template>
@@ -72,5 +72,38 @@ export default {
   color: $text-color;
   text-align: center;
   width: fit-content;
+  margin: 15px 0 0 0;
+  font-size: 18px;
+  padding: 5px 10px;
+  cursor: default;
+}
+.title::after {
+  content: '';
+  border-bottom: 3px solid $title-underline-color;
+  width: 100px;
+  display: block;
+  margin: 5px auto;
+}
+
+.closeModal .icon {
+  width: 20px;
+  height: 20px;
+  color: $text-color;
+}
+
+.closeModal {
+  position: absolute;
+  cursor: pointer;
+  right: 0;
+  max-width: 20px;
+  max-height: 20px;
+  padding: 6px;
+  border-radius: 10px;
+  background: $light-glass-background;
+  transition: 0.3s;
+}
+
+.closeModal:hover {
+  background: $medium-glass-background;
 }
 </style>
