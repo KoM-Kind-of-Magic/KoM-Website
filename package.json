@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "dev": "ue-cli-service serve -- --host 0.0.0.0 --port 80",
+    "dev": "vue-cli-service serve -- --port 80",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
@@ -13,7 +13,9 @@
     "axios": "^0.27.2",
     "core-js": "^3.8.3",
     "element-plus": "^2.2.5",
+    "portfinder": "^1.0.21",
     "vue": "^3.2.13",
+    "vue-cli": "^2.9.6",
     "vue-echarts": "^6.1.0",
     "vue-router": "^4.0.3",
     "vuex": "^4.0.0"
