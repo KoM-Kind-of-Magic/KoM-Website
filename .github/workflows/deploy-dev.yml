@@ -33,6 +33,8 @@ jobs:
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_EIP_ASSOC_FRONTEND: ${{ secrets.TF_VAR_EIP_ASSOC_FRONTEND }}
+          TF_VAR_SSH_PUB_KEY: ${{ secrets.TF_VAR_SSH_PUB_KEY }}
         run: |
           cd terraform
           terraform apply -auto-approve
