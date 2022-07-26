@@ -13,7 +13,6 @@ resource "aws_eip_association" "eip_assoc" {
 #   vpc      = true
 # }
 provider "aws" {
-			profile    = "default"
 			region = "eu-west-3"
 }
 
