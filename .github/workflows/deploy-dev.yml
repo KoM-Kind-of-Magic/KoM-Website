@@ -54,7 +54,7 @@ jobs:
       - name: Install ssh key
         uses: shimataro/ssh-key-action@v2
         with:
-          key: ${{ secrets.TF_VAR_SSH_PUB_KEY }}
+          key: ${{ secrets.PRIVATE_KEY }}
           name: id_rsa
           known_hosts: ${{ secrets.HOSTNAME_URL }}
       - name: run exporters playbook
