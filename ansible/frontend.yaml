@@ -1,44 +1,50 @@
 - hosts: front
   become: yes
   tasks:
-  
     - name: Install pkg
       apt:
         pkg:
           - curl
           - git
-          - gpg
+          - nodejs
+          - npm
+          - nginx
         state: latest
         update_cache: yes
 
-    - name: "Add nodejs apt key"
-      apt_key:
-        url: https://deb.nodesource.com/gpgkey/nodesource.gpg.key
-        state: present
-
-    - name: "Add nodejs 14.x ppa for apt repo"
-      apt_repository:
-        repo: deb https://deb.nodesource.com/node_14.x bionic main
-        update_cache: yes
-
-    - name: "Install nodejs"
-      apt:
-        update_cache: yes
-        name: nodejs
-        state: present
-
-    - name: Example clone of a single branch
+    - name: Pull project
+      become_user: admin
       ansible.builtin.git:
         repo: https://github.com/KoM-Kind-of-Magic/KoM-Website
         dest: code
-        single_branch: yes
         version: devops
-    
-    - name: Install pm2
-      shell: npm install -g pm2   
+
+    - name: Copy using inline content
+      ansible.builtin.copy:
+        content: 'prefix=${HOME}/.npm-packages'
+        dest: /.npmrc
 
     - name: Install node modules
-      shell: cd code && sudo npm install
+      become_user: admin
+      shell: cd code && npm i
 
-    - name: Launch server
-      shell: cd code && pm2 start "npm run start"
+    - name: Build
+      become_user: admin
+      shell: cd code && npm run build
+
+    - name: copy the nginx config file and restart nginx
+      copy:
+        src: ./nginx-site.cfg
+        dest: /etc/nginx/sites-available/nginx-site.cfg
+      become: yes
+      
+    - name: create symlink
+      file:
+        src: /etc/nginx/sites-available/nginx-site.cfg
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      become: yes
+    - name: start nginx
+      service:
+          name: nginx
+          state: restarted

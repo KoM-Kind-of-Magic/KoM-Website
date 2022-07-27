@@ -8,13 +8,16 @@ resource "aws_eip_association" "eip_assoc" {
   instance_id   = aws_instance.SRV-Front-ESP.id
   allocation_id = var.EIP_ASSOC_FRONTEND
 }
+# resource "aws_eip" "lb" {
+#   instance = aws_instance.SRV-Front-ESP.id
+#   vpc      = true
+# }
 provider "aws" {
-			profile    = "default"
 			region = "eu-west-3"
 }
 
 resource "aws_instance" "SRV-Front-ESP" {
-		ami						= "ami-04e905a52ec8010b2"
+		ami						= "ami-002ff2c881c910aa8"
 		instance_type			= "t2.micro"
 		key_name				= "admin"
 		subnet_id				= "subnet-07badc9b57fda08d4"
@@ -36,3 +39,11 @@ resource "aws_key_pair" "admin" {
    key_name   = "admin"
    public_key = var.SSH_PUB_KEY
  }
+
+terraform {
+  backend "s3" {
+    bucket = "kom-front-bucket"
+    key    = "terraform.tfstate"
+    region = "eu-west-3"
+  }
+}
