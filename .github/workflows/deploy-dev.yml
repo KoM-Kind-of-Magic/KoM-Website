@@ -61,5 +61,6 @@ jobs:
         env:
           PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
         run: |
-          ls -la ~/.ssh
+          cat ~/.ssh/id_rsa
+          cat ~/.ssh/known_hosts
           ansible-playbook -i ansible/inventory/aws/hosts ansible/frontend.yaml
