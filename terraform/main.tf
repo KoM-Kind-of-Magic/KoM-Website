@@ -39,3 +39,11 @@ resource "aws_key_pair" "admin" {
    key_name   = "admin"
    public_key = var.SSH_PUB_KEY
  }
+
+terraform {
+  backend "s3" {
+    bucket = "state-front"
+    key    = "terraform.tfstate"
+    region = "eu-west-3"
+  }
+}
