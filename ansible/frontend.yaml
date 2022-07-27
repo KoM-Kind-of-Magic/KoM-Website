@@ -17,7 +17,7 @@
       ansible.builtin.git:
         repo: https://github.com/KoM-Kind-of-Magic/KoM-Website
         dest: code
-        version: devops
+        version: dev
 
     - name: Copy using inline content
       ansible.builtin.copy:
