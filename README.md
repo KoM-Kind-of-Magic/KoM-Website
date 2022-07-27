@@ -1,5 +1,7 @@
 # kind-of-magic
 
+
+
 ## Project setup
 ```
 npm install
