@@ -21,6 +21,7 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
+  height:75px;
 
   background-color: rgb(107,38,63);
   background-image:

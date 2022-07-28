@@ -6,18 +6,43 @@
     <Transition>
       <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
     </Transition>
-    <div class="deckContainer">
+     <div class="container">
+      <el-row>
+        <el-col
+          v-for="(i, index) in 4"
+          :key="i"
+          :span="8"
+          :offset="index > 0 ? 4 : 0"
+        >
+          <el-card class="card">
+            <img
+              src="http://media.wizards.com/2016/bVvMNuiu2i_KLD/en_g2UfOun34M.png"
+              class="image"
+              alt="image"
+            />
+            <div style="padding: 14px">
+              <span style="color: white">Deck</span>
+              <div class="bottom">
+                <el-button text class="button">More</el-button>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
 
 <script>
 import CreateDeckPopIn from '@/components/CreateDeckPopIn.vue';
+import { ElCard, ElButton } from 'element-plus';
 
 export default {
   name: 'DeckListsView',
   components: {
     CreateDeckPopIn,
+    'el-card': ElCard,
+    'el-button': ElButton,
   },
   methods: {
     showModal() {
