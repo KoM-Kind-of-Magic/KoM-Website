@@ -14,9 +14,7 @@
       <div class="input">
         <Input placeholder="Type" class="name_input" />
       </div>
-      <div class="input">
-        <Button class="next_btn" size="medium" full-width>Next</Button>
-      </div>
+      <Button class="createDeckBtn">Create</Button>
     </div>
   </div>
 </template>
@@ -125,10 +123,6 @@ export default {
     color:#000000;
     opacity: 0.4;
   }
-}
-.next_btn {
-  border-radius: 16px;
-  color: $primary-color;
 }
 .closeModal:hover {
   background: $medium-glass-background;

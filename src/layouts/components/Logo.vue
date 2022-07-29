@@ -9,7 +9,7 @@
 
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Radley&display=swap');
 
 .logo {
