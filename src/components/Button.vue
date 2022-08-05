@@ -46,7 +46,7 @@ export default {
 <style lang="scss" scoped>
 .validateForm {
   position: absolute;
-  bottom: 30px;
+  bottom: 35px;
 }
 
 .validateForm button {

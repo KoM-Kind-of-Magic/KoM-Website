@@ -54,7 +54,7 @@ export default {
 .formInput .el-input__wrapper{
   background: $light-glass-background-select;
   box-shadow: none;
-  width: 280px;
+  width: 290px;
 }
 
 .formInput .el-input__wrapper input {

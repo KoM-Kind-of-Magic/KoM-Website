@@ -55,7 +55,7 @@ export default {
 .formInput .el-textarea__inner{
   background: $light-glass-background-select;
   box-shadow: none;
-  width: 300px;
+  width: 310px;
   color: $text-color;
   padding: 10px;
   max-height: 150px;
