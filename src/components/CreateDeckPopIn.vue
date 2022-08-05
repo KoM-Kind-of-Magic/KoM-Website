@@ -9,7 +9,7 @@
         <Input placeholder="Name" class="name_input" />
       </div>
       <div class="input">
-        <Input placeholder="Format" class="name_input" />
+        <SelectComp id="formatSelect" />
       </div>
       <div class="input">
         <Input placeholder="Type" class="name_input" />
@@ -22,12 +22,14 @@
 <script>
 import Input from './Input.vue';
 import Button from './Button.vue';
+import SelectComp from './Select.vue';
 
 export default {
   name: 'CreateDeckPopIn',
   components: {
     Input,
     Button,
+    SelectComp,
   },
   created() {
     document.addEventListener('keyup', this.closeModalOnEscPress);
@@ -116,13 +118,15 @@ export default {
   background: $light-glass-background;
   transition: 0.3s;
 }
+.input:first-child {
+  margin-top: 20px;
+}
+.input ::placeholder {
+  color:#000000;
+  opacity: 0.4;
+}
 .input {
   margin-bottom: 15px;
-  margin-top: 15px;
-  ::placeholder {
-    color:#000000;
-    opacity: 0.4;
-  }
 }
 .closeModal:hover {
   background: $medium-glass-background;
