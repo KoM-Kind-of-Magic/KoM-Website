@@ -1,6 +1,6 @@
 <template>
   <div class="validateForm">
-    <button v-bind="attrs" @click="onClick($event)">
+    <button>
       <slot />
       <div class="iconBackground">
         <fa class="icon" icon="arrow-right-long" />

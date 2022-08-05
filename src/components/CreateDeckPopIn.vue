@@ -6,7 +6,11 @@
         <fa class="icon" icon="xmark" />
       </div>
       <div class="input">
-        <Input placeholder="Name" class="name_input" />
+        <Input
+          placeholder="Name"
+          class="name_input"
+          @input="this.deckName = this.value"
+        />
       </div>
       <div class="input">
         <SelectComp id="formatSelect" />
@@ -14,7 +18,7 @@
       <div class="input">
         <TextArea placeholder="Description" class="desc_input" />
       </div>
-      <Button class="createDeckBtn">Create</Button>
+      <Button class="createDeckBtn" @click="createDeck()">Create</Button>
     </div>
   </div>
 </template>
@@ -33,6 +37,9 @@ export default {
     SelectComp,
     TextArea,
   },
+  data: () => ({
+    deckName: '',
+  }),
   created() {
     document.addEventListener('keyup', this.closeModalOnEscPress);
   },
@@ -44,6 +51,10 @@ export default {
       if (event.keyCode === 27) {
         this.$emit('close');
       }
+    },
+    createDeck() {
+      console.log('Create deck');
+      console.log(this.deckName);
     },
   },
 };

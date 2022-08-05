@@ -1,11 +1,10 @@
 <template>
     <el-input
     v-model="inputValue"
+    @input="$emit('input', this.inputValue);"
     class="formInput"
     :placeholder="placeholder"
     :clearable="clearable"
-    :size="size"
-    @change="triggerEvent"
   />
 </template>
 
@@ -17,7 +16,6 @@ export default {
   components: {
     'el-input': ElInput,
   },
-
   props: {
     value: {
       default: '',
@@ -33,16 +31,10 @@ export default {
       default: false,
       type: Boolean,
     },
-
-    size: {
-      default: null,
-      type: String,
-    },
   },
 
   setup() {
     const inputValue = ref('');
-
     return {
       inputValue,
     };
