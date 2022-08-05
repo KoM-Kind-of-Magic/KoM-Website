@@ -12,7 +12,7 @@
         <SelectComp id="formatSelect" />
       </div>
       <div class="input">
-        <Input placeholder="Type" class="name_input" />
+        <TextArea placeholder="Description" class="desc_input" />
       </div>
       <Button class="createDeckBtn">Create</Button>
     </div>
@@ -23,6 +23,7 @@
 import Input from './Input.vue';
 import Button from './Button.vue';
 import SelectComp from './Select.vue';
+import TextArea from './TextArea.vue';
 
 export default {
   name: 'CreateDeckPopIn',
@@ -30,6 +31,7 @@ export default {
     Input,
     Button,
     SelectComp,
+    TextArea,
   },
   created() {
     document.addEventListener('keyup', this.closeModalOnEscPress);
@@ -71,13 +73,8 @@ export default {
 
   border-radius: 10px;
 
-  width: 20%;
-  min-width: 300px;
-  max-width: 500px;
-
-  height: 40%;
-  min-height: 300px;
-  max-height: 500px;
+  width: 400px;
+  height: 450px;
 
   z-index: 3;
 

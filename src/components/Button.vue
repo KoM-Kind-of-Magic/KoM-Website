@@ -44,6 +44,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.validateForm {
+  position: absolute;
+  bottom: 30px;
+}
+
 .validateForm button {
   background: $primary-color;
   color: $text-color;

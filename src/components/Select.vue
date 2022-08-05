@@ -70,7 +70,7 @@ export default {
 <style lang="scss">
 
 .select {
-  width: 230px;
+  width: 300px;
 }
 
 .vs__dropdown-toggle {

@@ -3,9 +3,10 @@
     v-model="inputValue"
     class="formInput"
     :placeholder="placeholder"
-    :clearable="clearable"
-    :size="size"
-    @change="triggerEvent"
+    maxlength="140"
+    show-word-limit
+    type="textarea"
+    :rows='4'
   />
 </template>
 
@@ -51,16 +52,16 @@ export default {
 </script>
 
 <style lang="scss">
-.formInput .el-input__wrapper{
+.formInput .el-textarea__inner{
   background: $light-glass-background-select;
   box-shadow: none;
-  width: 280px;
+  width: 300px;
+  color: $text-color;
+  padding: 10px;
+  max-height: 150px;
 }
 
-.formInput .el-input__wrapper input {
-  color: $text-color !important;
-}
-.formInput .el-input__wrapper input::placeholder {
-  color: $text-color !important;
+.formInput .el-input__count {
+  background: transparent;
 }
 </style>
