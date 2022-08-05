@@ -78,6 +78,7 @@ export default {
 }
 .select .vs__search::placeholder {
   color: white !important;
+  font-size: 14px;
 }
 .select .vs__selected,
 .select .vs__selected-options {

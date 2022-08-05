@@ -1,7 +1,7 @@
 <template>
     <el-input
     v-model="inputValue"
-    class="input"
+    class="formInput"
     :placeholder="placeholder"
     :clearable="clearable"
     :size="size"
@@ -50,6 +50,17 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.formInput .el-input__wrapper{
+  background: $light-glass-background-select;
+  box-shadow: none;
+  width: 210px;
+}
 
+.formInput .el-input__wrapper input {
+  color: $text-color !important;
+}
+.formInput .el-input__wrapper input::placeholder {
+  color: $text-color !important;
+}
 </style>

@@ -88,7 +88,7 @@ export default {
   color: $text-color;
   text-align: center;
   width: fit-content;
-  margin: 15px 0 0 0;
+  margin: 15px 0 30px 0;
   font-size: 18px;
   padding: 5px 10px;
   cursor: default;
@@ -118,15 +118,8 @@ export default {
   background: $light-glass-background;
   transition: 0.3s;
 }
-.input:first-child {
-  margin-top: 20px;
-}
-.input ::placeholder {
-  color:#000000;
-  opacity: 0.4;
-}
 .input {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 .closeModal:hover {
   background: $medium-glass-background;
