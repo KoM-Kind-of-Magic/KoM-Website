@@ -94,6 +94,10 @@ export default {
   transform: scale(0.9);
 }
 
+.vs--open .vs__open-indicator {
+  transform: rotate(180deg) scale(0.9);
+}
+
 .select .vs__dropdown-menu {
   background: $light-glass-background-select;
   color: $text-color;
