@@ -1,7 +1,7 @@
 <template>
     <el-input
     v-model="inputValue"
-    @input="$emit('input', this.inputValue);"
+    @input="sendInputValue"
     class="formInput"
     :placeholder="placeholder"
     :clearable="clearable"
@@ -30,6 +30,11 @@ export default {
     clearable: {
       default: false,
       type: Boolean,
+    },
+  },
+  methods: {
+    sendInputValue() {
+      this.$emit('getInputValue', this.inputValue);
     },
   },
 

@@ -1,6 +1,7 @@
 <template>
     <el-input
     v-model="inputValue"
+    @input="sendInputValue"
     class="formInput"
     :placeholder="placeholder"
     maxlength="140"
@@ -48,6 +49,12 @@ export default {
       inputValue,
     };
   },
+  methods: {
+    sendInputValue() {
+      this.$emit('getInputValue', this.inputValue);
+    },
+  },
+
 };
 </script>
 

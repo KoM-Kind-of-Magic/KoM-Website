@@ -7,16 +7,24 @@
       </div>
       <div class="input">
         <Input
+          @getInputValue="setDeckName"
           placeholder="Name"
           class="name_input"
-          @input="this.deckName = this.value"
         />
       </div>
       <div class="input">
-        <SelectComp id="formatSelect" />
+        <SelectComp
+          id="formatSelect"
+          placeholder="Select a Deck format"
+          @getInputValue="setDeckFormat"
+        />
       </div>
       <div class="input">
-        <TextArea placeholder="Description" class="desc_input" />
+        <TextArea
+          placeholder="Description"
+          class="desc_input"
+          @getInputValue="setDeckDesc"
+        />
       </div>
       <Button class="createDeckBtn" @click="createDeck()">Create</Button>
     </div>
@@ -39,6 +47,8 @@ export default {
   },
   data: () => ({
     deckName: '',
+    deckFormat: '',
+    deckDesc: '',
   }),
   created() {
     document.addEventListener('keyup', this.closeModalOnEscPress);
@@ -53,8 +63,19 @@ export default {
       }
     },
     createDeck() {
-      console.log('Create deck');
+      console.log('Create deck :');
       console.log(this.deckName);
+      console.log(this.deckFormat);
+      console.log(this.deckDesc);
+    },
+    setDeckName(deckName) {
+      this.deckName = deckName;
+    },
+    setDeckFormat(deckFormat) {
+      this.deckFormat = deckFormat;
+    },
+    setDeckDesc(deckDesc) {
+      this.deckDesc = deckDesc;
     },
   },
 };
