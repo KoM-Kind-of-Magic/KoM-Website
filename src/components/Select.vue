@@ -1,7 +1,7 @@
 <template>
   <v-select
     class="select"
-    placeholder="Select a Deck format"
+    @option:selected="sendInputValue"
     :options="options"
     :filterable="true"
     :searchable="true"
@@ -47,6 +47,11 @@ export default {
         },
       ],
     };
+  },
+  methods: {
+    sendInputValue(val) {
+      this.$emit('getInputValue', val.value);
+    },
   },
 };
 </script>
