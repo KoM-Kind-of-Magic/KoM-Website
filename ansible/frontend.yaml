@@ -1,0 +1,51 @@
+- hosts: front
+  become: yes
+  tasks:
+    - name: Install pkg
+      apt:
+        pkg:
+          - curl
+          - git
+          - nodejs
+          - npm
+          - nginx
+        state: latest
+        update_cache: yes
+
+    - name: Pull project
+      become_user: admin
+      ansible.builtin.git:
+        repo: https://github.com/KoM-Kind-of-Magic/KoM-Website
+        dest: code
+        force: yes
+        version: dev
+
+    - name: Copy using inline content
+      ansible.builtin.copy:
+        content: 'prefix=${HOME}/.npm-packages'
+        dest: /.npmrc
+
+    - name: Install node modules
+      become_user: admin
+      shell: cd code && npm i
+
+    - name: Build
+      become_user: admin
+      shell: cd code && npm run build
+
+    - name: copy the nginx config file and restart nginx
+      copy:
+        src: ./nginx-site.cfg
+        dest: /etc/nginx/sites-available/nginx-site.cfg
+      become: yes
+      
+    - name: create symlink
+      file:
+        src: /etc/nginx/sites-available/nginx-site.cfg
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      become: yes
+    - name: start nginx
+      service:
+          name: nginx
+          state: restarted
