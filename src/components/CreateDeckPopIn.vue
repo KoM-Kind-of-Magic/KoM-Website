@@ -5,16 +5,51 @@
       <div class="closeModal" @click="closeModal" @keydown="c">
         <fa class="icon" icon="xmark" />
       </div>
+      <div class="input">
+        <Input
+          @getInputValue="setDeckName"
+          placeholder="Name"
+          class="name_input"
+        />
+      </div>
+      <div class="input">
+        <SelectComp
+          id="formatSelect"
+          placeholder="Select a Deck format"
+          @getInputValue="setDeckFormat"
+        />
+      </div>
+      <div class="input">
+        <TextArea
+          placeholder="Description"
+          class="desc_input"
+          @getInputValue="setDeckDesc"
+        />
+      </div>
+      <Button class="createDeckBtn" @click="createDeck()">Create</Button>
     </div>
   </div>
 </template>
 
 <script>
+import Input from './Input.vue';
+import Button from './Button.vue';
+import SelectComp from './Select.vue';
+import TextArea from './TextArea.vue';
 
 export default {
   name: 'CreateDeckPopIn',
   components: {
+    Input,
+    Button,
+    SelectComp,
+    TextArea,
   },
+  data: () => ({
+    deckName: '',
+    deckFormat: '',
+    deckDesc: '',
+  }),
   created() {
     document.addEventListener('keyup', this.closeModalOnEscPress);
   },
@@ -26,6 +61,21 @@ export default {
       if (event.keyCode === 27) {
         this.$emit('close');
       }
+    },
+    createDeck() {
+      console.log('Create deck :');
+      console.log(this.deckName);
+      console.log(this.deckFormat);
+      console.log(this.deckDesc);
+    },
+    setDeckName(deckName) {
+      this.deckName = deckName;
+    },
+    setDeckFormat(deckFormat) {
+      this.deckFormat = deckFormat;
+    },
+    setDeckDesc(deckDesc) {
+      this.deckDesc = deckDesc;
     },
   },
 };
@@ -51,17 +101,12 @@ export default {
   align-items: center;
 
   position: relative;
-  background: black;
+  background: #151823;
 
   border-radius: 10px;
 
-  width: 33%;
-  min-width: 300px;
-  max-width: 500px;
-
-  height: 40%;
-  min-height: 300px;
-  max-height: 500px;
+  width: 400px;
+  height: 450px;
 
   z-index: 3;
 
@@ -72,7 +117,7 @@ export default {
   color: $text-color;
   text-align: center;
   width: fit-content;
-  margin: 15px 0 0 0;
+  margin: 15px 0 30px 0;
   font-size: 18px;
   padding: 5px 10px;
   cursor: default;
@@ -102,7 +147,9 @@ export default {
   background: $light-glass-background;
   transition: 0.3s;
 }
-
+.input {
+  margin-bottom: 20px;
+}
 .closeModal:hover {
   background: $medium-glass-background;
 }
