@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
 import DeckListsView from '../views/DeckListsView.vue';
+import DeckView from '../views/DeckView.vue';
+import DeckEditorView from '../views/DeckEditorView.vue';
+
 import WorkInProgress from '../views/WorkInProgress.vue';
 
 const routes = [
@@ -13,6 +16,16 @@ const routes = [
     path: '/deckLists',
     name: 'deckLists',
     component: DeckListsView,
+  },
+  {
+    path: '/deck/:id',
+    name: 'deck',
+    component: DeckView,
+  },
+  {
+    path: '/deckEditor/:id',
+    name: 'deckEditor',
+    component: DeckEditorView,
   },
   {
     path: '/wip',

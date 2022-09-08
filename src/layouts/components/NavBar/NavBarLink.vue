@@ -20,36 +20,35 @@ export default {
   setup(props) {
     const route = useRoute();
     const isActive = computed(() => route.path === props.to);
-    console.log(isActive);
     return { isActive };
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .link {
   display: flex;
   align-items: center;
 
-  background: #ffffff44;
+  background: $medium-glass-background;
   text-decoration: none;
-  color: white;
+  color: $text-color;
   font-size: 20px;
 
   transition: 0.3s;
   padding: 10px;
   margin: 5px;
 
-  border-bottom: 1px solid transparent;
+  border-bottom: 4px solid transparent;
   border-radius: 5px;
 }
 
 .link:hover {
-  background: #ffffff88;
+  background: $strong-glass-background;
 }
 
 .link.active {
-  border-bottom: 1px solid red;
+  border-bottom: 4px solid red;
 }
 
 .link .icon {
