@@ -42,7 +42,7 @@ resource "aws_key_pair" "admin" {
 
 terraform {
   backend "s3" {
-    bucket = "kom-front-bucket"
+    bucket = "kom-front-bucket-ml"
     key    = "terraform.tfstate"
     region = "eu-west-3"
   }
