@@ -57,7 +57,7 @@ jobs:
         with:
           key: ${{ secrets.PRIVATE_KEY }}
           name: id_rsa
-          known_hosts: ${{ secrets.HOSTNAME_URL }}
+          known_hosts: ec2-15-188-111-204.eu-west-3.compute.amazonaws.com
       - name: Adding Known Hosts
         run: ssh-keyscan -H ec2-15-188-111-204.eu-west-3.compute.amazonaws.com >> ~/.ssh/known_hosts
       - name: Run playbook
