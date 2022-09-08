@@ -20,8 +20,8 @@ resource "aws_instance" "SRV-Front-ESP" {
 		ami						= "ami-002ff2c881c910aa8"
 		instance_type			= "t2.micro"
 		key_name				= "admin"
-		subnet_id				= var.SUBNET_ID
-		vpc_security_group_ids	= ["sg-070d8815d37f5d80e"]
+		subnet_id				= "subnet-07badc9b57fda08d4"
+		vpc_security_group_ids	= ["sg-0a748a68835ebec7d"]
 		root_block_device{
 		  volume_size			= "80"
 		  volume_type			= "gp3"
@@ -42,7 +42,7 @@ resource "aws_key_pair" "admin" {
 
 terraform {
   backend "s3" {
-    bucket = "kom-front-bucket-ml"
+    bucket = "kom-front-bucket"
     key    = "terraform.tfstate"
     region = "eu-west-3"
   }
