@@ -20,7 +20,7 @@ resource "aws_instance" "SRV-Front-ESP" {
 		ami						= "ami-002ff2c881c910aa8"
 		instance_type			= "t2.micro"
 		key_name				= "admin"
-		subnet_id				= "subnet-04b0d139f4b20a025"
+		subnet_id				= var.SUBNET_ID
 		vpc_security_group_ids	= ["sg-070d8815d37f5d80e"]
 		root_block_device{
 		  volume_size			= "80"
