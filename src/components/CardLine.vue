@@ -1,11 +1,22 @@
 <template>
   <div class="cardLine" :class="[card.isCommander ? 'commanderCard' : '']">
-    <div class="cardName">
-      {{card.name}}
+    <div class="cardInfos">
+      <div class="cardAmount">
+        {{card.number}}
+      </div>
+      <div class="cardName">
+        {{card.name}}
+      </div>
     </div>
     <div class="cardActions">
-      <div class="cardRemove" title="Remove card" @click="removeCard(card.id)" @keydown="c">
-        <fa class="icon" icon="xmark" />
+      <div class="cardAdd" title="Increase amount" @click="addCard(card.id)" @keydown="c">
+        <fa class="icon" icon="plus" />
+      </div>
+      <div class="cardRemove" title="Reduce amount" @click="removeCard(card.id)" @keydown="c">
+        <fa class="icon" icon="minus" />
+      </div>
+      <div class="cardRemoveAll" title="Remove card" @click="removeAllCards(card.id)" @keydown="c">
+        <fa class="icon" icon="trash-can" />
       </div>
     </div>
   </div>
@@ -20,8 +31,14 @@ export default {
     id: { type: String, required: false },
   },
   methods: {
+    removeAllCards(cardId) {
+      this.$emit('removeAllCards', cardId);
+    },
     removeCard(cardId) {
       this.$emit('removeCard', cardId);
+    },
+    addCard(cardId) {
+      this.$emit('addCard', cardId);
     },
   },
   data() {
@@ -38,7 +55,7 @@ export default {
   background: $dark-background;
   border-radius: 5px;
 
-  padding: 5px 10px;
+  padding: 0 10px;
   font-size: 15px;
   margin: 3px 3px 0 3px;
 }
@@ -49,10 +66,22 @@ export default {
 }
 
 .cardActions {
+  display: flex;
+  flex-direction: row;
+
   opacity: 0;
   transform: translateX(10px);
 
   transition: 0.1s;
+  color: $strong-glass-background;
+}
+
+.cardActions > * {
+  transition: 0.3s;
+  padding: 6px 0 0 10px;
+}
+.cardActions > *:hover {
+  color: $text-color;
 }
 
 .cardLine:hover .cardActions {
@@ -68,8 +97,21 @@ export default {
   border: 1px solid red;
 }
 
-.cardRemove {
-  padding: 0 4px;
+.cardInfos {
+  display: flex;
+  flex-direction: row;
+  line-height: 30px;
+}
+
+.cardAmount {
+  width: 25px;
+  text-align: right;
+  margin: 0 5px 0 0;
+}
+
+.cardAdd,
+.cardRemove,
+.cardRemoveAll {
   cursor: pointer;
 }
 </style>

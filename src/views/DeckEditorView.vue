@@ -4,7 +4,15 @@
       <div class="title">
         Cards in your deck
       </div>
-      <CardLine v-for="card in cards" :key="card.id" :card="card" @removeCard="removeCard"/>
+      <div class="cardContainer">
+        <CardLine v-for="card in cards"
+          :key="card.id"
+          :card="card"
+          @removeAllCards="removeAllCards"
+          @removeCard="removeCard"
+          @addCard="addCard"
+        />
+      </div>
     </div>
     <div class="infos-search-container">
       <div class="deckInfos">
@@ -27,9 +35,25 @@ import CardLine from '../components/CardLine.vue';
 export default {
   name: 'DeckEditorView',
   methods: {
-    removeCard(cardId) {
+    removeAllCards(cardId) {
       const index = this.cards.map((el) => el.id).indexOf(cardId);
       this.cards.splice(index, 1);
+    },
+    removeCard(cardId) {
+      const index = this.cards.map((el) => el.id).indexOf(cardId);
+      if (this.cards[index].number === 1) {
+        this.removeAllCards(cardId);
+      } else {
+        this.cards[index].number -= 1;
+      }
+      console.log(this.cards[index].number);
+    },
+    addCard(cardId) {
+      const index = this.cards.map((el) => el.id).indexOf(cardId);
+      if (this.cards[index].number < 999) {
+        this.cards[index].number += 1;
+      }
+      console.log(this.cards[index].number);
     },
   },
   components: { CardLine },
@@ -45,18 +69,22 @@ export default {
         {
           name: 'Atraxa',
           id: '2',
+          number: 2,
         },
         {
           name: 'Sliver Queen',
           id: '3',
+          number: 1,
         },
         {
           name: 'Ulamog',
           id: '4',
+          number: 25,
         },
         {
           name: 'Ghired',
           id: '5',
+          number: 999,
         },
       ],
     };
@@ -92,6 +120,12 @@ export default {
   text-align: center;
 }
 
+.cardContainer {
+  overflow-y: scroll;
+  padding: 0 0 0 20px;
+  margin: 20px 20px 20px 0;
+}
+
 .currentDeck,
 .deckInfos,
 .searchCards {
@@ -113,6 +147,7 @@ export default {
 
 .title {
   text-align: center;
+  margin: 20px 0 0 0;
 }
 
 .title::after {
