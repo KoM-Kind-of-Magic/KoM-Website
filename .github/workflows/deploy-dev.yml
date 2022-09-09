@@ -1,9 +1,10 @@
 name: CD
 
 on:
-  push:
+  pull_request:
     branches:
       - dev
+    types: [closed]
 
 jobs: 
   deploy-applications:
@@ -57,9 +58,9 @@ jobs:
         with:
           key: ${{ secrets.PRIVATE_KEY }}
           name: id_rsa
-          known_hosts: ec2-15-188-111-204.eu-west-3.compute.amazonaws.com
+          known_hosts: ${{ secrets.HOSTNAME_URL }}
       - name: Adding Known Hosts
-        run: ssh-keyscan -H ec2-15-188-111-204.eu-west-3.compute.amazonaws.com >> ~/.ssh/known_hosts
+        run: ssh-keyscan -H ${{ secrets.HOSTNAME_URL }} >> ~/.ssh/known_hosts
       - name: Run playbook
         run: |
           ansible-playbook -i ansible/inventory/aws/hosts ansible/frontend.yaml
