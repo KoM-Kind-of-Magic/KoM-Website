@@ -1,10 +1,10 @@
 <template>
-  <div class="cardLine">
-    <div class="cardName" :class="[card.isCommander ? 'commanderCard' : '']">
+  <div class="cardLine" :class="[card.isCommander ? 'commanderCard' : '']">
+    <div class="cardName">
       {{card.name}}
     </div>
     <div class="cardActions">
-      <div class="cardRemove"><fa class="icon" icon="xmark" /></div>
+      <div class="cardRemove" title="Remove card"><fa class="icon" icon="xmark" /></div>
     </div>
   </div>
 </template>
@@ -45,11 +45,14 @@ export default {
 
 .cardActions {
   opacity: 0;
+  transform: translateX(10px);
+
   transition: 0.1s;
 }
 
 .cardLine:hover .cardActions {
   opacity: 1;
+  transform: translateX(0);
 }
 
 .cardName {
@@ -58,5 +61,10 @@ export default {
 
 .commanderCard {
   border: 1px solid red;
+}
+
+.cardRemove {
+  padding: 0 4px;
+  cursor: pointer;
 }
 </style>
