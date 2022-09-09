@@ -4,7 +4,9 @@
       {{card.name}}
     </div>
     <div class="cardActions">
-      <div class="cardRemove" title="Remove card"><fa class="icon" icon="xmark" /></div>
+      <div class="cardRemove" title="Remove card" @click="removeCard(card.id)" @keydown="c">
+        <fa class="icon" icon="xmark" />
+      </div>
     </div>
   </div>
 </template>
@@ -18,6 +20,9 @@ export default {
     id: { type: String, required: false },
   },
   methods: {
+    removeCard(cardId) {
+      this.$emit('removeCard', cardId);
+    },
   },
   data() {
   },

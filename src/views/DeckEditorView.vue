@@ -4,7 +4,7 @@
       <div class="title">
         Cards in your deck
       </div>
-      <CardLine v-for="card in cards" :key="card.id" :card="card"/>
+      <CardLine v-for="card in cards" :key="card.id" :card="card" @removeCard="removeCard"/>
     </div>
     <div class="infos-search-container">
       <div class="deckInfos">
@@ -27,6 +27,10 @@ import CardLine from '../components/CardLine.vue';
 export default {
   name: 'DeckEditorView',
   methods: {
+    removeCard(cardId) {
+      const index = this.cards.map((el) => el.id).indexOf(cardId);
+      this.cards.splice(index, 1);
+    },
   },
   components: { CardLine },
   data() {
@@ -36,6 +40,7 @@ export default {
           name: 'Yarok',
           id: '1',
           isCommander: true,
+          number: 3,
         },
         {
           name: 'Atraxa',
