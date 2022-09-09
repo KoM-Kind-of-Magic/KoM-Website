@@ -20,6 +20,14 @@ resource "aws_key_pair" "admin" {
   instance_id   = aws_instance.SRV-Front-ESP.id
   allocation_id = var.EIP_ASSOC_FRONTEND
 }
+
+terraform {
+  backend "s3" {
+    bucket = "kom-front-bucket-ml"
+    key    = "terraform.tfstate"
+    region = "eu-west-3"
+  }
+}
 # resource "aws_instance" "SRV-Front-ESP" {
 # 		ami						= "ami-002ff2c881c910aa8"
 # 		instance_type			= "t2.micro"
