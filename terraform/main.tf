@@ -20,7 +20,7 @@ resource "aws_instance" "SRV-Front-ESP" {
 		ami						= "ami-002ff2c881c910aa8"
 		instance_type			= "t2.micro"
 		key_name				= "admin"
-		vpc_security_group_ids	= ["sg-070d8815d37f5d80e"]
+		vpc_security_group_ids	= ["sg-073729d8166cb3445"]
 		root_block_device{
 		  volume_size			= "80"
 		  volume_type			= "gp3"
