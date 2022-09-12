@@ -30,9 +30,6 @@ body {
   margin: 0;
   font-family: "Ubuntu";
   background-color:#0f0e13;
-  background-image:
-    radial-gradient(at 0% 0%, hsla(339,49%,30%,1) 0, transparent 50%),
-    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%),
-    radial-gradient(at 100% 0%, hsla(253,16%,7%,1) 0, transparent 50%),
+  background-image: linear-gradient(90deg, rgba(96,35,57,1) 0%, rgba(16,16,22,1) 100%);
 }
 </style>

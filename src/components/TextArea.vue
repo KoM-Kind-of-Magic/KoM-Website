@@ -59,16 +59,4 @@ export default {
 </script>
 
 <style lang="scss">
-.formInput .el-textarea__inner{
-  background: $light-glass-background-select;
-  box-shadow: none;
-  width: 310px;
-  color: $text-color;
-  padding: 10px;
-  max-height: 150px;
-}
-
-.formInput .el-input__count {
-  background: transparent;
-}
 </style>

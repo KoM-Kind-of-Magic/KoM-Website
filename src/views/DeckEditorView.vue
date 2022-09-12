@@ -19,6 +19,11 @@
         <div class="title">
           Deck Informations
         </div>
+        <TextArea
+          placeholder="Description"
+          class="desc_input"
+          @getInputValue="setDeckDesc"
+        />
       </div>
       <div class="searchCards">
         <div class="title">
@@ -31,6 +36,7 @@
 
 <script>
 import CardLine from '../components/CardLine.vue';
+import TextArea from '../components/TextArea.vue';
 
 export default {
   name: 'DeckEditorView',
@@ -56,7 +62,10 @@ export default {
       console.log(this.cards[index].number);
     },
   },
-  components: { CardLine },
+  components: {
+    CardLine,
+    TextArea,
+  },
   data() {
     return {
       cards: [
@@ -92,7 +101,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 #deckEditor {
   position: absolute;
@@ -158,6 +167,14 @@ export default {
   margin: 5px auto;
 
   background: $title-underline-color;
+}
+
+#deckEditor .desc_input .el-textarea__inner{
+  background: $dark-background;
+}
+
+#deckEditor .desc_input .el-input__count {
+  background: transparent;
 }
 
 </style>
