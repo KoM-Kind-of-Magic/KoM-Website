@@ -9,21 +9,25 @@
      <div class="container">
       <el-row>
         <el-col
-          v-for="(i, index) in 4"
+          v-for="(i, index) in 8"
           :key="i"
           :span="8"
-          :offset="index > 0 ? 4 : 0"
+          :offset="index > 0 ? 8 : 0"
         >
           <el-card class="card">
             <img
-              src="http://media.wizards.com/2016/bVvMNuiu2i_KLD/en_g2UfOun34M.png"
+              src="https://magicalter.com/wp-content/uploads/revslider/beforeafterslider1-1/before-after-1.png"
               class="image"
               alt="image"
             />
             <div style="padding: 14px">
               <span style="color: white">Deck</span>
               <div class="bottom">
-                <el-button text class="button">More</el-button>
+                <el-button :icon="Edit" circle><Plus class="icon"/></el-button>
+                <el-button class="delete-btn" type="danger" :icon="Delete" circle>
+                  <Delete class="icon" />
+                </el-button>
+                <el-button type="warning" :icon="Star" circle><Star class="icon" /></el-button>
               </div>
             </div>
           </el-card>
@@ -35,6 +39,7 @@
 
 <script>
 import CreateDeckPopIn from '@/components/CreateDeckPopIn.vue';
+import { Star, Plus, Delete } from '@element-plus/icons-vue';
 import { ElCard, ElButton } from 'element-plus';
 
 export default {
@@ -43,6 +48,9 @@ export default {
     CreateDeckPopIn,
     'el-card': ElCard,
     'el-button': ElButton,
+    Star,
+    Plus,
+    Delete,
   },
   methods: {
     showModal() {
@@ -107,5 +115,12 @@ export default {
 .createDeck:hover {
   cursor: pointer;
   background: $strong-glass-background;
+}
+.icon {
+  height: 16px;
+  width: 16px;
+}
+.delete-btn {
+  margin-left: 10rem;
 }
 </style>
