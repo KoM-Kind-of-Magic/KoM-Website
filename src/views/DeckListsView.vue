@@ -116,6 +116,15 @@ export default {
   cursor: pointer;
   background: $strong-glass-background;
 }
+.card {
+  -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+}
+.card:hover {
+  background: $medium-glass-background;
+  -webkit-transition: .3s;
+  transition: .3s
+}
 .icon {
   height: 16px;
   width: 16px;
