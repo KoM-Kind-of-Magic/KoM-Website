@@ -1,7 +1,7 @@
 <template>
   <div id="deckLists">
     <div class="createDeck" @click="showModal()" @keydown="c">
-      Create a deck
+      <Plus class="icon"/>Create a deck
     </div>
     <Transition>
       <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
@@ -21,13 +21,13 @@
               alt="image"
             />
             <div style="padding: 14px">
-              <span style="color: white">Deck</span>
+              <span style="color: white; font-weight: 900;">Deck</span>
               <div class="bottom">
                 <el-button :icon="Edit" circle><Plus class="icon"/></el-button>
-                <el-button class="delete-btn" type="danger" :icon="Delete" circle>
-                  <Delete class="icon" />
+                <el-button class="delete-btn" type="warning" :icon="Delete" circle>
+                  <Star class="icon" />
                 </el-button>
-                <el-button type="warning" :icon="Star" circle><Star class="icon" /></el-button>
+                <el-button type="danger" :icon="Star" circle><Delete class="icon" /></el-button>
               </div>
             </div>
           </el-card>
@@ -105,8 +105,8 @@ export default {
 
   right: 0;
   margin: 0 20px 0 0;
-  padding: 4px 8px;
-  border-radius: 5px;
+  padding: 6px 10px;
+  border-radius: 16px;
 
   color: $text-color;
   background: $medium-glass-background;
