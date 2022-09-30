@@ -22,11 +22,26 @@
         <div class="title">
           Deck Informations
         </div>
+        <div class="deckInputContainer">
+          <Input
+            @getInputValue="setDeckName"
+            placeholder="Name"
+            class="name_input"
+          />
+          <SelectComp
+            id="formatSelect"
+            placeholder="Select a Deck format"
+            @getInputValue="setDeckFormat"
+          />
+        </div>
         <TextArea
           placeholder="Description"
           class="desc_input"
           @getInputValue="setDeckDesc"
         />
+        <div class="deckActions">
+          <Button class="updateDeck" @click="updateDeck()">Validate</Button>
+        </div>
       </div>
       <div class="searchCards">
         <div class="title">
@@ -40,9 +55,19 @@
 <script>
 import CardLine from '../components/CardLine.vue';
 import TextArea from '../components/TextArea.vue';
+import Input from '../components/Input.vue';
+import SelectComp from '../components/Select.vue';
+import Button from '../components/Button.vue';
 
 export default {
   name: 'DeckEditorView',
+  components: {
+    CardLine,
+    TextArea,
+    Input,
+    SelectComp,
+    Button,
+  },
   methods: {
     removeAllCards(cardId) {
       const index = this.cards.map((el) => el.id).indexOf(cardId);
@@ -63,6 +88,21 @@ export default {
         this.cards[index].number += 1;
       }
       console.log(this.cards[index].number);
+    },
+    updateDeck() {
+      console.log('Updated deck :');
+      console.log(this.deckName);
+      console.log(this.deckFormat);
+      console.log(this.deckDesc);
+    },
+    setDeckName(deckName) {
+      this.deckName = deckName;
+    },
+    setDeckFormat(deckFormat) {
+      this.deckFormat = deckFormat;
+    },
+    setDeckDesc(deckDesc) {
+      this.deckDesc = deckDesc;
     },
   },
   computed: {
@@ -89,12 +129,11 @@ export default {
       // console.log(newVal);
     },
   },
-  components: {
-    CardLine,
-    TextArea,
-  },
   data() {
     return {
+      deckName: '',
+      deckFormat: '',
+      deckDesc: '',
       cards: [
         {
           name: 'Mana vault',
@@ -198,8 +237,7 @@ export default {
 
 .cardContainer {
   overflow-y: scroll;
-  padding: 0 0 0 20px;
-  margin: 0 20px 20px 0;
+  margin: 0 20px 20px 20px;
 }
 
 .currentDeck,
@@ -216,7 +254,7 @@ export default {
 }
 
 .deckInfos {
-  height: 200px;
+  height: 300px;
   display: flex;
   flex-direction: column;
 }
@@ -243,5 +281,53 @@ export default {
 #deckEditor .desc_input .el-input__count {
   background: transparent;
 }
+#deckEditor .desc_input,
+.deckInfos .deckInputContainer,
+#deckEditor .updateDeck {
+  margin: 10px auto 0 auto;
+  width: 80%;
+}
+.deckInfos .deckInputContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center
+}
 
+#deckEditor .formInput .el-input__wrapper {
+  background: $dark-background;
+  margin: 0 10px 0 0;
+  max-width: 500px;
+  width: auto;
+  min-width: 100px;
+}
+
+#deckEditor .desc_input .el-textarea__inner {
+  box-shadow: none;
+  color: $text-color;
+  max-height: 150px;
+}
+#deckEditor .desc_input .el-textarea__inner::placeholder {
+  color: $text-color;
+}
+
+#deckEditor .select .el-input__wrapper {
+  background: $dark-background;
+}
+#deckEditor .select .vs__dropdown-menu {
+  background: $dark-background;
+  color: $text-color;
+}
+#deckEditor .select .vs__dropdown-toggle {
+  background: $dark-background;
+}
+#deckEditor .select .vs__dropdown-menu li:hover {
+  background: $light-glass-background-select;
+}
+
+#deckEditor .updateDeck {
+  position: initial;
+  z-index: 1;
+  display: flex;
+  flex-direction: row-reverse;
+}
 </style>
