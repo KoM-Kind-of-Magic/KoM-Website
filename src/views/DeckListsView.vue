@@ -1,12 +1,12 @@
 <template>
   <div id="deckLists">
     <div class="createDeck" @click="showModal()" @keydown="c">
-      <Plus class="icon"/>Create a deck
+      <Plus class="deckIcon"/>Create a deck
     </div>
     <Transition>
       <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
     </Transition>
-     <div class="container">
+     <div class="container" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
       <el-row>
         <el-col
           v-for="(i, index) in 8"
@@ -23,7 +23,7 @@
             <div style="padding: 14px">
               <span style="color: white; font-weight: 900;">Deck</span>
               <div class="bottom">
-                <el-button :icon="Edit" circle><Plus class="icon"/></el-button>
+                <el-button :icon="Edit" type="info" circle><Plus class="icon"/></el-button>
                 <el-button class="delete-btn" type="warning" :icon="Delete" circle>
                   <Star class="icon" />
                 </el-button>
@@ -105,7 +105,7 @@ export default {
 
   right: 0;
   margin: 0 20px 0 0;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 16px;
 
   color: $text-color;
@@ -131,5 +131,12 @@ export default {
 }
 .delete-btn {
   margin-left: 10rem;
+}
+.deckIcon {
+  height: 14px;
+  width: 14px;
+  position: relative;
+  top: 0.5px;
+  margin-right: 3px;
 }
 </style>

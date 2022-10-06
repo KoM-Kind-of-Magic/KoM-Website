@@ -17,6 +17,9 @@
   top:0;
   left:0;
   margin-left: 15px;
+  padding: 15px;
+  height: 48px;
+  width: 40px;
 }
 .title {
   font-family: 'Radley', serif;
