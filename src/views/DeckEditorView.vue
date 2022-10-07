@@ -47,6 +47,12 @@
         <div class="title">
           Search for cards
         </div>
+        <Input
+          @getInputValue="triggerSearch"
+          placeholder="Search"
+          class="search_input"
+        />
+        <fa class="icon performSearch" icon="magnifying-glass" />
       </div>
     </div>
   </div>
@@ -103,6 +109,10 @@ export default {
     },
     setDeckDesc(deckDesc) {
       this.deckDesc = deckDesc;
+    },
+    triggerSearch(searchInfos) {
+      console.log('Method call with following infos :');
+      console.log(searchInfos);
     },
   },
   computed: {
@@ -330,4 +340,38 @@ export default {
   display: flex;
   flex-direction: row-reverse;
 }
+
+.searchCards {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+
+#deckEditor .search_input {
+  height: 40px;
+  margin: 10px auto 0 auto;
+  width: 80%;
+}
+#deckEditor .search_input .el-input__wrapper {
+  max-width: none;
+  width: 100%;
+  margin: 0;
+}
+
+#deckEditor .searchCards .performSearch {
+  position: absolute;
+  top: 65px;
+  z-index: 3;
+  right: 10%;
+  opacity: 0.7;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 10px;
+}
+
+#deckEditor .searchCards .performSearch:hover {
+  opacity: 1;
+}
+
 </style>
