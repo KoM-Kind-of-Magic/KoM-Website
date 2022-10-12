@@ -6,13 +6,15 @@
     <Transition>
       <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
     </Transition>
-     <div class="container" style="height: 70vh; overflow-y: auto; overflow-x: hidden">
+     <div class="container" style="height: 80vh; overflow-y: auto; overflow-x: hidden;
+     padding-top: 35px;
+     ">
       <el-row>
         <el-col
-          v-for="(i, index) in 8"
+          v-for="(i, index) in 12"
           :key="i"
           :span="8"
-          :offset="index > 0 ? 8 : 0"
+          :offset="index > 0 ? 12 : 0"
         >
           <el-card class="card">
             <img
@@ -84,7 +86,7 @@ export default {
   align-content: center;
   justify-content: center;
 
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .deckContainer {
   height: 500px;
