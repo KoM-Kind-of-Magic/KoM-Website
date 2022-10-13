@@ -53,6 +53,19 @@
           class="search_input"
         />
         <fa class="icon performSearch" icon="magnifying-glass" />
+
+        <div class="searchResult">
+          <div class="card">
+            <img
+              src="http://media.wizards.com/2016/bVvMNuiu2i_KLD/en_g2UfOun34M.png"
+              class="image"
+              alt="image"
+            />
+            <div class="action">
+              <fa class="icon addCard" title="add" icon="plus" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -346,6 +359,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   position: relative;
+  height: 100%;
 }
 
 #deckEditor .search_input {
@@ -374,4 +388,43 @@ export default {
   opacity: 1;
 }
 
+.searchResult {
+  display: flex;
+  flex: 1;
+  margin: 10px auto 0 auto;
+  width: 90%;
+}
+
+.searchResult .card {
+  width: 180px;
+  height: fit-content;
+
+  background: none;
+  border-radius: none;
+  box-shadow: 0 none;
+  backdrop-filter: none ;
+  border: none;
+
+  float: left;
+  margin: 0;
+  padding: 0;
+
+  position: relative;
+}
+
+.searchResult .action {
+  display: none;
+  position: absolute;
+  width: 100%;
+  flex-direction: row;
+  justify-content: end;
+  background: rgba(0, 0, 0, 0.5);
+  right: 0;
+}
+
+.searchResult .card:hover .action {
+  display: flex;
+  transform: translateY(-20px);
+  transition: 0.3s ease;
+}
 </style>
