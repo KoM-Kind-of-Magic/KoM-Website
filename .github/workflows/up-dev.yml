@@ -2,7 +2,7 @@ name: UP-DEV
 
 on:
   schedule:
-    - cron: '5 8 * * *'
+  - cron: '5 8 * * *'
 
 jobs: 
   deploy-applications:
