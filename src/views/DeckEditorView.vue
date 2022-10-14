@@ -55,16 +55,11 @@
         <fa class="icon performSearch" icon="magnifying-glass" />
 
         <div class="searchResult">
-          <div class="card">
-            <img
-              src="http://media.wizards.com/2016/bVvMNuiu2i_KLD/en_g2UfOun34M.png"
-              class="image"
-              alt="image"
-            />
-            <div class="actions">
-              <fa class="icon addCard" title="add" icon="plus" />
-            </div>
-          </div>
+          <CardSearched v-for=" card in cardsSearched"
+            :key="card.id"
+            :card="card"
+            @addCardFromSearch="addCardFromSearch"
+          />
         </div>
       </div>
     </div>
@@ -73,6 +68,7 @@
 
 <script>
 import CardLine from '../components/card/CardLine.vue';
+import CardSearched from '../components/card/CardSearched.vue';
 import TextArea from '../components/TextArea.vue';
 import Input from '../components/Input.vue';
 import SelectComp from '../components/Select.vue';
@@ -82,6 +78,7 @@ export default {
   name: 'DeckEditorView',
   components: {
     CardLine,
+    CardSearched,
     TextArea,
     Input,
     SelectComp,
@@ -107,6 +104,13 @@ export default {
         this.cards[index].number += 1;
       }
       console.log(this.cards[index].number);
+    },
+    addCardFromSearch(card) {
+      if (this.cards.filter((c) => c.id === card.id).length) {
+        this.cards[this.cards.findIndex((c) => c.id === card.id)].number += 1;
+      } else {
+        this.cards.push(card);
+      }
     },
     updateDeck() {
       console.log('Updated deck :');
@@ -148,7 +152,7 @@ export default {
     },
   },
   watch: {
-    sortByTypes(newVal) {
+    sortByTypes() {
       // console.log(newVal);
     },
   },
@@ -165,14 +169,14 @@ export default {
           type: 'artifact',
         },
         {
-          name: 'Yarok',
+          name: 'Yarok, the Desecrated',
           id: '1',
           isCommander: true,
           number: 3,
           type: 'creature',
         },
         {
-          name: 'Atraxa',
+          name: 'Asmoranomardicadaistinaculdacar',
           id: '2',
           number: 2,
           type: 'creature',
@@ -214,6 +218,85 @@ export default {
           type: 'land',
         },
       ],
+      cardsSearched: [
+        {
+          name: 'Lotus Cobra',
+          id: '10',
+          imgUrl: 'https://cards.scryfall.io/large/front/a/4/a4b759f0-901f-4be3-93fa-224609b08d48.jpg?1604199124',
+          type: 'creature',
+          number: 1,
+        },
+        {
+          name: 'Sword of heart and home',
+          id: '11',
+          imgUrl: 'https://cards.scryfall.io/large/front/a/1/a16fabbe-4557-4067-b882-f2e5dbd8b458.jpg?1626099357',
+          type: 'artifact',
+          number: 1,
+        },
+        {
+          name: 'Talisman of curiosity',
+          id: '12',
+          imgUrl: 'https://cards.scryfall.io/normal/front/f/d/fd52688a-39fd-430f-b950-cb56e0004396.jpg?1562202516',
+          type: 'artifact',
+          number: 1,
+        },
+        {
+          name: 'Talisman of indulgence',
+          id: '13',
+          imgUrl: 'https://cards.scryfall.io/normal/front/f/a/fa6c62c7-8fd4-46f1-a7f4-fc6e74d34b35.jpg?1631589255',
+          type: 'artifact',
+          number: 1,
+        },
+        {
+          name: 'Wishclaw Talisman',
+          id: '14',
+          imgUrl: 'https://cards.scryfall.io/normal/front/0/7/07c17b01-ee5d-491a-8403-b3f819b778c4.jpg?1572490271',
+          type: 'artifact',
+          number: 1,
+        },
+        {
+          name: 'Yoshimaru, Ever Faithfull',
+          id: '15',
+          imgUrl: 'https://cards.scryfall.io/large/front/a/a/aa409269-3698-42a2-8c51-75557b27a6f6.jpg?1664653410',
+          type: 'creature',
+          number: 1,
+        },
+        {
+          name: 'Yarok, the Desecrated',
+          id: '1',
+          imgUrl: 'https://cards.scryfall.io/normal/front/a/1/a1001d43-e11b-4e5e-acd4-4a50ef89977f.jpg?1592517590',
+          type: 'creature',
+          number: 1,
+        },
+        {
+          name: 'Zur, the enchanter',
+          id: '16',
+          imgUrl: 'https://cards.scryfall.io/normal/front/a/e/aeb0160a-dfdc-4b1f-865e-ef905aee65d5.jpg?1662987603',
+          type: 'creature',
+          number: 1,
+        },
+        {
+          name: 'Zur, Eternal Schemer',
+          id: '17',
+          imgUrl: 'https://cards.scryfall.io/normal/front/4/d/4d987435-2403-4e0f-b19d-693da923ba50.jpg?1663051659',
+          type: 'creature',
+          number: 1,
+        },
+        {
+          name: 'Chandra',
+          id: '8',
+          imgUrl: 'https://cards.scryfall.io/large/front/4/9/49d2a680-4f3b-4bfa-b77b-d2dfaced9f23.jpg?1592516849',
+          type: 'planeswalker',
+          number: 1,
+        },
+        {
+          name: 'Phyrexian Tower',
+          id: '9',
+          imgUrl: 'https://cards.scryfall.io/large/front/0/5/05b2cc68-1d20-421f-9800-af0996071554.jpg?1601081190',
+          type: 'planeswalker',
+          number: 1,
+        },
+      ],
     };
   },
 };
@@ -236,6 +319,7 @@ export default {
 
 .currentDeck {
   width: 33%;
+  min-width: 400px;
 
   display: flex;
   flex-direction: column;
@@ -261,6 +345,7 @@ export default {
 .cardContainer {
   overflow-y: scroll;
   margin: 0 20px 20px 20px;
+  min-width: 360px;
 }
 
 .currentDeck,
@@ -390,53 +475,11 @@ export default {
 
 .searchResult {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   flex: 1;
   margin: 10px auto 0 auto;
   width: 90%;
-}
-
-.searchResult .card {
-  width: 180px;
-  height: fit-content;
-
-  background: none;
-  border-radius: none;
-  box-shadow: 0 none;
-  backdrop-filter: none ;
-  border: none;
-
-  float: left;
-  margin: 0;
-  padding: 0;
-
-  position: relative;
-}
-
-.searchResult .actions {
-  display: flex;
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  flex-direction: row;
-  justify-content: end;
-  background: rgba(255, 0, 0, 0.5);
-  right: 0;
-  transition: 0.3s;
-  transform: translateY(-24px);
-  border-radius: 7px;
-}
-
-.searchResult .actions .icon {
-  opacity: 0.8;
-  transition: 0.2s;
-  cursor: pointer;
-  margin: 4px 6px;
-}
-.searchResult .actions .icon:hover {
-  opacity: 1;
-}
-
-.searchResult .card:hover .actions {
-  opacity: 1;
+  overflow-y: scroll;
 }
 </style>
