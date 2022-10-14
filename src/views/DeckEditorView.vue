@@ -72,7 +72,7 @@
 </template>
 
 <script>
-import CardLine from '../components/CardLine.vue';
+import CardLine from '../components/card/CardLine.vue';
 import TextArea from '../components/TextArea.vue';
 import Input from '../components/Input.vue';
 import SelectComp from '../components/Select.vue';
