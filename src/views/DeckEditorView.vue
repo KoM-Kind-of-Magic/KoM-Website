@@ -61,7 +61,7 @@
               class="image"
               alt="image"
             />
-            <div class="action">
+            <div class="actions">
               <fa class="icon addCard" title="add" icon="plus" />
             </div>
           </div>
@@ -412,19 +412,31 @@ export default {
   position: relative;
 }
 
-.searchResult .action {
-  display: none;
+.searchResult .actions {
+  display: flex;
+  opacity: 0;
   position: absolute;
   width: 100%;
   flex-direction: row;
   justify-content: end;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(255, 0, 0, 0.5);
   right: 0;
+  transition: 0.3s;
+  transform: translateY(-24px);
+  border-radius: 7px;
 }
 
-.searchResult .card:hover .action {
-  display: flex;
-  transform: translateY(-20px);
-  transition: 0.3s ease;
+.searchResult .actions .icon {
+  opacity: 0.8;
+  transition: 0.2s;
+  cursor: pointer;
+  margin: 4px 6px;
+}
+.searchResult .actions .icon:hover {
+  opacity: 1;
+}
+
+.searchResult .card:hover .actions {
+  opacity: 1;
 }
 </style>
