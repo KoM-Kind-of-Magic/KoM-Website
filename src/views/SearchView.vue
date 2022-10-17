@@ -67,7 +67,7 @@ export default {
   width: 105vh;
   height: 376px;
   left: 485px;
-  top: 477px;
+  top: 440px;
 
   background: rgba(196, 196, 196, 0.15);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -88,7 +88,7 @@ export default {
 .checkContainer {
   position: absolute;
   left: 57vh;
-  top: 72vh;
+  top: 68vh;
 }
 
  .vertical-line{
@@ -100,7 +100,7 @@ export default {
   margin-left: 52vh;
   position: absolute;
   left: 55vh;
-  top: 60vh;
+  top: 55vh;
 }
 
 .filter {
