@@ -81,7 +81,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .popInBackground {
   display: flex;
   flex-direction: column;
@@ -113,7 +113,7 @@ export default {
   top: 200px;
 }
 
-.title {
+#createDeckPopIn .title {
   color: $text-color;
   text-align: center;
   width: fit-content;
@@ -122,12 +122,14 @@ export default {
   padding: 5px 10px;
   cursor: default;
 }
-.title::after {
+#createDeckPopIn .title::after {
   content: '';
-  border-bottom: 3px solid $title-underline-color;
   width: 100px;
+  height: 3px;
   display: block;
   margin: 5px auto;
+
+  background: $title-underline-color;
 }
 
 .closeModal .icon {
@@ -152,5 +154,18 @@ export default {
 }
 .closeModal:hover {
   background: $medium-glass-background;
+}
+
+#createDeckPopIn .desc_input .el-textarea__inner {
+  background: $light-glass-background-select;
+  box-shadow: none;
+  width: 310px;
+  color: $text-color;
+  padding: 10px;
+  max-height: 150px;
+}
+
+#createDeckPopIn .desc_input .el-input__count {
+  background: transparent;
 }
 </style>
