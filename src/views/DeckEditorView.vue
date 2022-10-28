@@ -482,4 +482,5 @@ export default {
   width: 90%;
   overflow-y: scroll;
 }
+
 </style>
