@@ -27,7 +27,7 @@
               alt="image"
             />
             <div style="padding: 14px">
-              <span class="text-white font-black">Deck</span>
+              <span style="color: white; font-weight:500">Deck</span>
               <div class="bottom">
                 <el-button :icon="Edit" type="info" circle><Plus class="icon"/></el-button>
                 <el-button type="danger" :icon="Star" circle><Delete class="icon" /></el-button>
