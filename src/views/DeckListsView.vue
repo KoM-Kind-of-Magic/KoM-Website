@@ -7,14 +7,18 @@
       <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
     </Transition>
      <div class="container" style="height: 80vh; overflow-y: auto; overflow-x: hidden;
-     padding-top: 35px;
+     padding-top: 55px;
+     border-radius: 10px;
+     margin-top: 15px;
+     margin-bottom: -10px;
+     border: 1px solid #B22222;
      ">
       <el-row>
         <el-col
-          v-for="(i, index) in 12"
+          v-for="(i, index) in 15"
           :key="i"
           :span="8"
-          :offset="index > 0 ? 12 : 0"
+          :offset="index > 0 ? 15 : 0"
         >
           <el-card class="card">
             <img
@@ -23,12 +27,9 @@
               alt="image"
             />
             <div style="padding: 14px">
-              <span style="color: white; font-weight: 900;">Deck</span>
+              <span class="text-white font-black">Deck</span>
               <div class="bottom">
                 <el-button :icon="Edit" type="info" circle><Plus class="icon"/></el-button>
-                <el-button class="delete-btn" type="warning" :icon="Delete" circle>
-                  <Star class="icon" />
-                </el-button>
                 <el-button type="danger" :icon="Star" circle><Delete class="icon" /></el-button>
               </div>
             </div>
@@ -41,7 +42,7 @@
 
 <script>
 import CreateDeckPopIn from '@/components/CreateDeckPopIn.vue';
-import { Star, Plus, Delete } from '@element-plus/icons-vue';
+import { Plus, Delete } from '@element-plus/icons-vue';
 import { ElCard, ElButton } from 'element-plus';
 
 export default {
@@ -50,7 +51,6 @@ export default {
     CreateDeckPopIn,
     'el-card': ElCard,
     'el-button': ElButton,
-    Star,
     Plus,
     Delete,
   },
@@ -121,6 +121,8 @@ export default {
 .card {
   -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
   box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  width: 280px;
+  height: 450px;
 }
 .card:hover {
   background: $medium-glass-background;

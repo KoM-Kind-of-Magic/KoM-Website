@@ -22,6 +22,7 @@ module.exports = {
     'no-empty-pattern': 'off',
     'prettier/prettier': 'off',
     'vue/multi-word-component-names': 'off',
+    'max-len': 'off', // disables line length check
   },
   settings: {
     'import/resolver': {
