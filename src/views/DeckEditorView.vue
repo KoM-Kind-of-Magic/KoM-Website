@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     getList() {
-      axios.get('http://127.0.0.1:8081/deck/1')
+      axios.get('http://localhost:8081/cards')
         .then((response) => {
           console.log(response.data);
         });
