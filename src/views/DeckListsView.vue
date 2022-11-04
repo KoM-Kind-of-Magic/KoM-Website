@@ -122,11 +122,15 @@ export default {
   -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
   box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
   width: 280px;
-  height: 450px;
-  margin-right: -5px;
+  height: 430px;
+  margin-right: -10px;
+  .image {
+    margin-top: -20px;
+    margin-bottom: 10px;
+  }
 }
 .row {
-  margin-left: 3rem;
+  margin-left: 4rem;
 }
 .card:hover {
   background: $medium-glass-background;
