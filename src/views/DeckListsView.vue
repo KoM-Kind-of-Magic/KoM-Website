@@ -125,7 +125,7 @@ export default {
   margin-right: -5px;
 }
 .row {
-  margin-left: 2.5rem;
+  margin-left: 3rem;
 }
 .card:hover {
   background: $medium-glass-background;
