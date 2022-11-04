@@ -11,9 +11,8 @@
      border-radius: 10px;
      margin-top: 15px;
      margin-bottom: -10px;
-     border: 1px solid #B22222;
      ">
-      <el-row>
+      <el-row class="row">
         <el-col
           v-for="(i, index) in 15"
           :key="i"
@@ -123,6 +122,10 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
   width: 280px;
   height: 450px;
+  margin-right: -5px;
+}
+.row {
+  margin-left: 2.5rem;
 }
 .card:hover {
   background: $medium-glass-background;
