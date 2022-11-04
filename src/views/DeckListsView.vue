@@ -1,7 +1,7 @@
 <template>
   <div id="deckLists">
     <div class="createDeck" @click="showModal()" @keydown="c">
-      <Plus class="deckIcon"/>Create a deck
+      <Plus class="deckIcon"/>New Deck
     </div>
     <Transition>
       <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
@@ -28,7 +28,7 @@
             <div style="padding: 14px">
               <span style="color: white; font-weight:500">Deck</span>
               <div class="bottom">
-                <el-button :icon="Edit" type="info" circle><Plus class="icon"/></el-button>
+                <el-button :icon="Edit" type="info" circle><Grid class="icon"/></el-button>
                 <el-button type="danger" :icon="Star" circle><Delete class="icon" /></el-button>
               </div>
             </div>
@@ -41,7 +41,7 @@
 
 <script>
 import CreateDeckPopIn from '@/components/CreateDeckPopIn.vue';
-import { Plus, Delete } from '@element-plus/icons-vue';
+import { Plus, Delete, Grid } from '@element-plus/icons-vue';
 import { ElCard, ElButton } from 'element-plus';
 
 export default {
@@ -52,6 +52,7 @@ export default {
     'el-button': ElButton,
     Plus,
     Delete,
+    Grid,
   },
   methods: {
     showModal() {
