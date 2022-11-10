@@ -25,11 +25,11 @@
               class="image"
               alt="image"
             />
-            <div style="padding: 14px">
+            <div style="padding: 12px">
               <span style="color: white; font-weight:500">Deck</span>
               <div class="bottom">
-                <el-button :icon="Edit" type="info" circle><Grid class="icon"/></el-button>
-                <el-button type="danger" :icon="Star" circle><Delete class="icon" /></el-button>
+                <el-button :icon="Edit" class="icon-btn" type="primary" circle><Grid class="icon"/></el-button>
+                <el-button class="icon-btn" type="danger" :icon="Star" circle><Delete class="icon" /></el-button>
               </div>
             </div>
           </el-card>
@@ -125,12 +125,14 @@ export default {
   height: 430px;
   margin-right: -10px;
   .image {
-    margin-top: -20px;
-    margin-bottom: 10px;
+    margin-top: -22px;
+    margin-left: -9px;
+    width: 260px;
+    height: 347px;
   }
 }
 .row {
-  margin-left: 4rem;
+  margin-left: 5rem;
 }
 .card:hover {
   background: $medium-glass-background;
@@ -140,6 +142,9 @@ export default {
 .icon {
   height: 16px;
   width: 16px;
+}
+.icon-btn {
+  background: none;
 }
 .delete-btn {
   margin-left: 10rem;
