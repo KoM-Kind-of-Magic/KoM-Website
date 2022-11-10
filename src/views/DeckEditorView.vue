@@ -60,6 +60,7 @@
             :key="card.id"
             :card="card"
             @addCardFromSearch="addCardFromSearch"
+            @click="getList"
           />
         </div>
       </div>
@@ -68,6 +69,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 import CardLine from '../components/card/CardLine.vue';
 import CardSearched from '../components/card/CardSearched.vue';
 import TextArea from '../components/TextArea.vue';
@@ -86,6 +89,12 @@ export default {
     Button,
   },
   methods: {
+    getList() {
+      axios.get('http://localhost:8081/cards')
+        .then((response) => {
+          console.log(response.data);
+        });
+    },
     removeAllCards(cardId) {
       const index = this.cards.map((el) => el.id).indexOf(cardId);
       this.cards.splice(index, 1);
