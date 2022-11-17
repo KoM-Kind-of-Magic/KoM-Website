@@ -34,7 +34,7 @@
       alt="card's image"
       ref="cardImage"
       :style="`left: ${mouseX}px; top: ${mouseY}px;`"
-    >
+    ><!-- https://mtgjson.com/faq/#how-do-i-access-a-card-s-imagery -->
   </div>
 </template>
 

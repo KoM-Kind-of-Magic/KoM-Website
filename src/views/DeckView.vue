@@ -1,11 +1,14 @@
 <template>
   <div class="wrapper">
+    <div class="error" v-if="error.show">
+      {{error.message}}
+    </div>
     <div class="main-head">
-      <div class="deck-name">{{deckName}}</div>
-      <div class="deck-desc">{{deckDesc}}</div>
+      <div class="deck-name">{{deck.name}}</div>
+      <div class="deck-desc" v-show="deck.format">{{deck.format}}</div>
     </div>
     <div class="content">
-      <div class="masonry">
+      <div class="masonry" v-if="sortByTypes.length>0">
         <div class="item" v-for="types in Object.keys(sortByTypes)" :key="types">
           <div class="item__content">
             <div class="type-name">{{types}}</div>
@@ -30,6 +33,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 import CardLine from '../components/card/CardLine.vue';
 
 export default {
@@ -39,99 +44,53 @@ export default {
   },
   data() {
     return {
-      deckName: "Deck's name",
-      deckFormat: '',
-      deckDesc: "Le lorem ipsum est, en imprimerie, une suite de mots sans signification utilisée à titre provisoire pour calibrer une mise en page, le texte définitif venant remplacer le faux-texte dès qu'il est prêt ou que la mise en page est achevée. Généralement, on utilise un texte en faux latin, le Lorem ipsum ou Lipsum.",
-      cards: [
-        {
-          name: 'Lotus Cobra',
-          id: '10',
-          imgUrl: 'https://cards.scryfall.io/large/front/a/4/a4b759f0-901f-4be3-93fa-224609b08d48.jpg?1604199124',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Sword of heart and home',
-          id: '11',
-          imgUrl: 'https://cards.scryfall.io/large/front/a/1/a16fabbe-4557-4067-b882-f2e5dbd8b458.jpg?1626099357',
-          type: 'artifact',
-          number: 1,
-        },
-        {
-          name: 'Talisman of curiosity',
-          id: '12',
-          imgUrl: 'https://cards.scryfall.io/normal/front/f/d/fd52688a-39fd-430f-b950-cb56e0004396.jpg?1562202516',
-          type: 'artifact',
-          number: 2,
-        },
-        {
-          name: 'Talisman of indulgence',
-          id: '13',
-          imgUrl: 'https://cards.scryfall.io/normal/front/f/a/fa6c62c7-8fd4-46f1-a7f4-fc6e74d34b35.jpg?1631589255',
-          type: 'artifact',
-          number: 1,
-        },
-        {
-          name: 'Wishclaw Talisman',
-          id: '14',
-          imgUrl: 'https://cards.scryfall.io/normal/front/0/7/07c17b01-ee5d-491a-8403-b3f819b778c4.jpg?1572490271',
-          type: 'artifact',
-          number: 1,
-        },
-        {
-          name: 'Yoshimaru, Ever Faithfull',
-          id: '15',
-          imgUrl: 'https://cards.scryfall.io/large/front/a/a/aa409269-3698-42a2-8c51-75557b27a6f6.jpg?1664653410',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Yarok, the Desecrated',
-          id: '1',
-          imgUrl: 'https://cards.scryfall.io/normal/front/a/1/a1001d43-e11b-4e5e-acd4-4a50ef89977f.jpg?1592517590',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Zur, the enchanter',
-          id: '16',
-          imgUrl: 'https://cards.scryfall.io/normal/front/a/e/aeb0160a-dfdc-4b1f-865e-ef905aee65d5.jpg?1662987603',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Zur, Eternal Schemer',
-          id: '17',
-          imgUrl: 'https://cards.scryfall.io/normal/front/4/d/4d987435-2403-4e0f-b19d-693da923ba50.jpg?1663051659',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Chandra',
-          id: '8',
-          imgUrl: 'https://cards.scryfall.io/large/front/4/9/49d2a680-4f3b-4bfa-b77b-d2dfaced9f23.jpg?1592516849',
-          type: 'planeswalker',
-          number: 4,
-        },
-        {
-          name: 'Phyrexian Tower',
-          id: '9',
-          imgUrl: 'https://cards.scryfall.io/large/front/0/5/05b2cc68-1d20-421f-9800-af0996071554.jpg?1601081190',
-          type: 'planeswalker',
-          number: 1,
-        },
-      ],
+      deck: {
+        name: '',
+        cards: [],
+        format: '',
+        type: '',
+        createdAt: '',
+      },
+      error: {
+        show: false,
+        message: '',
+      },
     };
   },
   mounted() {
-    console.log('TODO : make API call to get cards from deck');
+    this.getDeck();
   },
   methods: {
+    getDeck() {
+      axios.get(`http://localhost:8081/deck/${this.deckId}`)
+        .then((response) => {
+          console.log(response.data);
+          const deck = response.data.data;
+          this.deck = {
+            name: deck.name ?? 'Deck with no name',
+            cards: deck.cards ?? [],
+            format: deck.format ?? '',
+            type: deck.type ?? '',
+            createdAt: deck.createdAt ?? '',
+          };
+        })
+        .catch((error) => {
+          if (error.response.status === 404) {
+            this.$router.push({ name: 'PageNotFound' });
+          } else {
+            this.error = {
+              show: true,
+              message: `Error ${error.response.data.status} : ${error.response.data.message.data}`,
+            };
+          }
+          console.error(error);
+        });
+    },
   },
   computed: {
     sortByTypes() {
       const res = {};
-      const cardTypes = [...new Set(this.cards.map((c) => c.type))];
+      const cardTypes = [...new Set(this.deck.cards.map((c) => c.type))];
       //
       cardTypes.sort((a, b) => {
         if (a < b) { return -1; }
@@ -141,10 +100,13 @@ export default {
       cardTypes.forEach((t) => {
         res[t] = [];
       });
-      this.cards.forEach((c) => {
+      this.deck.cards.forEach((c) => {
         res[c.type].push(c);
       });
       return res;
+    },
+    deckId() {
+      return this.$route.params.id;
     },
   },
 };

@@ -5,6 +5,7 @@ import DeckView from '../views/DeckView.vue';
 import DeckEditorView from '../views/DeckEditorView.vue';
 
 import WorkInProgress from '../views/WorkInProgress.vue';
+import PageNotFound from '../views/PageNotFound.vue';
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: '/wip',
     name: 'wip',
     component: WorkInProgress,
+  },
+  {
+    path: '/PageNotFound',
+    name: 'PageNotFound',
+    component: PageNotFound,
   },
 ];
 
