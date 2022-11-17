@@ -27,17 +27,22 @@
             @getInputValue="setDeckName"
             placeholder="Name"
             class="name_input"
+            :value="this.deckName"
           />
           <SelectComp
             id="formatSelect"
             placeholder="Select a Deck format"
             @getInputValue="setDeckFormat"
+            :options="this.possibleFormats"
+            :chose="this.deckFormat"
+            v-if="this.deckFormat != '' && this.possibleFormats.length>0"
           />
         </div>
         <TextArea
           placeholder="Description"
           class="desc_input"
           @getInputValue="setDeckDesc"
+          :value="this.deckDesc"
         />
         <div class="deckActions">
           <Button class="updateDeck" @click="updateDeck()">Validate</Button>
@@ -69,6 +74,7 @@
 
 <script>
 import axios from 'axios';
+import { useRoute } from 'vue-router';
 
 import CardLine from '../components/card/CardLine.vue';
 import CardSearched from '../components/card/CardSearched.vue';
@@ -87,11 +93,45 @@ export default {
     SelectComp,
     Button,
   },
+  created() {
+    this.getDeckPossibleFormats();
+  },
+  mounted() {
+    const route = useRoute();
+    this.deckId = route.params.id;
+
+    this.getDeckInfos();
+  },
   methods: {
-    getList() {
-      axios.get('http://localhost:8081/cards')
+    getDeckInfos() {
+      axios.get(`${process.env.VUE_APP_API_URL}/deck/${this.deckId}`)
         .then((response) => {
-          console.log(response.data);
+          const res = response.data.data;
+
+          this.deckName = res.name;
+          this.deckFormat = res.format;
+          this.deckDesc = res.description;
+
+          console.log(this.deckFormat);
+        });
+    },
+    getDeckPossibleFormats() {
+      axios.get(`${process.env.VUE_APP_API_URL}/deck/formats`)
+        .then((response) => {
+          const res = response.data.data;
+          const formatedRes = [];
+
+          res.forEach((format) => {
+            formatedRes.push(
+              {
+                value: format,
+                label: format[0].toUpperCase() + format.slice(1),
+              },
+            );
+          });
+
+          this.possibleFormats = formatedRes;
+          console.log(this.possibleFormats);
         });
     },
     removeAllCards(cardId) {
@@ -126,6 +166,18 @@ export default {
       console.log(this.deckName);
       console.log(this.deckFormat);
       console.log(this.deckDesc);
+      axios.patch(
+        `${process.env.VUE_APP_API_URL}/deck/${this.deckId}`,
+        {
+          name: this.deckName,
+          format: this.deckFormat,
+          description: this.deckDesc,
+        },
+      )
+        .then((response) => {
+          const res = response;
+          console.log(res);
+        });
     },
     setDeckName(deckName) {
       this.deckName = deckName;
@@ -167,9 +219,11 @@ export default {
   },
   data() {
     return {
+      deckId: '',
       deckName: '',
       deckFormat: '',
       deckDesc: '',
+      possibleFormats: [],
       cards: [
         {
           name: 'Mana vault',
