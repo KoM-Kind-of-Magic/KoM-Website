@@ -29,14 +29,12 @@
             class="name_input"
             :value="this.deckName"
           />
-          <SelectComp
-            id="formatSelect"
-            placeholder="Select a Deck format"
-            @getInputValue="setDeckFormat"
+          <v-select
+            class="select"
+            label="label"
             :options="this.possibleFormats"
-            :chose="this.deckFormat"
-            v-if="this.deckFormat != '' && this.possibleFormats.length>0"
-          />
+            v-model="this.deckFormat">
+          </v-select>
         </div>
         <TextArea
           placeholder="Description"
@@ -76,21 +74,21 @@
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 
+import vSelect from 'vue-select';
 import CardLine from '../components/card/CardLine.vue';
 import CardSearched from '../components/card/CardSearched.vue';
 import TextArea from '../components/TextArea.vue';
 import Input from '../components/Input.vue';
-import SelectComp from '../components/Select.vue';
 import Button from '../components/Button.vue';
 
 export default {
   name: 'DeckEditorView',
   components: {
+    'v-select': vSelect,
     CardLine,
     CardSearched,
     TextArea,
     Input,
-    SelectComp,
     Button,
   },
   created() {
@@ -109,7 +107,8 @@ export default {
           const res = response.data.data;
 
           this.deckName = res.name;
-          this.deckFormat = res.format;
+          const idx = this.possibleFormats.findIndex((o) => o.value === res.format);
+          this.deckFormat = this.possibleFormats[idx];
           this.deckDesc = res.description;
 
           console.log(this.deckFormat);
@@ -170,7 +169,7 @@ export default {
         `${process.env.VUE_APP_API_URL}/deck/${this.deckId}`,
         {
           name: this.deckName,
-          format: this.deckFormat,
+          format: this.deckFormat.value,
           description: this.deckDesc,
         },
       )
@@ -221,7 +220,7 @@ export default {
     return {
       deckId: '',
       deckName: '',
-      deckFormat: '',
+      deckFormat: {},
       deckDesc: '',
       possibleFormats: [],
       cards: [
@@ -544,6 +543,44 @@ export default {
   margin: 10px auto 0 auto;
   width: 90%;
   overflow-y: scroll;
+}
+
+.select {
+  width: 310px;
+}
+
+.vs__dropdown-toggle {
+  background: $light-glass-background;
+}
+.select .vs__search::placeholder {
+  color: white !important;
+  font-size: 14px;
+}
+.select .vs__selected,
+.select .vs__selected-options {
+  color: $text-color;
+}
+
+.select .vs__clear svg {
+  fill: $text-color;
+}
+
+.select .vs__open-indicator {
+  fill: $text-color;
+  transform: scale(0.9);
+}
+
+.vs--open .vs__open-indicator {
+  transform: rotate(180deg) scale(0.9);
+}
+
+.select .vs__dropdown-menu {
+  background: $light-glass-background-select;
+  color: $text-color;
+}
+
+.select .vs__dropdown-menu li:hover {
+  background: $medium-glass-background-select;
 }
 
 </style>
