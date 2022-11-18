@@ -73,6 +73,7 @@
 <script>
 import axios from 'axios';
 import { useRoute } from 'vue-router';
+import _ from 'lodash';
 
 import vSelect from 'vue-select';
 import CardLine from '../components/card/CardLine.vue';
@@ -93,6 +94,8 @@ export default {
   },
   created() {
     this.getDeckPossibleFormats();
+
+    this.triggerSearch = _.debounce(this.triggerSearch, 300);
   },
   mounted() {
     const route = useRoute();
@@ -187,9 +190,21 @@ export default {
     setDeckDesc(deckDesc) {
       this.deckDesc = deckDesc;
     },
-    triggerSearch(searchInfos) {
-      console.log('Method call with following infos :');
-      console.log(searchInfos);
+    triggerSearch(cardName) {
+      if (cardName !== '') {
+        axios.post(
+          `${process.env.VUE_APP_API_URL}/cards/search`,
+          {
+            name: cardName,
+          },
+        )
+          .then((response) => {
+            const res = response;
+            console.log(res);
+          });
+      } else {
+        this.cardsSearched = [];
+      }
     },
   },
   computed: {
