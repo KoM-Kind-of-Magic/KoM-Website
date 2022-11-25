@@ -17,13 +17,18 @@
       </div>
     </div>
     <div class="cardActions" v-show="appearence === 'edit'">
-      <div class="cardAdd" title="Increase amount" @click="addCard(card.id)" @keydown="c">
+      <div class="cardAdd" title="Increase amount" @click="addCard(card.uuid)" @keydown="c">
         <fa class="icon" icon="plus" />
       </div>
-      <div class="cardRemove" title="Reduce amount" @click="removeCard(card.id)" @keydown="c">
+      <div class="cardRemove" title="Reduce amount" @click="removeCard(card.uuid)" @keydown="c">
         <fa class="icon" icon="minus" />
       </div>
-      <div class="cardRemoveAll" title="Remove card" @click="removeAllCards(card.id)" @keydown="c">
+      <div
+        class="cardRemoveAll"
+        title="Remove card"
+        @click="removeAllCards(card.uuid)"
+        @keydown="c"
+      >
         <fa class="icon" icon="trash-can" />
       </div>
     </div>

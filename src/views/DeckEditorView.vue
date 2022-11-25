@@ -28,17 +28,20 @@
             @getInputValue="setDeckName"
             placeholder="Name"
             class="name_input"
+            :value="this.deckName"
           />
-          <SelectComp
-            id="formatSelect"
-            placeholder="Select a Deck format"
-            @getInputValue="setDeckFormat"
-          />
+          <v-select
+            class="select"
+            label="label"
+            :options="this.possibleFormats"
+            v-model="this.deckFormat">
+          </v-select>
         </div>
         <TextArea
           placeholder="Description"
           class="desc_input"
           @getInputValue="setDeckDesc"
+          :value="this.deckDesc"
         />
         <div class="deckActions">
           <Button class="updateDeck" @click="updateDeck()">Validate</Button>
@@ -52,6 +55,7 @@
           @getInputValue="triggerSearch"
           placeholder="Search"
           class="search_input"
+          :value="this.mySearch"
         />
         <fa class="icon performSearch" icon="magnifying-glass" />
 
@@ -70,63 +74,92 @@
 
 <script>
 import axios from 'axios';
+import { useRoute } from 'vue-router';
+import _ from 'lodash';
 
+import vSelect from 'vue-select';
 import CardLine from '../components/card/CardLine.vue';
 import CardSearched from '../components/card/CardSearched.vue';
 import TextArea from '../components/TextArea.vue';
 import Input from '../components/Input.vue';
-import SelectComp from '../components/Select.vue';
 import Button from '../components/Button.vue';
 
 export default {
   name: 'DeckEditorView',
   components: {
+    'v-select': vSelect,
     CardLine,
     CardSearched,
     TextArea,
     Input,
-    SelectComp,
     Button,
   },
+  created() {
+    this.getDeckInfos();
+
+    this.triggerSearch = _.debounce(this.triggerSearch, 500);
+  },
+  mounted() {
+    const route = useRoute();
+    this.deckId = route.params.id;
+  },
   methods: {
-    getList() {
-      axios.get('http://localhost:8081/cards')
+    getDeckInfos() {
+      axios.get(`${process.env.VUE_APP_API_URL}/deck/formats`)
         .then((response) => {
-          console.log(response.data);
+          const res = response.data.data;
+          const formatedRes = [];
+
+          res.forEach((format) => {
+            formatedRes.push(
+              {
+                value: format,
+                label: format[0].toUpperCase() + format.slice(1),
+              },
+            );
+          });
+
+          this.possibleFormats = formatedRes;
+        })
+        .then(() => {
+          axios.get(`${process.env.VUE_APP_API_URL}/deck/${this.deckId}`)
+            .then((response) => {
+              const res = response.data.data;
+
+              this.deckName = res.name;
+              const idx = this.possibleFormats.findIndex((o) => o.value === res.format);
+              this.deckFormat = this.possibleFormats[idx];
+              this.deckDesc = res.description;
+              this.cards = res.cards;
+            });
         });
     },
-    removeAllCards(cardId) {
-      const index = this.cards.map((el) => el.id).indexOf(cardId);
+    removeAllCards(uuid) {
+      this.cards = this.cards.filter((card) => card.uuid !== uuid);
+    },
+    removeCard(uuid) {
+      const index = this.cards.findIndex((card) => card.uuid === uuid);
       this.cards.splice(index, 1);
     },
-    removeCard(cardId) {
-      const index = this.cards.map((el) => el.id).indexOf(cardId);
-      if (this.cards[index].number === 1) {
-        this.removeAllCards(cardId);
-      } else {
-        this.cards[index].number -= 1;
-      }
-      console.log(this.cards[index].number);
-    },
-    addCard(cardId) {
-      const index = this.cards.map((el) => el.id).indexOf(cardId);
-      if (this.cards[index].number < 999) {
-        this.cards[index].number += 1;
-      }
-      console.log(this.cards[index].number);
+    addCard(uuid) {
+      const index = this.cards.map((el) => el.uuid).indexOf(uuid);
+      this.cards.push(this.cards[index]);
     },
     addCardFromSearch(card) {
-      if (this.cards.filter((c) => c.id === card.id).length) {
-        this.cards[this.cards.findIndex((c) => c.id === card.id)].number += 1;
-      } else {
-        this.cards.push(card);
-      }
+      this.cards.push(card);
     },
     updateDeck() {
-      console.log('Updated deck :');
-      console.log(this.deckName);
-      console.log(this.deckFormat);
-      console.log(this.deckDesc);
+      const cardList = this.cards.map((el) => el.uuid);
+
+      axios.patch(
+        `${process.env.VUE_APP_API_URL}/deck/${this.deckId}`,
+        {
+          name: this.deckName,
+          format: this.deckFormat.value,
+          description: this.deckDesc,
+          cards: cardList,
+        },
+      );
     },
     setDeckName(deckName) {
       this.deckName = deckName;
@@ -137,15 +170,43 @@ export default {
     setDeckDesc(deckDesc) {
       this.deckDesc = deckDesc;
     },
-    triggerSearch(searchInfos) {
-      console.log('Method call with following infos :');
-      console.log(searchInfos);
+    triggerSearch(cardName) {
+      this.mySearch = cardName;
+      if (cardName !== '') {
+        axios.post(
+          `${process.env.VUE_APP_API_URL}/cards/search`,
+          {
+            name: cardName,
+          },
+        )
+          .then((response) => {
+            this.cardsSearched = response.data.data;
+          });
+      } else {
+        this.cardsSearched = [];
+      }
     },
   },
   computed: {
     sortByTypes() {
+      const newCards = [];
+      this.cards.forEach((card) => {
+        if (newCards.findIndex((nc) => nc.uuid === card.uuid) === -1) {
+          const obj = { ...card, ...{ number: 1 } };
+          newCards.push(obj);
+        } else {
+          newCards[newCards.findIndex((nc) => nc.uuid === card.uuid)].number += 1;
+        }
+      });
       const res = {};
-      const cardTypes = [...new Set(this.cards.map((c) => c.type))];
+      newCards.sort((a, b) => {
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB) { return -1; }
+        if (nameA > nameB) { return 1; }
+        return 0;
+      });
+      const cardTypes = [...new Set(newCards.map((c) => c.types.split(',')[c.types.split(',').length - 1]))];
       //
       cardTypes.sort((a, b) => {
         if (a < b) { return -1; }
@@ -155,8 +216,8 @@ export default {
       cardTypes.forEach((t) => {
         res[t] = [];
       });
-      this.cards.forEach((c) => {
-        res[c.type].push(c);
+      newCards.forEach((c) => {
+        res[c.types.split(',')[c.types.split(',').length - 1]].push(c);
       });
       return res;
     },
@@ -168,145 +229,14 @@ export default {
   },
   data() {
     return {
+      deckId: '',
       deckName: '',
-      deckFormat: '',
+      deckFormat: {},
       deckDesc: '',
-      cards: [
-        {
-          name: 'Mana vault',
-          id: '6',
-          number: 1,
-          type: 'artifact',
-        },
-        {
-          name: 'Yarok, the Desecrated',
-          id: '1',
-          isCommander: true,
-          number: 3,
-          type: 'creature',
-        },
-        {
-          name: 'Asmoranomardicadaistinaculdacar',
-          id: '2',
-          number: 2,
-          type: 'creature',
-        },
-        {
-          name: 'Sliver Queen',
-          id: '3',
-          number: 1,
-          type: 'creature',
-        },
-        {
-          name: 'Ulamog',
-          id: '4',
-          number: 25,
-          type: 'creature',
-        },
-        {
-          name: 'Ghired',
-          id: '5',
-          number: 999,
-          type: 'creature',
-        },
-        {
-          name: 'Mox diamond',
-          id: '7',
-          number: 2,
-          type: 'artifact',
-        },
-        {
-          name: 'Chandra',
-          id: '8',
-          number: 4,
-          type: 'planeswalker',
-        },
-        {
-          name: 'Phyrexian Tower',
-          id: '9',
-          number: 4,
-          type: 'land',
-        },
-      ],
-      cardsSearched: [
-        {
-          name: 'Lotus Cobra',
-          id: '10',
-          imgUrl: 'https://cards.scryfall.io/large/front/a/4/a4b759f0-901f-4be3-93fa-224609b08d48.jpg?1604199124',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Sword of heart and home',
-          id: '11',
-          imgUrl: 'https://cards.scryfall.io/large/front/a/1/a16fabbe-4557-4067-b882-f2e5dbd8b458.jpg?1626099357',
-          type: 'artifact',
-          number: 1,
-        },
-        {
-          name: 'Talisman of curiosity',
-          id: '12',
-          imgUrl: 'https://cards.scryfall.io/normal/front/f/d/fd52688a-39fd-430f-b950-cb56e0004396.jpg?1562202516',
-          type: 'artifact',
-          number: 1,
-        },
-        {
-          name: 'Talisman of indulgence',
-          id: '13',
-          imgUrl: 'https://cards.scryfall.io/normal/front/f/a/fa6c62c7-8fd4-46f1-a7f4-fc6e74d34b35.jpg?1631589255',
-          type: 'artifact',
-          number: 1,
-        },
-        {
-          name: 'Wishclaw Talisman',
-          id: '14',
-          imgUrl: 'https://cards.scryfall.io/normal/front/0/7/07c17b01-ee5d-491a-8403-b3f819b778c4.jpg?1572490271',
-          type: 'artifact',
-          number: 1,
-        },
-        {
-          name: 'Yoshimaru, Ever Faithfull',
-          id: '15',
-          imgUrl: 'https://cards.scryfall.io/large/front/a/a/aa409269-3698-42a2-8c51-75557b27a6f6.jpg?1664653410',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Yarok, the Desecrated',
-          id: '1',
-          imgUrl: 'https://cards.scryfall.io/normal/front/a/1/a1001d43-e11b-4e5e-acd4-4a50ef89977f.jpg?1592517590',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Zur, the enchanter',
-          id: '16',
-          imgUrl: 'https://cards.scryfall.io/normal/front/a/e/aeb0160a-dfdc-4b1f-865e-ef905aee65d5.jpg?1662987603',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Zur, Eternal Schemer',
-          id: '17',
-          imgUrl: 'https://cards.scryfall.io/normal/front/4/d/4d987435-2403-4e0f-b19d-693da923ba50.jpg?1663051659',
-          type: 'creature',
-          number: 1,
-        },
-        {
-          name: 'Chandra',
-          id: '8',
-          imgUrl: 'https://cards.scryfall.io/large/front/4/9/49d2a680-4f3b-4bfa-b77b-d2dfaced9f23.jpg?1592516849',
-          type: 'planeswalker',
-          number: 1,
-        },
-        {
-          name: 'Phyrexian Tower',
-          id: '9',
-          imgUrl: 'https://cards.scryfall.io/large/front/0/5/05b2cc68-1d20-421f-9800-af0996071554.jpg?1601081190',
-          type: 'planeswalker',
-          number: 1,
-        },
-      ],
+      mySearch: '',
+      possibleFormats: [],
+      cards: [],
+      cardsSearched: [],
     };
   },
 };
@@ -491,6 +421,44 @@ export default {
   margin: 10px auto 0 auto;
   width: 90%;
   overflow-y: scroll;
+}
+
+.select {
+  width: 310px;
+}
+
+.vs__dropdown-toggle {
+  background: $light-glass-background;
+}
+.select .vs__search::placeholder {
+  color: white !important;
+  font-size: 14px;
+}
+.select .vs__selected,
+.select .vs__selected-options {
+  color: $text-color;
+}
+
+.select .vs__clear svg {
+  fill: $text-color;
+}
+
+.select .vs__open-indicator {
+  fill: $text-color;
+  transform: scale(0.9);
+}
+
+.vs--open .vs__open-indicator {
+  transform: rotate(180deg) scale(0.9);
+}
+
+.select .vs__dropdown-menu {
+  background: $light-glass-background-select;
+  color: $text-color;
+}
+
+.select .vs__dropdown-menu li:hover {
+  background: $medium-glass-background-select;
 }
 
 </style>

@@ -7,8 +7,8 @@
     :searchable="true"
     :clearable="true"
     :close-on-select="true"
-  >
-  </v-select>
+    :v-model="this.chose"
+  />
 </template>
 
 <script>
@@ -21,36 +21,32 @@ export default {
   components: {
     'v-select': vSelect,
   },
+  props: {
+    options: {
+      default: () => [],
+      type: Array,
+    },
+    chose: {
+      default: '',
+      type: String,
+    },
+  },
+  mounted() {
+    this.selectedFormatModel = this.chose;
+  },
   data() {
     return {
-      value: ref(''),
-      options: [
-        {
-          value: 'Option1',
-          label: 'Option1',
-        },
-        {
-          value: 'Option2',
-          label: 'Option2',
-        },
-        {
-          value: 'Option3',
-          label: 'Option3',
-        },
-        {
-          value: 'Option4',
-          label: 'Option4',
-        },
-        {
-          value: 'Option5',
-          label: 'Option5',
-        },
-      ],
+      selectedFormatModel: '',
     };
   },
   methods: {
     sendInputValue(val) {
       this.$emit('getInputValue', val.value);
+    },
+  },
+  watch: {
+    chose() {
+      this.selectedFormatModel = this.chose;
     },
   },
 };

@@ -5,6 +5,7 @@
     class="formInput"
     :placeholder="placeholder"
     :clearable="clearable"
+    :value="value"
   />
 </template>
 

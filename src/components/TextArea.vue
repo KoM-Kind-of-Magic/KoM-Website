@@ -8,6 +8,7 @@
     show-word-limit
     type="textarea"
     :rows='4'
+    :value="value"
   />
 </template>
 
