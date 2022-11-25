@@ -1,6 +1,16 @@
 <template>
-  <div class="cardLine" :class="[card.isCommander ? 'commanderCard' : '']">
-    <div class="cardInfos">
+  <div
+    class="cardLine"
+    :class="[card.isCommander ? 'commanderCard' : '']"
+  >
+    <div
+      class="cardInfos"
+      @mouseover="cardHovered = true"
+      @mouseleave="cardHovered = false"
+      @focusin="cardHovered = true"
+      @focusout="cardHovered = false"
+      @mousemove.prevent="onMouseMove($event)"
+    >
       <div class="cardAmount">
         {{card.number}}
       </div>
@@ -8,7 +18,10 @@
         {{card.name}}
       </div>
     </div>
-    <div class="cardActions">
+    <div
+      class="cardActions"
+      v-show="appearence === 'edit'"
+    >
       <div class="cardAdd" title="Increase amount" @click="addCard(card.uuid)" @keydown="c">
         <fa class="icon" icon="plus" />
       </div>
@@ -24,6 +37,14 @@
         <fa class="icon" icon="trash-can" />
       </div>
     </div>
+    <img
+      :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image`"
+      class="image"
+      v-show="cardHovered && mouseX>0 && mouseY>0 && card.scryfallId"
+      alt="card's image"
+      ref="cardImage"
+      :style="`left: ${mouseX}px; top: ${mouseY}px;`"
+    >
   </div>
 </template>
 
@@ -34,6 +55,7 @@ export default {
   props: {
     card: { type: Object, required: true },
     id: { type: String, required: false },
+    appearence: { type: String, required: false, default: 'default' },
   },
   methods: {
     removeAllCards(cardId) {
@@ -45,8 +67,17 @@ export default {
     addCard(cardId) {
       this.$emit('addCard', cardId);
     },
+    onMouseMove(e) {
+      this.mouseX = e.pageX;
+      this.mouseY = e.clientY;
+    },
   },
   data() {
+    return {
+      cardHovered: false,
+      mouseX: 0,
+      mouseY: 0,
+    };
   },
 };
 </script>
@@ -63,6 +94,8 @@ export default {
   padding: 0 10px;
   font-size: 15px;
   margin: 3px 3px 0 3px;
+
+  color: white;
 }
 
 .cardActions .icon{
@@ -106,6 +139,7 @@ export default {
   display: flex;
   flex-direction: row;
   line-height: 30px;
+  width: -webkit-fill-available;
 }
 
 .cardAmount {
@@ -118,5 +152,13 @@ export default {
 .cardRemove,
 .cardRemoveAll {
   cursor: pointer;
+}
+
+.image {
+  position: absolute;
+  width: 200px;
+  pointer-events: none;
+  overflow: hidden;
+  position: fixed;
 }
 </style>

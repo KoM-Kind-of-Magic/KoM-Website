@@ -10,6 +10,7 @@
           <CardLine v-for="card in sortByTypes[types]"
             :key="card.id"
             :card="card"
+            appearence="edit"
             @removeAllCards="removeAllCards"
             @removeCard="removeCard"
             @addCard="addCard"
