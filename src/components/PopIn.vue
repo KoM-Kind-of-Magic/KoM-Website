@@ -13,12 +13,11 @@
 <script>
 export default {
   name: 'PopIn',
+  props: {
+    title: { type: String, required: false },
+  },
   data() {
-    return {
-      deckName: '',
-      deckFormat: '',
-      deckDesc: '',
-    }
+    return {};
   },
   created() {
     document.addEventListener('keyup', this.closeModalOnEscPress);
@@ -42,7 +41,7 @@ export default {
   flex-direction: column;
   align-items: center;
 
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   top: 0;
@@ -61,7 +60,6 @@ export default {
   border-radius: 10px;
 
   width: 400px;
-  height: 450px;
 
   z-index: 3;
 
@@ -97,7 +95,7 @@ export default {
     border-radius: 10px;
     background: $light-glass-background;
     transition: 0.3s;
-    
+
     & .icon {
       width: 20px;
       height: 20px;

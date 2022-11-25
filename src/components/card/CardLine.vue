@@ -2,13 +2,15 @@
   <div
     class="cardLine"
     :class="[card.isCommander ? 'commanderCard' : '']"
-    @mouseover="cardHovered = true"
-    @mouseleave="cardHovered = false"
-    @focusin="cardHovered = true"
-    @focusout="cardHovered = false"
-    @mousemove.prevent="onMouseMove($event)"
   >
-    <div class="cardInfos">
+    <div
+      class="cardInfos"
+      @mouseover="cardHovered = true"
+      @mouseleave="cardHovered = false"
+      @focusin="cardHovered = true"
+      @focusout="cardHovered = false"
+      @mousemove.prevent="onMouseMove($event)"
+    >
       <div class="cardAmount">
         {{card.number}}
       </div>
@@ -16,7 +18,10 @@
         {{card.name}}
       </div>
     </div>
-    <div class="cardActions" v-show="appearence === 'edit'">
+    <div
+      class="cardActions"
+      v-show="appearence === 'edit'"
+    >
       <div class="cardAdd" title="Increase amount" @click="addCard(card.uuid)" @keydown="c">
         <fa class="icon" icon="plus" />
       </div>
@@ -64,7 +69,7 @@ export default {
     },
     onMouseMove(e) {
       this.mouseX = e.pageX;
-      this.mouseY = e.pageY;
+      this.mouseY = e.clientY;
     },
   },
   data() {
@@ -134,6 +139,7 @@ export default {
   display: flex;
   flex-direction: row;
   line-height: 30px;
+  width: -webkit-fill-available;
 }
 
 .cardAmount {
