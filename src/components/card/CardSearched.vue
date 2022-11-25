@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <img
-      :src=card.imgUrl
+      :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image&version=border_crop`"
       class="image"
       alt="image"
     />
