@@ -32,8 +32,6 @@ export default {
     },
   },
   mounted() {
-    console.log(JSON.parse(JSON.stringify(this.chose)));
-    console.log(JSON.parse(JSON.stringify(this.options)));
     this.selectedFormatModel = this.chose;
   },
   data() {
