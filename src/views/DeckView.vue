@@ -86,6 +86,9 @@ export default {
           console.error(error);
         });
     },
+    editDeck() {
+      this.$router.push({ name: 'deckEditor', params: { id: this.deckId } });
+    },
   },
   computed: {
     sortByTypes() {
