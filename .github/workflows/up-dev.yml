@@ -1,10 +1,8 @@
-name: DEPLOY-DEV
+name: UP-DEV
 
 on:
-  pull_request:
-    branches:
-      - dev
-    types: [closed]
+  schedule:
+  - cron: '5 8 * * *'
 
 jobs: 
   deploy-applications:
@@ -57,7 +55,7 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.PRIVATE_KEY }}
-          name: aws
+          name: id_rsa
           known_hosts: ${{ secrets.HOSTNAME_URL }}
       - name: Adding Known Hosts
         run: ssh-keyscan -H ${{ secrets.HOSTNAME_URL }} >> ~/.ssh/known_hosts

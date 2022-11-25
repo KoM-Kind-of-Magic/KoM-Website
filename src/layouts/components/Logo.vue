@@ -1,7 +1,7 @@
 <template>
     <div>
       <img src="@/assets/images/logo.png" alt="logo" class="logo"/>
-      <span class="title">Kind of Magic</span>
+      <span class="siteTitle">Kind of Magic</span>
     </div>
 </template>
 
@@ -21,7 +21,7 @@
   height: 48px;
   width: 40px;
 }
-.title {
+.siteTitle {
   font-family: 'Radley', serif;
   position: absolute;
   color: white;
