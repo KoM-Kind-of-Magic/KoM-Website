@@ -27,7 +27,7 @@ nav {
 
   background-color: rgb(107,38,63);
   background-image:
-    linear-gradient(140deg, rgba(107,38,63,1) 0%, rgba(28,5,68,1) 50%, rgba(0,0,0,1) 100%);
+    linear-gradient(90deg, rgb(96, 35, 57) 0%, rgb(21, 24, 35) 100%);
 }
 
 </style>

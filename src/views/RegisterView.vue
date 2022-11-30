@@ -1,16 +1,23 @@
 <template>
   <div class="container">
-    <div class="login-card">
+    <div class="register-card">
       <div class="logo-div">
         <img class="img" src="@/assets/images/logo.png" alt="image"/>
       </div>
       <div class="card-title">
-        Sign in
+        Sign up
       </div>
       <div class="username-div">
         <el-input
           v-model="username"
           placeholder="Username"
+          class="input-style"
+        />
+      </div>
+      <div class="email-div">
+        <el-input
+          v-model="email"
+          placeholder="Email"
           class="input-style"
         />
       </div>
@@ -23,15 +30,21 @@
           class="input-style"
         />
       </div>
-      <div class="keeplogged-div">
-        <el-checkbox class="checkbox-style" v-model="keepLogged">Keep me logged in</el-checkbox>
+      <div class="confirmPassword-div">
+        <el-input
+          v-model="confirmPassword"
+          placeholder="Confirm password"
+          type="password"
+          show-password
+          class="input-style"
+        />
       </div>
-      <div class="signinbtn-div">
-        <Button class="signIn-btn" @click="signin()">Sign in</Button>
+      <div class="signupbtn-div">
+        <Button class="signUp-btn" @click="signup()">Sign up</Button>
       </div>
       <div class="register-div">
-        Not a member ?
-        <ElLink class="link-style" :underline="false" @click="registerNow()">Register now</ElLink>
+        Already a member ?
+        <ElLink class="link-style" :underline="false" @click="login()">login now</ElLink>
       </div>
     </div>
   </div>
@@ -39,21 +52,22 @@
 
 <script>
 import { ref } from 'vue';
-import { ElInput, ElCheckbox, ElLink } from 'element-plus';
+import { ElInput, ElLink } from 'element-plus';
 import Button from '../components/Button.vue';
 
 export default {
-  name: 'LoginView',
+  name: 'RegisterView',
   components: {
     Button,
     'el-input': ElInput,
-    'el-checkbox': ElCheckbox,
     ElLink,
   },
   data() {
     return {
       username: '',
+      email: '',
       password: '',
+      confirmPassword: '',
       keepLogged: false,
     };
   },
@@ -64,11 +78,11 @@ export default {
     setPassword(password) {
       this.password = password;
     },
-    signin() {
+    signup() {
       console.log('signin');
     },
-    registerNow() {
-      this.$router.push({ name: 'register' });
+    login() {
+      this.$router.push({ name: 'login' });
     },
   },
   setup() {
@@ -87,7 +101,7 @@ export default {
   padding-top: 24px;
 }
 
-.login-card {
+.register-card {
   display: flex;
   flex-direction: column;
   max-width: 400px;
@@ -104,7 +118,7 @@ export default {
   font-size: 24px;
 }
 
-.signIn-btn {
+.signUp-btn {
   position: relative;
   bottom: 0;
   display: inline-flex;

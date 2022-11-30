@@ -30,6 +30,8 @@ body {
   margin: 0;
   font-family: "Ubuntu";
   background-color:#0f0e13;
-  background-image: linear-gradient(90deg, rgba(96,35,57,1) 0%, rgba(16,16,22,1) 100%);
+  background-image: linear-gradient(90deg, rgb(96, 35, 57) 0%, rgb(21, 24, 35) 100%);
+  // background-image: url("@/assets/images/background.png");
+  // background-size: cover;
 }
 </style>
