@@ -11,15 +11,31 @@
         <el-input
           v-model="username"
           placeholder="Username"
+          size="large"
+          :maxlength="100"
           class="input-style"
-        />
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><User /></el-icon>
+          </template>
+        </el-input>
       </div>
       <div class="email-div">
         <el-input
           v-model="email"
           placeholder="Email"
-          class="input-style"
-        />
+          size="large"
+          :maxlength="100"
+          :class="(emailError ? 'input-error' : '') + ' input-style'"
+          @blur="checkEmailValidity()"
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><Message /></el-icon>
+          </template>
+        </el-input>
+        <div class="msg-error" v-show="emailError">
+          Email not valid
+        </div>
       </div>
       <div class="password-div">
         <el-input
@@ -27,8 +43,14 @@
           placeholder="Password"
           type="password"
           show-password
+          size="large"
+          :maxlength="100"
           class="input-style"
-        />
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><Lock /></el-icon>
+          </template>
+        </el-input>
       </div>
       <div class="confirmPassword-div">
         <el-input
@@ -36,23 +58,45 @@
           placeholder="Confirm password"
           type="password"
           show-password
-          class="input-style"
-        />
+          size="large"
+          :maxlength="100"
+          :class="(passwordError ? 'input-error' : '') +
+          ' input-style'"
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><Lock /></el-icon>
+          </template>
+        </el-input>
+        <div class="msg-error" v-show="passwordError">
+          Password confirm not matching with password
+        </div>
       </div>
       <div class="signupbtn-div">
         <Button class="signUp-btn" @click="signup()">Sign up</Button>
       </div>
       <div class="register-div">
         Already a member ?
-        <ElLink class="link-style" :underline="false" @click="login()">login now</ElLink>
+        <ElLink class="link-style" :underline="false" @click="redirectTologin()">login now</ElLink>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+import { useRoute } from 'vue-router';
 import { ref } from 'vue';
-import { ElInput, ElLink } from 'element-plus';
+import {
+  ElInput,
+  ElLink,
+  ElIcon,
+  ElNotification,
+} from 'element-plus';
+import {
+  User,
+  Lock,
+  Message,
+} from '@element-plus/icons-vue';
 import Button from '../components/Button.vue';
 
 export default {
@@ -61,6 +105,17 @@ export default {
     Button,
     'el-input': ElInput,
     ElLink,
+    'el-icon': ElIcon,
+    User,
+    Lock,
+    Message,
+  },
+  computed: {
+    passwordError() {
+      return this.password
+        && this.confirmPassword
+        && this.confirmPassword !== this.password;
+    },
   },
   data() {
     return {
@@ -68,28 +123,48 @@ export default {
       email: '',
       password: '',
       confirmPassword: '',
-      keepLogged: false,
+      emailError: false,
     };
   },
   methods: {
-    setUsername(username) {
-      this.username = username;
-    },
-    setPassword(password) {
-      this.password = password;
-    },
     signup() {
-      console.log('signin');
+      if (this.username && !this.emailError && !this.passwordError) {
+        axios.post(
+          `${process.env.VUE_APP_API_URL}/auth/register`,
+          {
+            email: this.email,
+            password: this.password,
+            confirm_password: this.confirmPassword,
+            username: this.username,
+          },
+        ).then((response) => {
+          console.log('register response', response);
+          if (response.status < 400) {
+            ElNotification({
+              title: 'Account created successfully !',
+              type: 'success',
+            });
+            this.$router.push({ name: 'login' });
+          }
+        }).catch((error) => {
+          ElNotification({
+            title: error.response.data,
+            type: 'error',
+          });
+        });
+      } else {
+        ElNotification({
+          title: 'Please complete all fields correctly to register.',
+          type: 'error',
+        });
+      }
     },
-    login() {
+    redirectTologin() {
       this.$router.push({ name: 'login' });
     },
-  },
-  setup() {
-    const currentDate = ref(new Date());
-    return {
-      currentDate,
-    };
+    checkEmailValidity() {
+      this.emailError = !(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email));
+    },
   },
 };
 </script>
@@ -124,9 +199,18 @@ export default {
   display: inline-flex;
 }
 
+.msg-error {
+  color: #da0000;
+}
+
 .input-style {
   --el-input-bg-color: #ffffff33;
   --el-input-text-color: white;
+  --el-input-border-color: #00000000;
+}
+
+.input-error {
+  --el-input-border-color: #da0000;
 }
 
 .checkbox-style {

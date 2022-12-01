@@ -9,10 +9,16 @@
       </div>
       <div class="username-div">
         <el-input
-          v-model="username"
-          placeholder="Username"
+          v-model="email"
+          placeholder="Email"
+          size="large"
+          :maxlength="100"
           class="input-style"
-        />
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><Message /></el-icon>
+          </template>
+        </el-input>
       </div>
       <div class="password-div">
         <el-input
@@ -20,8 +26,14 @@
           placeholder="Password"
           type="password"
           show-password
+          size="large"
+          :maxlength="100"
           class="input-style"
-        />
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon"><Lock /></el-icon>
+          </template>
+        </el-input>
       </div>
       <div class="keeplogged-div">
         <el-checkbox class="checkbox-style" v-model="keepLogged">Keep me logged in</el-checkbox>
@@ -39,7 +51,16 @@
 
 <script>
 import { ref } from 'vue';
-import { ElInput, ElCheckbox, ElLink } from 'element-plus';
+import {
+  ElInput,
+  ElCheckbox,
+  ElLink,
+  ElIcon,
+} from 'element-plus';
+import {
+  Message,
+  Lock,
+} from '@element-plus/icons-vue';
 import Button from '../components/Button.vue';
 
 export default {
@@ -49,21 +70,18 @@ export default {
     'el-input': ElInput,
     'el-checkbox': ElCheckbox,
     ElLink,
+    'el-icon': ElIcon,
+    Message,
+    Lock,
   },
   data() {
     return {
-      username: '',
+      email: '',
       password: '',
       keepLogged: false,
     };
   },
   methods: {
-    setUsername(username) {
-      this.username = username;
-    },
-    setPassword(password) {
-      this.password = password;
-    },
     signin() {
       console.log('signin');
     },
@@ -113,6 +131,7 @@ export default {
 .input-style {
   --el-input-bg-color: #ffffff33;
   --el-input-text-color: white;
+  --el-input-border-color: #00000000;
 }
 
 .checkbox-style {
