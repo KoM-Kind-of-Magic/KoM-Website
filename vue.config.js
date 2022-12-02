@@ -14,6 +14,6 @@ module.exports = defineConfig({
   devServer: {
     allowedHosts: 'all',
     port: '8080',
-    host: 'kindofmagic.localhost',
+    host: 'localhost',
   },
 });
