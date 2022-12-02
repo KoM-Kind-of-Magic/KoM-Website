@@ -1,29 +1,47 @@
 <template>
   <div id="deckLists">
     <div class="createDeck" @click="showModal()" @keydown="c">
-      Create a deck
+      <Plus class="deckIcon"/>New Deck
     </div>
     <Transition>
       <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
     </Transition>
-     <div class="container">
-      <el-row>
+     <div class="container" style="height: 80vh; overflow-y: auto; overflow-x: hidden;
+     padding-top: 55px;
+     border-radius: 10px;
+     margin-top: 15px;
+     margin-bottom: -10px;
+     ">
+      <el-row class="row">
         <el-col
-          v-for="(i, index) in 4"
+          v-for="(i, index) in 15"
           :key="i"
           :span="8"
-          :offset="index > 0 ? 4 : 0"
+          :offset="index > 0 ? 15 : 0"
         >
           <el-card class="card">
             <img
-              src="http://media.wizards.com/2016/bVvMNuiu2i_KLD/en_g2UfOun34M.png"
+              src="https://magicalter.com/wp-content/uploads/revslider/beforeafterslider1-1/before-after-1.png"
               class="image"
               alt="image"
             />
-            <div style="padding: 14px">
-              <span style="color: white">Deck</span>
+            <div style="padding: 12px">
+              <span style="color: white; font-weight:500">Deck</span>
               <div class="bottom">
-                <el-button text class="button">More</el-button>
+                <el-button
+                  :icon="Edit"
+                  class="icon-btn"
+                  type="primary"
+                  circle>
+                    <Grid class="icon"/>
+                </el-button>
+                <el-button
+                  class="icon-btn"
+                  type="danger"
+                  :icon="Star"
+                  circle>
+                    <Delete class="icon" />
+                </el-button>
               </div>
             </div>
           </el-card>
@@ -35,6 +53,7 @@
 
 <script>
 import CreateDeckPopIn from '@/components/CreateDeckPopIn.vue';
+import { Plus, Delete, Grid } from '@element-plus/icons-vue';
 import { ElCard, ElButton } from 'element-plus';
 
 export default {
@@ -43,6 +62,9 @@ export default {
     CreateDeckPopIn,
     'el-card': ElCard,
     'el-button': ElButton,
+    Plus,
+    Delete,
+    Grid,
   },
   methods: {
     showModal() {
@@ -76,7 +98,7 @@ export default {
   align-content: center;
   justify-content: center;
 
-  margin-top: 20px;
+  margin-top: 10px;
 }
 .deckContainer {
   height: 500px;
@@ -97,8 +119,8 @@ export default {
 
   right: 0;
   margin: 0 20px 0 0;
-  padding: 4px 8px;
-  border-radius: 5px;
+  padding: 6px 12px;
+  border-radius: 16px;
 
   color: $text-color;
   background: $medium-glass-background;
@@ -107,5 +129,43 @@ export default {
 .createDeck:hover {
   cursor: pointer;
   background: $strong-glass-background;
+}
+.card {
+  -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+  width: 280px;
+  height: 430px;
+  margin-right: -10px;
+  .image {
+    margin-top: -22px;
+    margin-left: -9px;
+    width: 260px;
+    height: 347px;
+  }
+}
+.row {
+  margin-left: 5rem;
+}
+.card:hover {
+  background: $medium-glass-background;
+  -webkit-transition: .3s;
+  transition: .3s
+}
+.icon {
+  height: 16px;
+  width: 16px;
+}
+.icon-btn {
+  background: none;
+}
+.delete-btn {
+  margin-left: 10rem;
+}
+.deckIcon {
+  height: 14px;
+  width: 14px;
+  position: relative;
+  top: 0.5px;
+  margin-right: 3px;
 }
 </style>

@@ -5,6 +5,7 @@ import RegisterView from '../views/RegisterView.vue';
 import DeckListsView from '../views/DeckListsView.vue';
 import DeckView from '../views/DeckView.vue';
 import DeckEditorView from '../views/DeckEditorView.vue';
+import SearchView from '../views/SearchView.vue';
 
 import WorkInProgress from '../views/WorkInProgress.vue';
 import PageNotFound from '../views/PageNotFound.vue';
@@ -39,6 +40,11 @@ const routes = [
     path: '/deckEditor/:id',
     name: 'deckEditor',
     component: DeckEditorView,
+  },
+  {
+    path: '/search',
+    name: 'search',
+    component: SearchView,
   },
   {
     path: '/wip',
