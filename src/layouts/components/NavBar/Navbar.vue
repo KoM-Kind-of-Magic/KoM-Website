@@ -3,7 +3,7 @@
     <Logo />
     <NavBarLink class="item" to="/" icon="home">Home</NavBarLink>
     <NavBarLink class="item" to="/deckLists" icon="clone">My Decks</NavBarLink>
-    <NavBarLink class="item" to="/wip" icon="gear">WIP</NavBarLink>
+    <NavBarLink class="item" to="/search" icon="search">Search</NavBarLink>
     <NavBarLink class="item" to="/wip" icon="gear">WIP</NavBarLink>
   </nav>
 </template>
@@ -15,6 +15,20 @@ import Logo from '../Logo.vue';
 export default {
   name: 'NavBar',
   components: { NavBarLink, Logo },
+
+  methods: {
+    showModal() {
+      this.isShow = true;
+    },
+    hideModal() {
+      this.isShow = false;
+    },
+  },
+  data() {
+    return {
+      isShow: false,
+    };
+  },
 };
 </script>
 
@@ -23,11 +37,10 @@ nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  height:85px;
+  height:95px;
 
   background-color: rgb(107,38,63);
   background-image:
     linear-gradient(140deg, rgba(107,38,63,1) 0%, rgba(28,5,68,1) 50%, rgba(0,0,0,1) 100%);
 }
-
 </style>
