@@ -28,8 +28,20 @@
             <div style="padding: 12px">
               <span style="color: white; font-weight:500">Deck</span>
               <div class="bottom">
-                <el-button :icon="Edit" class="icon-btn" type="primary" circle><Grid class="icon"/></el-button>
-                <el-button class="icon-btn" type="danger" :icon="Star" circle><Delete class="icon" /></el-button>
+                <el-button
+                  :icon="Edit"
+                  class="icon-btn"
+                  type="primary"
+                  circle>
+                    <Grid class="icon"/>
+                </el-button>
+                <el-button
+                  class="icon-btn"
+                  type="danger"
+                  :icon="Star"
+                  circle>
+                    <Delete class="icon" />
+                </el-button>
               </div>
             </div>
           </el-card>
