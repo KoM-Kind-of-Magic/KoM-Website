@@ -90,7 +90,7 @@ import {
   ElInput,
   ElLink,
   ElIcon,
-  ElNotification,
+  ElMessage,
 } from 'element-plus';
 import {
   User,
@@ -140,21 +140,21 @@ export default {
         ).then((response) => {
           console.log('register response', response);
           if (response.status < 400) {
-            ElNotification({
-              title: 'Account created successfully !',
+            ElMessage({
+              message: 'Account created successfully !',
               type: 'success',
             });
             this.$router.push({ name: 'login' });
           }
         }).catch((error) => {
-          ElNotification({
-            title: error.response.data,
+          ElMessage({
+            message: error.response.data,
             type: 'error',
           });
         });
       } else {
-        ElNotification({
-          title: 'Please complete all fields correctly to register.',
+        ElMessage({
+          message: 'Please complete all fields correctly to register.',
           type: 'error',
         });
       }

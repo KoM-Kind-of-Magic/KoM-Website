@@ -50,12 +50,14 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { ref } from 'vue';
 import {
   ElInput,
   ElCheckbox,
   ElLink,
   ElIcon,
+  ElMessage,
 } from 'element-plus';
 import {
   Message,
@@ -84,16 +86,47 @@ export default {
   methods: {
     signin() {
       console.log('signin');
+      if (this.email && this.password) {
+        axios.post(
+          `${process.env.VUE_APP_API_URL}/auth/login`,
+          {
+            email: this.email,
+            password: this.password,
+          },
+        ).then((response) => {
+          if (response.status < 400) {
+            ElMessage({
+              message: 'Logged',
+              type: 'success',
+            });
+            this.$store.dispatch('setUser', {
+              logged: true,
+              username: response.data.username ?? 'no username',
+              email: response.data.email ?? 'no email',
+              token: response.data.token,
+            });
+            this.$router.push({ name: 'home' });
+          }
+        }).catch((error) => {
+          if (error.response && error.response.data) {
+            ElMessage({
+              message: error.response.data,
+              type: 'error',
+            });
+          } else {
+            console.error(error);
+          }
+        });
+      } else {
+        ElMessage({
+          message: 'Please complete all fields correctly to sign in.',
+          type: 'error',
+        });
+      }
     },
     registerNow() {
       this.$router.push({ name: 'register' });
     },
-  },
-  setup() {
-    const currentDate = ref(new Date());
-    return {
-      currentDate,
-    };
   },
 };
 </script>
