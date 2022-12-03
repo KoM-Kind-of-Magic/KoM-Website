@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="logo-align">
       <img src="@/assets/images/logo.png" alt="logo" class="logo"/>
-      <span class="siteTitle">Kind of Magic</span>
+      <div class="siteTitle">Kind of Magic</div>
     </div>
 </template>
 
@@ -13,22 +13,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Radley&display=swap');
 
 .logo {
-  position: absolute;
-  top:0;
-  left:0;
-  margin-left: 15px;
   padding: 15px;
-  height: 48px;
-  width: 40px;
+  height: 70px;
 }
 .siteTitle {
   font-family: 'Radley', serif;
-  position: absolute;
   color: white;
-  left: 0;
-  margin-left: 85px;
   font-size: 44px;
-  top: 0;
-  margin-top: 15px;
+}
+.logo-align {
+  display: inline-flex;
+  align-items: center;
 }
 </style>
