@@ -14,9 +14,12 @@
       <el-avatar src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" />
     </div>
     <div class="nav-item nav-user" v-else>
-      <div class="normal-btn" @click="$router.push({ name: 'login' })" @keydown="c">
+      <el-link @click="$router.push({ name: 'login' })">
+        <el-icon class="el-icon--left">
+          <UserFilled />
+        </el-icon>
         Login
-      </div>
+      </el-link>
     </div>
   </nav>
 </template>
@@ -24,7 +27,12 @@
 <script>
 import {
   ElAvatar,
+  ElLink,
+  ElIcon,
 } from 'element-plus';
+import {
+  UserFilled,
+} from '@element-plus/icons-vue';
 import NavBarLink from './NavBarLink.vue';
 import Logo from '../Logo.vue';
 
@@ -34,6 +42,9 @@ export default {
     NavBarLink,
     Logo,
     'el-avatar': ElAvatar,
+    'el-link': ElLink,
+    'el-icon': ElIcon,
+    UserFilled,
   },
   methods: {
     showModal() {
@@ -73,6 +84,10 @@ nav {
   }
   &.nav-user {
     justify-content: end;
+
+    & .el-link {
+      --el-link-font-size: 18px;
+    }
   }
 }
 
