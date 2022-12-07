@@ -1,8 +1,9 @@
 <template>
-  <div class="container">
+  <div class="container" @keyup.enter="signup()">
     <div class="register-card">
       <div class="logo-div">
         <img class="img" src="@/assets/images/logo.png" alt="image"/>
+        <div class="logo-name">Kind of Magic</div>
       </div>
       <div class="card-title">
         Sign up
@@ -173,7 +174,6 @@ export default {
 .container {
   display: block;
   width: 100%;
-  padding-top: 24px;
 }
 
 .register-card {
@@ -187,6 +187,19 @@ export default {
   padding: 32px 52px;
   border-radius: 12px;
   color: white;
+
+  & .logo-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    & .logo-name {
+      font-family: 'Radley', serif;
+      color: white;
+      font-size: 36px;
+    }
+  }
 }
 
 .card-title {

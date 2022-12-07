@@ -1,8 +1,9 @@
 <template>
-  <div class="container">
+  <div class="container" @keyup.enter="signin()">
     <div class="login-card">
       <div class="logo-div">
         <img class="img" src="@/assets/images/logo.png" alt="image"/>
+        <div class="logo-name">Kind of Magic</div>
       </div>
       <div class="card-title">
         Sign in
@@ -85,7 +86,6 @@ export default {
   },
   methods: {
     signin() {
-      console.log('signin');
       if (this.email && this.password) {
         axios.post(
           `${process.env.VUE_APP_API_URL}/auth/login`,
@@ -99,12 +99,17 @@ export default {
               message: 'Logged',
               type: 'success',
             });
-            this.$store.dispatch('setUser', {
+            const ld = new Date();
+            const userInfo = {
               logged: true,
-              username: response.data.username ?? 'no username',
-              email: response.data.email ?? 'no email',
+              loginDate: ld.toString(),
+              loginKeep: this.keepLogged,
+              username: response.data.username ?? '',
+              email: response.data.email ?? this.email,
               token: response.data.token,
-            });
+            };
+            this.$store.dispatch('setUser', userInfo);
+            localStorage.userInfo = JSON.stringify(userInfo);
             this.$router.push({ name: 'home' });
           }
         }).catch((error) => {
@@ -135,7 +140,6 @@ export default {
 .container {
   display: block;
   width: 100%;
-  padding-top: 24px;
 }
 
 .login-card {
@@ -149,6 +153,19 @@ export default {
   padding: 32px 52px;
   border-radius: 12px;
   color: white;
+
+  & .logo-div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    & .logo-name {
+      font-family: 'Radley', serif;
+      color: white;
+      font-size: 36px;
+    }
+  }
 }
 
 .card-title {
