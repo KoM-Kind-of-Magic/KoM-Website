@@ -13,7 +13,11 @@
       <el-dropdown>
         <span>
           {{userName}}&nbsp;
-          <el-avatar src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png" />
+          <el-avatar>
+            <el-icon>
+              <User />
+            </el-icon>
+          </el-avatar>
         </span>
         <template #dropdown>
           <el-dropdown-menu>
@@ -44,7 +48,7 @@ import {
   ElMessage,
 } from 'element-plus';
 import {
-  UserFilled,
+  User,
 } from '@element-plus/icons-vue';
 import NavBarLink from './NavBarLink.vue';
 import Logo from '../Logo.vue';
@@ -60,7 +64,7 @@ export default {
     'el-dropdown': ElDropdown,
     'el-dropdown-menu': ElDropdownMenu,
     'el-dropdown-item': ElDropdownItem,
-    UserFilled,
+    User,
   },
   computed: {
     userName() {

@@ -35,13 +35,11 @@ export default {
   methods: {
     checkLogin() {
       if (localStorage.userInfo) {
-        const today = new Date();
+        const now = Date.now();
         const user = JSON.parse(localStorage.userInfo);
-        const logDate = new Date(user.loginDate);
-        // by default we keep user logged for 1 day
-        if ((today.getFullYear() === logDate.getFullYear()
-        && today.getMonth() === logDate.getMonth()
-        && today.getDate() === logDate.getDate()) || user.loginKeep) {
+        // by default we keep user logged for 6 hours and reset for every route change
+        if (user.loginDate >= now - 21600000 || user.loginKeep) {
+          user.loginDate = now;
           this.$store.dispatch('setUser', user);
         } else {
           this.$router.push({ name: 'login' });

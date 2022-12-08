@@ -99,10 +99,9 @@ export default {
               message: 'Logged',
               type: 'success',
             });
-            const ld = new Date();
             const userInfo = {
               logged: true,
-              loginDate: ld.toString(),
+              loginDate: Date.now(),
               loginKeep: this.keepLogged,
               username: response.data.username ?? '',
               email: response.data.email ?? this.email,
