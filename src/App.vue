@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <NavBar />
+  <div :class="(isLoginRoute ? 'center':'')+' space-items'">
+    <NavBar v-if="!isLoginRoute" />
     <router-view />
   </div>
 </template>
@@ -12,6 +12,42 @@ export default {
   name: 'app',
   components: {
     NavBar,
+  },
+  data() {
+    return {
+      loginRoutes: ['login', 'register'],
+    };
+  },
+  computed: {
+    isLoginRoute() {
+      return this.loginRoutes.includes(this.$route.name);
+    },
+  },
+  watch: {
+    $route(to, from) {
+      // for now there is no route we can access when not logged
+      // so we redirect to login page when not logged
+      if (!this.isLoginRoute) {
+        this.checkLogin();
+      }
+    },
+  },
+  methods: {
+    checkLogin() {
+      if (localStorage.userInfo) {
+        const now = Date.now();
+        const user = JSON.parse(localStorage.userInfo);
+        // by default we keep user logged for 6 hours and reset for every route change
+        if (user.loginDate >= now - 21600000 || user.loginKeep) {
+          user.loginDate = now;
+          this.$store.dispatch('setUser', user);
+        } else {
+          this.$router.push({ name: 'login' });
+        }
+      } else {
+        this.$router.push({ name: 'login' });
+      }
+    },
   },
 };
 </script>
@@ -28,8 +64,23 @@ body, html {
 
 body {
   margin: 0;
-  font-family: "Ubuntu";
+  font-family: "Ubuntu" !important;
   background-color:#0f0e13;
-  background-image: linear-gradient(90deg, rgba(96,35,57,1) 0%, rgba(16,16,22,1) 100%);
+  background-image: linear-gradient(90deg, rgb(96, 35, 57) 0%, rgb(21, 24, 35) 100%);
+  // background-image: url("@/assets/images/background.png");
+  // background-size: cover;
+}
+
+input {
+  font-family: inherit;
+}
+
+.space-items {
+  display: grid;
+  gap: 24px;
+  &.center {
+    height: inherit;
+    align-items: center;
+  }
 }
 </style>

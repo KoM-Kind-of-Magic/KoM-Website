@@ -64,7 +64,6 @@ export default {
 .container {
   display: block;
   width: 100%;
-  padding-top: 150px;
   margin-right: 15px;
 }
 .card {
