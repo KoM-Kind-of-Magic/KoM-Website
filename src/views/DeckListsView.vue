@@ -1,171 +1,239 @@
 <template>
-  <div id="deckLists">
-    <div class="createDeck" @click="showModal()" @keydown="c">
-      <Plus class="deckIcon"/>New Deck
+  <div>
+    <div class="view-header">
+      <div class="page-title">Your decks</div>
+      <div class="createDeck" @click="createDeckModalShow = true" @keydown="c">
+        New deck
+      </div>
     </div>
-    <Transition>
-      <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
-    </Transition>
-     <div class="container" style="height: 80vh; overflow-y: auto; overflow-x: hidden;
-     padding-top: 55px;
-     border-radius: 10px;
-     margin-top: 15px;
-     margin-bottom: -10px;
-     ">
-      <el-row class="row">
-        <el-col
-          v-for="(i, index) in 15"
-          :key="i"
-          :span="8"
-          :offset="index > 0 ? 15 : 0"
+    <el-row v-if="deckList.length > 0" :gutter="20">
+      <el-col
+        v-for="(deck, index) in deckList"
+        :key="index"
+        :xs="8"
+        :sm="6"
+        :md="4"
+        :lg="3"
+        :xl="3"
+      >
+        <el-card
+          :body-style="{ padding: '0px' }"
+          shadow="hover"
+          @click="openDeck(deck.deck_id)"
+          @keydown="c"
         >
-          <el-card class="card">
-            <img
-              src="https://magicalter.com/wp-content/uploads/revslider/beforeafterslider1-1/before-after-1.png"
-              class="image"
-              alt="image"
-            />
-            <div style="padding: 12px">
-              <span style="color: white; font-weight:500">Deck</span>
-              <div class="bottom">
-                <el-button
-                  :icon="Edit"
-                  class="icon-btn"
-                  type="primary"
-                  circle>
-                    <Grid class="icon"/>
-                </el-button>
-                <el-button
-                  class="icon-btn"
-                  type="danger"
-                  :icon="Star"
-                  circle>
-                    <Delete class="icon" />
-                </el-button>
-              </div>
+          <img
+            alt="card's image"
+            :src="`https://api.scryfall.com/cards/${deck.representingCard.scryfallId}?format=image`"
+            class="image"
+            v-if="deck.representingCard"
+          />
+          <img
+            alt="card's image"
+            src="@/assets/images/MagicCardBack.png"
+            class="image"
+            v-else
+          />
+          <div style="padding: 8px">
+            <div class="deck-title">{{ deck.name }}</div>
+            <div class="bottom">
+              <div>{{ deck.format }}</div>
+              <el-button text class="button" @click.stop="editDeck(deck.deck_id)">
+                &nbsp;Edit&nbsp;
+              </el-button>
             </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
+          </div>
+        </el-card>
+      </el-col>
+    </el-row>
+    <Transition>
+      <PopIn
+        v-show="createDeckModalShow"
+        title="Create a new deck"
+        @close="createDeckModalShow = false"
+      >
+        <div class="input">
+          <Input
+            @getInputValue="setDeckName"
+            placeholder="Name"
+            class="name_input"
+          />
+        </div>
+        <div class="input">
+          <SelectComp
+            id="formatSelect"
+            placeholder="Select a Deck format"
+            @getInputValue="setDeckFormat"
+          />
+        </div>
+        <div class="input">
+          <TextArea
+            placeholder="Description"
+            class="desc_input"
+            @getInputValue="setDeckDesc"
+          />
+        </div>
+        <div class="modal-actions">
+          <div class="normal-btn" @click="createDeck()" @keydown="c">
+            Create
+          </div>
+          <div class="normal-btn" @click="deleteModalShow = false" @keydown="c">
+            Cancel
+          </div>
+        </div>
+      </PopIn>
+    </Transition>
   </div>
 </template>
 
 <script>
-import CreateDeckPopIn from '@/components/CreateDeckPopIn.vue';
-import { Plus, Delete, Grid } from '@element-plus/icons-vue';
-import { ElCard, ElButton } from 'element-plus';
+import axios from 'axios';
+import PopIn from '@/components/PopIn.vue';
+import Input from '@/components/Input.vue';
+import SelectComp from '@/components/Select.vue';
+import TextArea from '@/components/TextArea.vue';
+
+import {
+  ElRow,
+  ElCol,
+  ElButton,
+  ElCard,
+} from 'element-plus';
 
 export default {
   name: 'DeckListsView',
   components: {
-    CreateDeckPopIn,
+    Input,
+    SelectComp,
+    TextArea,
+    PopIn,
+    'el-row': ElRow,
+    'el-col': ElCol,
     'el-card': ElCard,
     'el-button': ElButton,
-    Plus,
-    Delete,
-    Grid,
-  },
-  methods: {
-    showModal() {
-      this.isShow = true;
-    },
-    hideModal() {
-      this.isShow = false;
-    },
   },
   data() {
     return {
-      isShow: false,
+      deckList: [],
+      createDeckModalShow: false,
     };
+  },
+  mounted() {
+    this.getDeckList();
+  },
+  methods: {
+    getDeckList() {
+      axios.get('http://localhost:8081/deck')
+        .then((response) => {
+          this.deckList = response.data.data;
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    getCardImageUrl(data) {
+      let url = '';
+      if (data) {
+        url = `https://api.scryfall.com/cards/${data.scryfallId}?format=image`;
+      } else {
+        url = '@/assets/images/MagicCardBack.png';
+      }
+      return url;
+    },
+    openDeck(id) {
+      this.$router.push({ name: 'deck', params: { id } });
+    },
+    editDeck(id) {
+      this.$router.push({ name: 'deckEditor', params: { id } });
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-
-#deckLists {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-
-  margin-top: 10px;
-}
-.deckContainer {
-  height: 500px;
-  width: 100%;
-  position: relative;
-
-  margin: 35px 20px;
-  padding: 20px;
-
-  box-shadow: 20px 50px 50px rgba(0, 0, 0, 0.5);
-  background: $light-glass-background;
-
-  border-radius: 5px;
-}
-
-.createDeck {
-  position: absolute;
-
-  right: 0;
-  margin: 0 20px 0 0;
-  padding: 6px 12px;
-  border-radius: 16px;
-
-  color: $text-color;
-  background: $medium-glass-background;
-  transition: 0.3s;
-}
-.createDeck:hover {
-  cursor: pointer;
-  background: $strong-glass-background;
-}
-.card {
-  -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-  width: 280px;
-  height: 430px;
-  margin-right: -10px;
-  .image {
-    margin-top: -22px;
-    margin-left: -9px;
-    width: 260px;
-    height: 347px;
+  .el-row {
+    margin: 0px !important;
+    justify-content: center;
+    display: flex;
   }
-}
-.row {
-  margin-left: 5rem;
-}
-.card:hover {
-  background: $medium-glass-background;
-  -webkit-transition: .3s;
-  transition: .3s
-}
-.icon {
-  height: 16px;
-  width: 16px;
-}
-.icon-btn {
-  background: none;
-}
-.delete-btn {
-  margin-left: 10rem;
-}
-.deckIcon {
-  height: 14px;
-  width: 14px;
-  position: relative;
-  top: 0.5px;
-  margin-right: 3px;
-}
+  .el-col {
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  .el-col:last-child {
+    margin-bottom: 0;
+  }
+  .el-card {
+    border-radius: 16px;
+    cursor: pointer;
+  }
+  .image {
+    width: 100%;
+    display: block;
+    border-radius: 16px;
+  }
+  .deck-title {
+    font-size: 20px;
+  }
+  .view-header {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1080px;
+    margin: auto;
+    margin-bottom: 20px;
+
+    & .page-title {
+      font-size: 32px;
+    }
+    & .createDeck {
+      display: flex;
+      padding: 6px 12px;
+      border-radius: 16px;
+      color: white;
+      background: rgba(255, 255, 255, 0.3);
+      transition: 0.3s;
+      align-self: center;
+      &:hover {
+        cursor: pointer;
+        background: $strong-glass-background;
+      }
+    }
+  }
+  .modal-actions {
+    align-self: end;
+    display: inline-flex;
+    gap: 10px;
+    margin: 10px;
+  }
+  .input {
+    margin-bottom: 20px;
+  }
+  .desc_input .el-textarea__inner {
+    background: $light-glass-background-select;
+    box-shadow: none;
+    width: 310px;
+    color: $text-color;
+    padding: 10px;
+    max-height: 150px;
+  }
+  .desc_input .el-input__count {
+    background: transparent;
+  }
+  .normal-btn {
+    padding: 4px 8px;
+    border-radius: 5px;
+
+    color: $text-color;
+    background: $medium-glass-background;
+    transition: 0.3s;
+    font-size: 18px;
+
+    &:hover {
+      cursor: pointer;
+      background: $strong-glass-background;
+    }
+    &.margin-bottom {
+      margin-bottom: 10px;
+    }
+  }
 </style>
