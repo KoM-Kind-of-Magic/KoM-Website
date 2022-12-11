@@ -6,47 +6,51 @@
         New deck
       </div>
     </div>
-    <el-row v-if="deckList.length > 0" :gutter="20">
-      <el-col
-        v-for="(deck, index) in deckList"
-        :key="index"
-        :xs="8"
-        :sm="6"
-        :md="4"
-        :lg="3"
-        :xl="3"
-      >
-        <el-card
-          :body-style="{ padding: '0px' }"
-          shadow="hover"
-          @click="openDeck(deck.deck_id)"
-          @keydown="c"
+    <div class="content">
+      <el-row v-if="deckList.length > 0" :gutter="20">
+        <el-col
+          v-for="(deck, index) in deckList"
+          :key="index"
+          :xs="8"
+          :sm="6"
+          :md="5"
+          :lg="6"
+          :xl="6"
         >
-          <img
-            alt="card's image"
-            :src="`https://api.scryfall.com/cards/${deck.representingCard.scryfallId}?format=image`"
-            class="image"
-            v-if="deck.representingCard"
-          />
-          <img
-            alt="card's image"
-            src="@/assets/images/MagicCardBack.png"
-            class="image"
-            v-else
-          />
-          <div style="padding: 8px">
-            <div class="deck-title">{{ deck.name }}</div>
-            <div class="bottom">
-              <div>{{ deck.format }}</div>
-              <el-button text class="button" @click.stop="editDeck(deck.deck_id)">
-                &nbsp;Edit&nbsp;
-              </el-button>
+          <div class="deck-item" :style="`z-index: calc(9999 - ${index});`">
+            <div
+                class="deck-back"
+                @click="openDeck(deck.deck_id)"
+                @keydown="c"
+              >
+              <div class="deck-infos">
+                <div class="name">{{ deck.name }}</div>
+                <div class="format">{{ deck.format }}</div>
+                <div class="description">{{ deck.description }}</div>
+                <div class="edit">
+                  <el-button text class="button" @click.stop="editDeck(deck.deck_id)">
+                    &nbsp;Edit&nbsp;
+                  </el-button>
+                </div>
+              </div>
+            </div>
+            <div class="deck-image">
+              <img
+                alt="card's image"
+                :src="`https://api.scryfall.com/cards/${deck.representingCard.scryfallId}?format=image`"
+                v-if="deck.representingCard"
+              />
+              <img
+                alt="card's image"
+                src="@/assets/images/MagicCardBack.png"
+                v-else
+              />
             </div>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
-    <Transition>
+        </el-col>
+      </el-row>
+    </div>
+    <Transition style="z-index: 99999;">
       <PopIn
         v-show="createDeckModalShow"
         title="Create a new deck"
@@ -97,7 +101,6 @@ import {
   ElRow,
   ElCol,
   ElButton,
-  ElCard,
 } from 'element-plus';
 
 export default {
@@ -109,7 +112,6 @@ export default {
     PopIn,
     'el-row': ElRow,
     'el-col': ElCol,
-    'el-card': ElCard,
     'el-button': ElButton,
   },
   data() {
@@ -151,6 +153,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .content {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    max-width: 1080px;
+    margin: auto;
+  }
   .el-row {
     margin: 0px !important;
     justify-content: center;
@@ -163,17 +171,58 @@ export default {
   .el-col:last-child {
     margin-bottom: 0;
   }
-  .el-card {
-    border-radius: 16px;
-    cursor: pointer;
-  }
-  .image {
-    width: 100%;
-    display: block;
-    border-radius: 16px;
-  }
-  .deck-title {
-    font-size: 20px;
+  .deck-item {
+    aspect-ratio: 2.5 / 3.49;
+    position: relative;
+
+    & .deck-image, & .deck-back {
+      position: absolute;
+    }
+    & .deck-image {
+      pointer-events:none;
+
+      & img {
+        width: 100%;
+        border-radius: 5.584% / 4%;
+        background-image: url('@/assets/images/MagicCardBack.png');
+      }
+    }
+    & .deck-back {
+      transition: 0.3s;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+
+      &:hover {
+        padding-left: 100%;
+      }
+      & .deck-infos {
+        padding: 8px;
+        gap: 8px;
+        display: flex;
+        flex-direction: column;
+        background-color: #202020;
+        color: white;
+        border-radius: 5.584% / 4%;
+        height: calc(100% - 16px);
+        word-break: break-all;
+
+        & .name {
+          font-size: larger;
+        }
+        & .format {
+          font-size: small;
+        }
+        & .description {
+          font-size: medium;
+        }
+        & .edit {
+          display: flex;
+          align-self: end;
+          justify-content: end;
+        }
+      }
+    }
   }
   .view-header {
     display: flex;
