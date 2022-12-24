@@ -28,7 +28,23 @@
             <div class="cardText cardRarity">
               Rarity : {{card.rarity[0].toUpperCase() + card.rarity.slice(1)}}
             </div>
-            <div class="cardText cardLegalities">Legalities : </div>
+            <div class="cardText cardLegalities">
+              Legalities :
+              <el-tooltip v-for="(item) in card.legalities"
+                placement="top"
+                :key="item.uuid"
+                effect="light"
+              >
+                <template #content>{{item.status}}</template>
+                <el-tag
+                  class="legalityTag"
+                  :type="item.type"
+                  effect="light"
+                >
+                  {{item.format[0].toUpperCase() + item.format.slice(1)}}
+                </el-tag>
+              </el-tooltip>
+            </div>
             <div class="cardText cardArtist">Artist : {{ card.artist }}</div>
           </div>
         </div>
@@ -43,10 +59,13 @@
 <script>
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import { ElTag, ElTooltip } from 'element-plus';
 
 export default {
   name: 'CardPage',
   components: {
+    'el-tag': ElTag,
+    'el-tooltip': ElTooltip,
   },
   data() {
     return {
@@ -69,6 +88,20 @@ export default {
         .then((res) => {
           console.log(res);
           this.card = res.data.data;
+
+          // Add an attribute for the tag type to choose
+          this.card.legalities.forEach((elem) => {
+            if (elem.status === 'Legal') {
+              // eslint-disable-next-line
+              elem.type = 'success';
+            } else if (elem.status === 'Restricted') {
+              // eslint-disable-next-line
+              elem.type = 'warning';
+            } else {
+              // eslint-disable-next-line
+              elem.type = 'error';
+            }
+          });
         })
         .catch((e) => {
           console.log(e);
@@ -99,7 +132,7 @@ export default {
 .cardImg {
   width: 350px;
   margin: 0 20px 0 0;
-  border-radius: 5.584% / 4%;
+  border-radius: 10px;
 }
 .cardInfos {
   flex-direction: column;
@@ -160,6 +193,15 @@ export default {
 }
 .cardText {
   text-align: left;
+}
+
+.cardLegalities {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.legalityTag {
+  cursor: pointer;
 }
 
 </style>
