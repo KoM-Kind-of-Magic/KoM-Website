@@ -14,7 +14,7 @@
         <div class="cardMainContainer">
           <div class="cardMainBadges">
             <div class="badge">Price (MKM)</div>
-            <div class="badge">{{card.number}} - {{card.setCode}}</div>
+            <div class="badge">{{card.number}}/{{card.set.totalSetSize}}</div>
             <div class="badge">
               <img
                 class="cardExtIcon"
@@ -24,7 +24,7 @@
             </div>
           </div>
           <div class="cardTextContainer">
-            <div class="cardText cardExtName">Extention : {{card.setCode}}</div>
+            <div class="cardText cardExtName">Extention : {{card.set.name}}</div>
             <div class="cardText cardRarity">
               Rarity : {{card.rarity[0].toUpperCase() + card.rarity.slice(1)}}
             </div>
