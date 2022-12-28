@@ -16,12 +16,7 @@
             <div class="badge">Price (MKM)</div>
             <div class="badge">{{card.number}}/{{card.set.totalSetSize}}</div>
             <div class="badge">
-              <img v-if="this.card.setIconUrl"
-                class="cardExtIcon"
-                alt=""
-                :src="this.card.setIconUrl"
-              />
-              <!-- Else do a spinner -->
+              <i :class="`cardExtIcon ss ss-${card.set.keyruneCode.toLowerCase()}`"></i>
             </div>
           </div>
           <div class="cardTextContainer">
@@ -104,21 +99,6 @@ export default {
             }
           });
         })
-        .then(() => {
-          this.getCardSetIcon(this.card.setCode);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    },
-    getCardSetIcon(setCode) {
-      axios.get(
-        `https://api.scryfall.com/sets/${setCode}`,
-      )
-        .then((res) => {
-          console.log(res);
-          this.card.setIconUrl = res.data.icon_svg_uri;
-        })
         .catch((e) => {
           console.log(e);
         });
@@ -196,8 +176,8 @@ export default {
 
 .cardExtIcon {
   margin: auto;
-  width: 30px;
-  height: 30px;
+  font-size: 30px;
+  color: black;
 }
 
 .cardTextContainer {
