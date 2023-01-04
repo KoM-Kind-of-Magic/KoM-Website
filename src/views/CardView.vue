@@ -16,7 +16,13 @@
             <div class="badge">Price (MKM)</div>
             <div class="badge">{{card.number}}/{{card.set.totalSetSize}}</div>
             <div class="badge">
-              <i :class="`cardExtIcon ss ss-${card.set.keyruneCode.toLowerCase()}`"></i>
+              <i
+                :class="
+                `cardExtIcon
+                ss
+                ss-${card.set.keyruneCode.toLowerCase()}`"
+              >
+              </i>
             </div>
           </div>
           <div class="cardTextContainer">
@@ -46,8 +52,27 @@
         </div>
       </div>
     </div>
-    <div class="cardRules">
-
+    <div class="cardOtherVersions">
+      <div class="otherVersionTitle">
+        Alternate versions
+      </div>
+      <div class="versionTable">
+        <el-table :data="relatedVersions" max-height="500" empty-text="No other versions">
+          <el-table-column fixed="left" align="center" label="Icon" width="60">
+            <template #default="scope">
+              <i
+                :class="
+                `cardExtIcon
+                ss
+                ss-${scope.row.keyruneCode.toLowerCase()}`"
+              >
+              </i>
+            </template>
+          </el-table-column>
+          <el-table-column prop="code" align="center" label="Set code"  width="100"/>
+          <el-table-column prop="name" label="Set name" />
+        </el-table>
+      </div>
     </div>
   </div>
 </template>
@@ -55,17 +80,25 @@
 <script>
 import { useRoute } from 'vue-router';
 import axios from 'axios';
-import { ElTag, ElTooltip } from 'element-plus';
+import {
+  ElTag,
+  ElTooltip,
+  ElTable,
+  ElTableColumn,
+} from 'element-plus';
 
 export default {
   name: 'CardPage',
   components: {
     'el-tag': ElTag,
     'el-tooltip': ElTooltip,
+    'el-table': ElTable,
+    'el-table-column': ElTableColumn,
   },
   data() {
     return {
       card: {},
+      relatedVersions: [],
     };
   },
   mounted() {
@@ -97,10 +130,40 @@ export default {
               // eslint-disable-next-line
               elem.type = 'error';
             }
+            // this.relatedVersions
           });
+        })
+        .then(() => {
+          const setCodeList = this.card.printings.split(',');
+
+          const index = setCodeList.indexOf(this.card.setCode);
+          if (index > -1) { // only splice array when item is found
+            setCodeList.splice(index, 1); // 2nd parameter means remove one item only
+          }
+          this.getCardRelatedSets(setCodeList);
         })
         .catch((e) => {
           console.log(e);
+        });
+    },
+    getCardRelatedSets(setCodeList) {
+      axios.post(
+        `${process.env.VUE_APP_API_URL}/sets/codes`,
+        {
+          codes: setCodeList,
+        },
+      )
+        .then((res) => {
+          res.data.data.sort((a, b) => {
+            const dateA = new Date(a.releaseDate);
+            const dateB = new Date(b.releaseDate);
+            if (dateB < dateA) {
+              return -1;
+            }
+            return 1;
+          });
+          console.log(res.data.data);
+          this.relatedVersions = res.data.data;
         });
     },
   },
@@ -110,19 +173,18 @@ export default {
 <style lang="scss" scoped>
 #cardPage {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
 
   color: $text-color;
   margin: 50px 0 0 0;
+  padding: 0 10%;
 }
 
 .cardInfosContainer {
   display: flex;
   flex-direction: row;
-
   width: 100%;
-  padding: 0 10%;
 }
 
 .cardImg {
@@ -131,6 +193,7 @@ export default {
   border-radius: 10px;
 }
 .cardInfos {
+  display: flex;
   flex-direction: column;
   align-content: center;
 
@@ -201,4 +264,21 @@ export default {
   cursor: pointer;
 }
 
+.cardOtherVersions {
+  margin-top: 20px;
+  width: 350px;
+}
+
+.otherVersionTitle {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.versionTable {
+  background: #141414;
+}
+
+.versionTable .cardExtIcon {
+  color: #a3a6ad;
+}
 </style>
