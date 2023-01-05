@@ -13,7 +13,7 @@
           :key="index"
           :xs="8"
           :sm="6"
-          :md="5"
+          :md="6"
           :lg="6"
           :xl="6"
         >
@@ -57,31 +57,37 @@
         @close="createDeckModalShow = false"
       >
         <div class="input">
-          <Input
-            @getInputValue="setDeckName"
+          <el-input
+            v-model="newDeck.name"
             placeholder="Name"
-            class="name_input"
+            class="formInput"
           />
         </div>
         <div class="input">
-          <SelectComp
-            id="formatSelect"
-            placeholder="Select a Deck format"
-            @getInputValue="setDeckFormat"
-          />
+          <v-select
+            v-if="possibleFormats.length>0"
+            class="select"
+            label="Select a Deck format"
+            :options="possibleFormats"
+            v-model="newDeck.format">
+          </v-select>
         </div>
         <div class="input">
-          <TextArea
+          <el-input
+            v-model="newDeck.description"
             placeholder="Description"
-            class="desc_input"
-            @getInputValue="setDeckDesc"
+            class="formTextarea"
+            maxlength="140"
+            show-word-limit
+            type="textarea"
+            :rows='4'
           />
         </div>
         <div class="modal-actions">
           <div class="normal-btn" @click="createDeck()" @keydown="c">
             Create
           </div>
-          <div class="normal-btn" @click="deleteModalShow = false" @keydown="c">
+          <div class="normal-btn" @click="createDeckModalShow = false" @keydown="c">
             Cancel
           </div>
         </div>
@@ -93,32 +99,34 @@
 <script>
 import axios from 'axios';
 import PopIn from '@/components/PopIn.vue';
-import Input from '@/components/Input.vue';
-import SelectComp from '@/components/Select.vue';
-import TextArea from '@/components/TextArea.vue';
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 
 import {
   ElRow,
   ElCol,
   ElButton,
+  ElInput,
+  ElMessage,
 } from 'element-plus';
 
 export default {
   name: 'DeckListsView',
   components: {
-    Input,
-    SelectComp,
-    TextArea,
+    'v-select': vSelect,
     PopIn,
     'el-row': ElRow,
     'el-col': ElCol,
     'el-button': ElButton,
+    'el-input': ElInput,
   },
-  data() {
-    return {
-      deckList: [],
-      createDeckModalShow: false,
-    };
+  computed: {
+    isCreateDeckValid() {
+      return this.newDeck.name && this.newDeck.format;
+    },
+  },
+  created() {
+    this.getPossibleFormats();
   },
   mounted() {
     this.getDeckList();
@@ -131,6 +139,10 @@ export default {
         })
         .catch((error) => {
           console.error(error);
+          ElMessage({
+            message: error.message,
+            type: 'error',
+          });
         });
     },
     getCardImageUrl(data) {
@@ -148,6 +160,46 @@ export default {
     editDeck(id) {
       this.$router.push({ name: 'deckEditor', params: { id } });
     },
+    getPossibleFormats() {
+      axios.get(`${process.env.VUE_APP_API_URL}/deck/formats`)
+        .then((response) => {
+          this.possibleFormats = JSON.parse(JSON.stringify(response.data.data));
+          this.newDeck.format = JSON.parse(JSON.stringify(response.data.data[0]));
+        });
+    },
+    createDeck() {
+      if (this.isCreateDeckValid) {
+        axios.post(`${process.env.VUE_APP_API_URL}/deck`, this.newDeck)
+          .then((response) => {
+            ElMessage({
+              message: 'Deck created !',
+              type: 'success',
+            });
+            setTimeout(() => {
+              this.$router.push({ name: 'deckEditor', params: { id: response.data.data.deck_id } });
+            }, 200);
+          })
+          .catch((error) => {
+            console.error(error);
+            ElMessage({
+              message: error.message,
+              type: 'error',
+            });
+          });
+      }
+    },
+  },
+  data() {
+    return {
+      deckList: [],
+      newDeck: {
+        name: '',
+        description: '',
+        format: '',
+      },
+      possibleFormats: [],
+      createDeckModalShow: false,
+    };
   },
 };
 </script>
@@ -156,7 +208,7 @@ export default {
   .content {
     background: rgba(255, 255, 255, 0.1);
     padding: 8px;
-    max-width: 1080px;
+    max-width: 1122px;
     margin: auto;
   }
   .el-row {
@@ -194,27 +246,37 @@ export default {
       cursor: pointer;
 
       &:hover {
-        padding-left: 100%;
+        animation: card-anim 0.4s ease-in-out 0s 1 normal both;
       }
       & .deck-infos {
         padding: 8px;
-        gap: 8px;
         display: flex;
         flex-direction: column;
-        background-color: #202020;
+        background: linear-gradient(#202020ba, #202020ba), url('@/assets/images/MagicCardBack.png');
+        background-size: cover;
         color: white;
         border-radius: 5.584% / 4%;
         height: calc(100% - 16px);
         word-break: break-all;
 
+        & div {
+          padding: 8px;
+        }
         & .name {
           font-size: larger;
+          text-decoration: underline;
+          text-underline-position: under;
+          text-decoration-color: #822a4a;
+          text-decoration-thickness: 3px;
         }
         & .format {
           font-size: small;
+          font-style: italic;
+          color: lightgrey;
         }
         & .description {
           font-size: medium;
+          flex: 1;
         }
         & .edit {
           display: flex;
@@ -222,6 +284,18 @@ export default {
           justify-content: end;
         }
       }
+    }
+  }
+  @keyframes card-anim {
+    0% {
+      padding-left: 0px;
+    }
+    50% {
+      padding-left: 100%;
+    }
+    100% {
+      padding-left: 0%;
+      z-index: 99999999;
     }
   }
   .view-header {
@@ -257,17 +331,6 @@ export default {
   .input {
     margin-bottom: 20px;
   }
-  .desc_input .el-textarea__inner {
-    background: $light-glass-background-select;
-    box-shadow: none;
-    width: 310px;
-    color: $text-color;
-    padding: 10px;
-    max-height: 150px;
-  }
-  .desc_input .el-input__count {
-    background: transparent;
-  }
   .normal-btn {
     padding: 4px 8px;
     border-radius: 5px;
@@ -285,4 +348,66 @@ export default {
       margin-bottom: 10px;
     }
   }
+  .select .el-input__wrapper {
+    background: $dark-background;
+  }
+  .select .vs__dropdown-menu {
+    background: $dark-background;
+    color: $text-color;
+  }
+  .select .vs__dropdown-toggle {
+    background: $dark-background;
+  }
+  .select .vs__dropdown-menu li:hover {
+    background: $light-glass-background-select;
+  }
+  .select {
+    width: 310px;
+    text-transform: capitalize;
+  }
+
+.vs__dropdown-toggle {
+  background: $light-glass-background;
+}
+.select .vs__selected,
+.select .vs__selected-options {
+  color: $text-color;
+}
+
+.select .vs__clear svg {
+  fill: $text-color;
+}
+
+.select .vs__open-indicator {
+  fill: $text-color;
+  transform: scale(0.9);
+}
+
+.vs--open .vs__open-indicator {
+  transform: rotate(180deg) scale(0.9);
+}
+
+.select .vs__dropdown-menu {
+  background: $light-glass-background-select;
+  color: $text-color;
+}
+
+.select .vs__dropdown-menu li:hover {
+  background: $medium-glass-background-select;
+}
+.formInput .el-input__wrapper{
+  background: $light-glass-background-select;
+  box-shadow: none;
+  width: 290px;
+}
+
+.formInput .el-input__wrapper input {
+  color: $text-color !important;
+}
+
+.formTextarea {
+  --el-input-bg-color: #2d3039;
+  --el-input-text-color: white;
+  width: 310px;
+}
 </style>
