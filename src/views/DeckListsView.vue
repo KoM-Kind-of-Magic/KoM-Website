@@ -1,171 +1,413 @@
 <template>
-  <div id="deckLists">
-    <div class="createDeck" @click="showModal()" @keydown="c">
-      <Plus class="deckIcon"/>New Deck
+  <div>
+    <div class="view-header">
+      <div class="page-title">Your decks</div>
+      <div class="createDeck" @click="createDeckModalShow = true" @keydown="c">
+        New deck
+      </div>
     </div>
-    <Transition>
-      <CreateDeckPopIn v-show="isShow" @close="hideModal"/>
-    </Transition>
-     <div class="container" style="height: 80vh; overflow-y: auto; overflow-x: hidden;
-     padding-top: 55px;
-     border-radius: 10px;
-     margin-top: 15px;
-     margin-bottom: -10px;
-     ">
-      <el-row class="row">
+    <div class="content">
+      <el-row v-if="deckList.length > 0" :gutter="20">
         <el-col
-          v-for="(i, index) in 15"
-          :key="i"
-          :span="8"
-          :offset="index > 0 ? 15 : 0"
+          v-for="(deck, index) in deckList"
+          :key="index"
+          :xs="8"
+          :sm="6"
+          :md="6"
+          :lg="6"
+          :xl="6"
         >
-          <el-card class="card">
-            <img
-              src="https://magicalter.com/wp-content/uploads/revslider/beforeafterslider1-1/before-after-1.png"
-              class="image"
-              alt="image"
-            />
-            <div style="padding: 12px">
-              <span style="color: white; font-weight:500">Deck</span>
-              <div class="bottom">
-                <el-button
-                  :icon="Edit"
-                  class="icon-btn"
-                  type="primary"
-                  circle>
-                    <Grid class="icon"/>
-                </el-button>
-                <el-button
-                  class="icon-btn"
-                  type="danger"
-                  :icon="Star"
-                  circle>
-                    <Delete class="icon" />
-                </el-button>
+          <div class="deck-item" :style="`z-index: calc(9999 - ${index});`">
+            <div
+                class="deck-back"
+                @click="openDeck(deck.deck_id)"
+                @keydown="c"
+              >
+              <div class="deck-infos">
+                <div class="name">{{ deck.name }}</div>
+                <div class="format">{{ deck.format }}</div>
+                <div class="description">{{ deck.description }}</div>
+                <div class="edit">
+                  <el-button text class="button" @click.stop="editDeck(deck.deck_id)">
+                    &nbsp;Edit&nbsp;
+                  </el-button>
+                </div>
               </div>
             </div>
-          </el-card>
+            <div class="deck-image">
+              <img
+                alt="card's image"
+                :src="`https://api.scryfall.com/cards/${deck.representingCard.scryfallId}?format=image`"
+                v-if="deck.representingCard"
+              />
+              <img
+                alt="card's image"
+                src="@/assets/images/MagicCardBack.png"
+                v-else
+              />
+            </div>
+          </div>
         </el-col>
       </el-row>
     </div>
+    <Transition style="z-index: 99999;">
+      <PopIn
+        v-show="createDeckModalShow"
+        title="Create a new deck"
+        @close="createDeckModalShow = false"
+      >
+        <div class="input">
+          <el-input
+            v-model="newDeck.name"
+            placeholder="Name"
+            class="formInput"
+          />
+        </div>
+        <div class="input">
+          <v-select
+            v-if="possibleFormats.length>0"
+            class="select"
+            label="Select a Deck format"
+            :options="possibleFormats"
+            v-model="newDeck.format">
+          </v-select>
+        </div>
+        <div class="input">
+          <el-input
+            v-model="newDeck.description"
+            placeholder="Description"
+            class="formTextarea"
+            maxlength="140"
+            show-word-limit
+            type="textarea"
+            :rows='4'
+          />
+        </div>
+        <div class="modal-actions">
+          <div class="normal-btn" @click="createDeck()" @keydown="c">
+            Create
+          </div>
+          <div class="normal-btn" @click="createDeckModalShow = false" @keydown="c">
+            Cancel
+          </div>
+        </div>
+      </PopIn>
+    </Transition>
   </div>
 </template>
 
 <script>
-import CreateDeckPopIn from '@/components/CreateDeckPopIn.vue';
-import { Plus, Delete, Grid } from '@element-plus/icons-vue';
-import { ElCard, ElButton } from 'element-plus';
+import axios from 'axios';
+import PopIn from '@/components/PopIn.vue';
+import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
+
+import {
+  ElRow,
+  ElCol,
+  ElButton,
+  ElInput,
+  ElMessage,
+} from 'element-plus';
 
 export default {
   name: 'DeckListsView',
   components: {
-    CreateDeckPopIn,
-    'el-card': ElCard,
+    'v-select': vSelect,
+    PopIn,
+    'el-row': ElRow,
+    'el-col': ElCol,
     'el-button': ElButton,
-    Plus,
-    Delete,
-    Grid,
+    'el-input': ElInput,
+  },
+  computed: {
+    isCreateDeckValid() {
+      return this.newDeck.name && this.newDeck.format;
+    },
+  },
+  created() {
+    this.getPossibleFormats();
+  },
+  mounted() {
+    this.getDeckList();
   },
   methods: {
-    showModal() {
-      this.isShow = true;
+    getDeckList() {
+      axios.get('http://localhost:8081/deck')
+        .then((response) => {
+          this.deckList = response.data.data;
+        })
+        .catch((error) => {
+          console.error(error);
+          ElMessage({
+            message: error.message,
+            type: 'error',
+          });
+        });
     },
-    hideModal() {
-      this.isShow = false;
+    getCardImageUrl(data) {
+      let url = '';
+      if (data) {
+        url = `https://api.scryfall.com/cards/${data.scryfallId}?format=image`;
+      } else {
+        url = '@/assets/images/MagicCardBack.png';
+      }
+      return url;
+    },
+    openDeck(id) {
+      this.$router.push({ name: 'deck', params: { id } });
+    },
+    editDeck(id) {
+      this.$router.push({ name: 'deckEditor', params: { id } });
+    },
+    getPossibleFormats() {
+      axios.get(`${process.env.VUE_APP_API_URL}/deck/formats`)
+        .then((response) => {
+          this.possibleFormats = JSON.parse(JSON.stringify(response.data.data));
+          this.newDeck.format = JSON.parse(JSON.stringify(response.data.data[0]));
+        });
+    },
+    createDeck() {
+      if (this.isCreateDeckValid) {
+        axios.post(`${process.env.VUE_APP_API_URL}/deck`, this.newDeck)
+          .then((response) => {
+            ElMessage({
+              message: 'Deck created !',
+              type: 'success',
+            });
+            setTimeout(() => {
+              this.$router.push({ name: 'deckEditor', params: { id: response.data.data.deck_id } });
+            }, 200);
+          })
+          .catch((error) => {
+            console.error(error);
+            ElMessage({
+              message: error.message,
+              type: 'error',
+            });
+          });
+      }
     },
   },
   data() {
     return {
-      isShow: false,
+      deckList: [],
+      newDeck: {
+        name: '',
+        description: '',
+        format: '',
+      },
+      possibleFormats: [],
+      createDeckModalShow: false,
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.v-enter-active,
-.v-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.v-enter-from,
-.v-leave-to {
-  opacity: 0;
-}
-
-#deckLists {
-  display: flex;
-  align-content: center;
-  justify-content: center;
-
-  margin-top: 10px;
-}
-.deckContainer {
-  height: 500px;
-  width: 100%;
-  position: relative;
-
-  margin: 35px 20px;
-  padding: 20px;
-
-  box-shadow: 20px 50px 50px rgba(0, 0, 0, 0.5);
-  background: $light-glass-background;
-
-  border-radius: 5px;
-}
-
-.createDeck {
-  position: absolute;
-
-  right: 0;
-  margin: 0 20px 0 0;
-  padding: 6px 12px;
-  border-radius: 16px;
-
-  color: $text-color;
-  background: $medium-glass-background;
-  transition: 0.3s;
-}
-.createDeck:hover {
-  cursor: pointer;
-  background: $strong-glass-background;
-}
-.card {
-  -webkit-box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
-  width: 280px;
-  height: 430px;
-  margin-right: -10px;
-  .image {
-    margin-top: -22px;
-    margin-left: -9px;
-    width: 260px;
-    height: 347px;
+  .content {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px;
+    max-width: 1122px;
+    margin: auto;
   }
+  .el-row {
+    margin: 0px !important;
+    justify-content: center;
+    display: flex;
+  }
+  .el-col {
+    margin-bottom: 20px;
+    border-radius: 4px;
+  }
+  .el-col:last-child {
+    margin-bottom: 0;
+  }
+  .deck-item {
+    aspect-ratio: 2.5 / 3.49;
+    position: relative;
+
+    & .deck-image, & .deck-back {
+      position: absolute;
+    }
+    & .deck-image {
+      pointer-events:none;
+
+      & img {
+        width: 100%;
+        border-radius: 5.584% / 4%;
+        background-image: url('@/assets/images/MagicCardBack.png');
+      }
+    }
+    & .deck-back {
+      transition: 0.3s;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+
+      &:hover {
+        animation: card-anim 0.4s ease-in-out 0s 1 normal both;
+      }
+      & .deck-infos {
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(#202020ba, #202020ba), url('@/assets/images/MagicCardBack.png');
+        background-size: cover;
+        color: white;
+        border-radius: 5.584% / 4%;
+        height: calc(100% - 16px);
+        word-break: break-all;
+
+        & div {
+          padding: 8px;
+        }
+        & .name {
+          font-size: larger;
+          text-decoration: underline;
+          text-underline-position: under;
+          text-decoration-color: #822a4a;
+          text-decoration-thickness: 3px;
+        }
+        & .format {
+          font-size: small;
+          font-style: italic;
+          color: lightgrey;
+        }
+        & .description {
+          font-size: medium;
+          flex: 1;
+        }
+        & .edit {
+          display: flex;
+          align-self: end;
+          justify-content: end;
+        }
+      }
+    }
+  }
+  @keyframes card-anim {
+    0% {
+      padding-left: 0px;
+    }
+    50% {
+      padding-left: 100%;
+    }
+    100% {
+      padding-left: 0%;
+      z-index: 99999999;
+    }
+  }
+  .view-header {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1080px;
+    margin: auto;
+    margin-bottom: 20px;
+
+    & .page-title {
+      font-size: 32px;
+    }
+    & .createDeck {
+      display: flex;
+      padding: 6px 12px;
+      border-radius: 16px;
+      color: white;
+      background: rgba(255, 255, 255, 0.3);
+      transition: 0.3s;
+      align-self: center;
+      &:hover {
+        cursor: pointer;
+        background: $strong-glass-background;
+      }
+    }
+  }
+  .modal-actions {
+    align-self: end;
+    display: inline-flex;
+    gap: 10px;
+    margin: 10px;
+  }
+  .input {
+    margin-bottom: 20px;
+  }
+  .normal-btn {
+    padding: 4px 8px;
+    border-radius: 5px;
+
+    color: $text-color;
+    background: $medium-glass-background;
+    transition: 0.3s;
+    font-size: 18px;
+
+    &:hover {
+      cursor: pointer;
+      background: $strong-glass-background;
+    }
+    &.margin-bottom {
+      margin-bottom: 10px;
+    }
+  }
+  .select .el-input__wrapper {
+    background: $dark-background;
+  }
+  .select .vs__dropdown-menu {
+    background: $dark-background;
+    color: $text-color;
+  }
+  .select .vs__dropdown-toggle {
+    background: $dark-background;
+  }
+  .select .vs__dropdown-menu li:hover {
+    background: $light-glass-background-select;
+  }
+  .select {
+    width: 310px;
+    text-transform: capitalize;
+  }
+
+.vs__dropdown-toggle {
+  background: $light-glass-background;
 }
-.row {
-  margin-left: 5rem;
+.select .vs__selected,
+.select .vs__selected-options {
+  color: $text-color;
 }
-.card:hover {
-  background: $medium-glass-background;
-  -webkit-transition: .3s;
-  transition: .3s
+
+.select .vs__clear svg {
+  fill: $text-color;
 }
-.icon {
-  height: 16px;
-  width: 16px;
+
+.select .vs__open-indicator {
+  fill: $text-color;
+  transform: scale(0.9);
 }
-.icon-btn {
-  background: none;
+
+.vs--open .vs__open-indicator {
+  transform: rotate(180deg) scale(0.9);
 }
-.delete-btn {
-  margin-left: 10rem;
+
+.select .vs__dropdown-menu {
+  background: $light-glass-background-select;
+  color: $text-color;
 }
-.deckIcon {
-  height: 14px;
-  width: 14px;
-  position: relative;
-  top: 0.5px;
-  margin-right: 3px;
+
+.select .vs__dropdown-menu li:hover {
+  background: $medium-glass-background-select;
+}
+.formInput .el-input__wrapper{
+  background: $light-glass-background-select;
+  box-shadow: none;
+  width: 290px;
+}
+
+.formInput .el-input__wrapper input {
+  color: $text-color !important;
+}
+
+.formTextarea {
+  --el-input-bg-color: #2d3039;
+  --el-input-text-color: white;
+  width: 310px;
 }
 </style>

@@ -78,6 +78,7 @@ import { useRoute } from 'vue-router';
 import _ from 'lodash';
 
 import vSelect from 'vue-select';
+import 'vue-select/dist/vue-select.css';
 import CardLine from '../components/card/CardLine.vue';
 import CardSearched from '../components/card/CardSearched.vue';
 import TextArea from '../components/TextArea.vue';
