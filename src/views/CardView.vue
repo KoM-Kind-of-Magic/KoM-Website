@@ -52,26 +52,39 @@
         </div>
       </div>
     </div>
-    <div class="cardOtherVersions">
-      <div class="otherVersionTitle">
-        Alternate versions
+    <div class="cardSideInfos">
+      <div class="cardOtherVersions">
+        <div class="otherVersionTitle">
+          Alternate versions
+        </div>
+        <div class="versionTable">
+          <el-table :data="relatedVersions" max-height="500" empty-text="No other versions">
+            <el-table-column fixed="left" align="center" label="Icon" width="60">
+              <template #default="scope">
+                <i
+                  :class="
+                  `cardExtIcon
+                  ss
+                  ss-${scope.row.keyruneCode.toLowerCase()}`"
+                >
+                </i>
+              </template>
+            </el-table-column>
+            <el-table-column prop="code" align="center" label="Set code"  width="100"/>
+            <el-table-column prop="name" label="Set name" />
+          </el-table>
+        </div>
       </div>
-      <div class="versionTable">
-        <el-table :data="relatedVersions" max-height="500" empty-text="No other versions">
-          <el-table-column fixed="left" align="center" label="Icon" width="60">
-            <template #default="scope">
-              <i
-                :class="
-                `cardExtIcon
-                ss
-                ss-${scope.row.keyruneCode.toLowerCase()}`"
-              >
-              </i>
-            </template>
-          </el-table-column>
-          <el-table-column prop="code" align="center" label="Set code"  width="100"/>
-          <el-table-column prop="name" label="Set name" />
-        </el-table>
+      <div class="cardRulings">
+        <div class="rulingsTitle">
+          Card rulings
+        </div>
+        <div class="rulingsTable">
+          <el-table :data="cardRulings" max-height="500" empty-text="No rules">
+            <el-table-column prop="date" align="center" label="Date"  width="150"/>
+            <el-table-column prop="text" align="left" label="Rules" :fit="true"/>
+          </el-table>
+        </div>
       </div>
     </div>
   </div>
@@ -99,20 +112,19 @@ export default {
     return {
       card: {},
       relatedVersions: [],
+      cardRulings: [],
     };
   },
   mounted() {
     const route = useRoute();
 
     this.getCardById(route.params.uuid);
+    this.getCardRulings(route.params.uuid);
   },
   methods: {
-    getCardById(id) {
+    getCardById(uuid) {
       axios.get(
-        `${process.env.VUE_APP_API_URL}/cards/${id}`,
-        {
-          uuid: this.cardUuid,
-        },
+        `${process.env.VUE_APP_API_URL}/cards/${uuid}`,
       )
         .then((res) => {
           console.log(res);
@@ -164,6 +176,15 @@ export default {
           });
           console.log(res.data.data);
           this.relatedVersions = res.data.data;
+        });
+    },
+    getCardRulings(uuid) {
+      axios.get(
+        `${process.env.VUE_APP_API_URL}/rulings/${uuid}`,
+      )
+        .then((res) => {
+          console.log(res);
+          this.cardRulings = res.data.data;
         });
     },
   },
@@ -264,20 +285,30 @@ export default {
   cursor: pointer;
 }
 
-.cardOtherVersions {
+.cardSideInfos {
+  display: flex;
+  flex-direction: row;
   margin-top: 20px;
+  gap: 20px;
+  width: 100%;
+}
+.cardOtherVersions {
   width: 350px;
 }
+.cardRulings {
+  flex: 1;
+}
 
-.otherVersionTitle {
+.otherVersionTitle,
+.rulingsTitle {
   text-align: center;
   margin-bottom: 5px;
 }
 
-.versionTable {
+.versionTable,
+.rulingsTable {
   background: #141414;
 }
-
 .versionTable .cardExtIcon {
   color: #a3a6ad;
 }
