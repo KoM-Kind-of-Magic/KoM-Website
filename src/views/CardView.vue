@@ -7,14 +7,13 @@
         :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image&version=border_crop`"
       />
       <div class="cardInfos">
-        <div class="cardName">{{card.name}}</div>
-        <div class="cardSlider">
-          Slider
-        </div>
+        <div class="cardName title">{{card.name}}</div>
         <div class="cardMainContainer">
           <div class="cardMainBadges">
-            <div class="badge">Price (MKM)</div>
-            <div class="badge">{{card.number}}/{{card.set.totalSetSize}}</div>
+            <div class="badge cardRarity">
+              {{card.rarity[0].toUpperCase() + card.rarity.slice(1)}}
+            </div>
+            <div class="badge">{{card.types.replaceAll(',', ' ')}}</div>
             <div class="badge">
               <i
                 :class="
@@ -25,29 +24,48 @@
               </i>
             </div>
           </div>
-          <div class="cardTextContainer">
-            <div class="cardText cardExtName">Extention : {{card.set.name}}</div>
-            <div class="cardText cardRarity">
-              Rarity : {{card.rarity[0].toUpperCase() + card.rarity.slice(1)}}
+          <div class="cardAttributes">
+            <div class="attribute manaCost">
+              Mana cost :<div class="manaIconContainer" v-html='card.manaCost'></div>
+              — CMC : {{card.convertedManaCost}}
             </div>
-            <div class="cardText cardLegalities">
-              Legalities :
-              <el-tooltip v-for="(item) in card.legalities"
-                placement="top"
-                :key="item.uuid"
+            <div v-if="card.power && card.toughness" class="attribute">
+              Power / Toughness :
+              <strong>{{card.power}}</strong> / <strong>{{card.toughness}}</strong>
+            </div>
+            <div v-else-if="card.types === 'Planeswalker'" class="attribute loyalty">
+              Loyalty :  <i :class="`ms ms-3x ms-loyalty-start ms-loyalty-${card.loyalty}`"></i>
+            </div>
+            <div v-else class="attribute"></div>
+            <div class="attribute">
+              Extention Name : {{card.set.name}}
+            </div>
+            <div class="attribute">
+              Artist : {{card.artist}}
+            </div>
+          </div>
+          <div class="cardTextContainer">
+            <div class="cardText" v-html="card.text"></div>
+            <div class="cardText" v-html="card.flavorText"></div>
+          </div>
+        </div>
+        <div class="cardLegalities">
+          <div class="title">Legalities</div>
+          <div class="legalitiesBadgeContainer">
+            <el-tooltip v-for="(item) in card.legalities"
+              placement="top"
+              :key="item.uuid"
+              effect="light"
+            >
+              <template #content>{{item.status}}</template>
+              <el-tag
+                class="legalityTag"
+                :type="item.type"
                 effect="light"
               >
-                <template #content>{{item.status}}</template>
-                <el-tag
-                  class="legalityTag"
-                  :type="item.type"
-                  effect="light"
-                >
-                  {{item.format[0].toUpperCase() + item.format.slice(1)}}
-                </el-tag>
-              </el-tooltip>
-            </div>
-            <div class="cardText cardArtist">Artist : {{ card.artist }}</div>
+                {{item.format[0].toUpperCase() + item.format.slice(1)}}
+              </el-tag>
+            </el-tooltip>
           </div>
         </div>
       </div>
@@ -144,6 +162,23 @@ export default {
             }
             // this.relatedVersions
           });
+
+          if (this.card.text != null) {
+            this.card.text = this.cardTextWashingMachine(
+              this.card.text,
+            );
+          }
+          if (this.card.flavorText != null) {
+            this.card.flavorText = this.flavorTextWashingMachine(
+              this.card.flavorText,
+            );
+          }
+          if (this.card.manaCost != null) {
+            this.card.manaCost = this.cardManaCostWashingMachnine(
+              this.card.manaCost,
+              true,
+            );
+          }
         })
         .then(() => {
           const setCodeList = this.card.printings.split(',');
@@ -187,6 +222,117 @@ export default {
           this.cardRulings = res.data.data;
         });
     },
+    cardTextWashingMachine(text) {
+      let newText = text.replaceAll(/\r|\n/g, '<br/>')
+        .replaceAll('{T}', '{TAP}')
+        .replaceAll('{Q}', '{UNTAP}');
+
+      const textIcons = newText.match(/\{(.*?)\}/gs);
+
+      if (textIcons != null) {
+        textIcons.forEach((textIcon) => {
+          const trueIcon = this.cardManaCostWashingMachnine(textIcon);
+          newText = newText.replace(textIcon, trueIcon);
+        });
+      }
+
+      if (this.card.types === 'Planeswalker') {
+        const textLoyalty = newText.match(/\[(.*?)\]/gs);
+
+        if (textLoyalty != null) {
+          textLoyalty.forEach((tl) => {
+            const trueLoyalty = this.loyaltyWashingMachnine(tl);
+            newText = newText.replace(tl, trueLoyalty);
+          });
+        }
+      }
+
+      const sagaIcons = newText.match(/I{1,3} —|IV —/gs);
+      if (sagaIcons != null) {
+        sagaIcons.forEach((si) => {
+          const trueSaga = this.sagaWashingMachine(si);
+          newText = newText.replace(si, trueSaga);
+        });
+      }
+
+      return newText;
+    },
+    flavorTextWashingMachine(text) {
+      let newText = text.replaceAll(/\r|\n/g, '<br/>');
+      newText = text.replaceAll('*', '<strong>');
+      newText = `<em>${newText}</em>`;
+
+      return newText;
+    },
+    cardManaCostWashingMachnine(mc, shadow = false) {
+      let iconMc = mc.match(/\{(.*?)\}/gs);
+      const shadowClass = shadow ? 'ms-shadow' : '';
+
+      iconMc = iconMc.map((icon) => `<i class='ms ms-${icon.replace('{', '').replace('}', '').replace('/', '').toLowerCase()} ms-cost ${shadowClass}'> </i> `).join('');
+
+      return iconMc;
+    },
+    loyaltyWashingMachnine(lc) {
+      let iconLc = lc.match(/\[(.*?)\]/gs);
+      let loyaltyClass = '';
+
+      if (iconLc[0].includes('+')) {
+        loyaltyClass = 'ms-loyalty-up';
+      } else if (iconLc[0].includes('−')) {
+        loyaltyClass = 'ms-loyalty-down';
+      } else {
+        loyaltyClass = 'ms-loyalty-zero';
+      }
+
+      iconLc = iconLc.map((icon) => `
+        <i class='ms ms-2x ${loyaltyClass} loyalty ms-loyalty-${icon.replace('[', '').replace(']', '').replace('−', '').replace('+', '')
+  .toLowerCase()} '> </i>`).join('');
+
+      return iconLc;
+    },
+    sagaWashingMachine(sc) {
+      const iconSaga = sc.match(/.+?(?= —)/gs);
+      console.log(this.romanToInt(iconSaga[0]));
+
+      return `<i class='ms ms-saga ms-saga-${this.romanToInt(iconSaga[0])} ms-2x'></i> -`;
+    },
+    romanToInt(s) {
+      const romanHash = {
+        I: 1,
+        V: 5,
+        X: 10,
+        L: 50,
+        C: 100,
+        D: 500,
+        M: 1000,
+      };
+
+      let accumulator = 0;
+      for (let i = 0; i < s.length; i += 1) {
+        if (s[i] === 'I' && s[i + 1] === 'V') {
+          accumulator += 4;
+          i += 1;
+        } else if (s[i] === 'I' && s[i + 1] === 'X') {
+          accumulator += 9;
+          i += 1;
+        } else if (s[i] === 'X' && s[i + 1] === 'L') {
+          accumulator += 40;
+          i += 1;
+        } else if (s[i] === 'X' && s[i + 1] === 'C') {
+          accumulator += 90;
+          i += 1;
+        } else if (s[i] === 'C' && s[i + 1] === 'D') {
+          accumulator += 400;
+          i += 1;
+        } else if (s[i] === 'C' && s[i + 1] === 'M') {
+          accumulator += 900;
+          i += 1;
+        } else {
+          accumulator += romanHash[s[i]];
+        }
+      }
+      return accumulator;
+    },
   },
 };
 </script>
@@ -212,6 +358,7 @@ export default {
   width: 350px;
   margin: 0 20px 0 0;
   border-radius: 10px;
+  max-height: 500px;
 }
 .cardInfos {
   display: flex;
@@ -221,19 +368,23 @@ export default {
   background: $light-glass-background;
   width: inherit;
   text-align: center;
+
+  border-radius: 10px;
 }
 
 .cardName {
-
+  font-size: 20px;
 }
 
-.cardMainContainer,
-.cardName,
-.cardSlider {
+.cardMainContainer {
   margin: 10px;
+  flex: 1;
   padding: 15px 0;
-  border-radius: 10px;
-  background: $medium-glass-background;
+  border-radius: 5px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+
 }
 .cardMainBadges {
   display: flex;
@@ -243,19 +394,25 @@ export default {
 }
 .badge {
   flex: 1;
-  height: 50px;
-  background: $strong-glass-background;
+  height: 25px;
 
   vertical-align: middle;
-  line-height: 50px;
-  border-radius: 20px;
+  line-height: 25px;
+  max-width: 200px;
   margin: 0 15px;
 }
 .badge:nth-child(2) {
   margin: 0;
 }
-.badge:nth-child(3) {
-  display: flex;
+
+.badge::after {
+  content: '';
+  width: 50px;
+  height: 3px;
+  display: block;
+  margin: 5px auto;
+
+  background: $strong-glass-background;
 }
 
 .cardExtIcon {
@@ -268,18 +425,32 @@ export default {
   display: flex;
   flex-direction: column;
 
+  margin: auto auto 0 auto;
+  width: 80%;
   padding: 15px 15px 0 15px;
   gap: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
 }
 .cardText {
   text-align: left;
 }
 
 .cardLegalities {
+  margin: auto 0 30px 0;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  align-items: center;
+}
+.cardLegalities .title {
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+.legalitiesBadgeContainer {
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 5px;
 }
 .legalityTag {
   cursor: pointer;
@@ -311,5 +482,19 @@ export default {
 }
 .versionTable .cardExtIcon {
   color: #a3a6ad;
+}
+
+.cardAttributes {
+  text-align: left;
+  margin: 20px auto;
+  line-height: 24px;
+  width: 80%;
+}
+.cardAttributes .attribute.manaCost {
+  display: flex;
+  flex-direction: row;
+}
+.manaIconContainer {
+  margin: 0 5px;
 }
 </style>
