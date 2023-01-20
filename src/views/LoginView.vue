@@ -98,15 +98,18 @@ export default {
             ElMessage({
               message: 'Logged',
               type: 'success',
+              showClose: true,
             });
             const userInfo = {
               logged: true,
               loginDate: Date.now(),
               loginKeep: this.keepLogged,
-              username: response.data.username ?? '',
-              email: response.data.email ?? this.email,
+              username: response.data.userId.username ?? '',
+              email: response.data.userId.email ?? this.email,
               token: response.data.token,
             };
+
+            console.log(response);
             this.$store.dispatch('setUser', userInfo);
             localStorage.userInfo = JSON.stringify(userInfo);
             this.$router.push({ name: 'home' });
@@ -116,6 +119,7 @@ export default {
             ElMessage({
               message: error.response.data,
               type: 'error',
+              showClose: true,
             });
           } else {
             console.error(error);

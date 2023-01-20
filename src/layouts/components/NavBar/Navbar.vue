@@ -4,15 +4,30 @@
       <Logo />
     </div>
     <div class="nav-item nav-menu">
-      <NavBarLink class="item" to="/" icon="home">Home</NavBarLink>
-      <NavBarLink class="item" to="/deckLists" icon="clone">My Decks</NavBarLink>
-      <NavBarLink class="item" to="/search" icon="search">Search</NavBarLink>
-      <NavBarLink class="item" to="/wip" icon="gear">WIP</NavBarLink>
+      <NavBarLink
+        :class="(tab.routeNames.includes($route.name) ? 'active' : '') + ' item'"
+        :to="tab.to"
+        v-for="tab in tabs"
+        :key="tab.name"
+      >
+        <el-icon v-if="tab.name == 'Home'">
+          <House />
+        </el-icon>
+        <el-icon v-else-if="tab.name == 'Decks'">
+          <Files />
+        </el-icon>
+        <el-icon v-else-if="tab.name == 'Search'">
+          <Search />
+        </el-icon>
+        <el-icon v-else-if="tab.name == 'Collection'">
+          <Collection />
+        </el-icon>
+        {{tab.name}}
+      </NavBarLink>
     </div>
     <div class="nav-item nav-user" v-if="$store.state.user.logged">
-      <el-dropdown>
-        <span>
-          {{userName}}&nbsp;
+      <el-dropdown trigger="click">
+        <span class='userAvatar'>
           <el-avatar>
             <el-icon>
               <User />
@@ -21,7 +36,15 @@
         </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="logout()" @keydown="c">Sign out</el-dropdown-item>
+            <el-dropdown-item>
+              {{userName}}
+            </el-dropdown-item>
+            <el-dropdown-item>
+              Settings
+            </el-dropdown-item>
+            <el-dropdown-item divided @click="logout()" @keydown="c">
+              Sign out
+            </el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -49,6 +72,11 @@ import {
 } from 'element-plus';
 import {
   User,
+  Files,
+  House,
+  Search,
+  Collection,
+  Plus,
 } from '@element-plus/icons-vue';
 import NavBarLink from './NavBarLink.vue';
 import Logo from '../Logo.vue';
@@ -65,6 +93,10 @@ export default {
     'el-dropdown-menu': ElDropdownMenu,
     'el-dropdown-item': ElDropdownItem,
     User,
+    Files,
+    House,
+    Search,
+    Collection,
   },
   computed: {
     userName() {
@@ -86,6 +118,7 @@ export default {
       ElMessage({
         message: 'Disconnected',
         type: 'success',
+        showClose: true,
       });
       this.$router.push({ name: 'login' });
     },
@@ -93,6 +126,38 @@ export default {
   data() {
     return {
       isShow: false,
+      tabs: [
+        {
+          name: 'Home',
+          routeNames: [
+            'home',
+          ],
+          to: '/',
+        },
+        {
+          name: 'Decks',
+          routeNames: [
+            'deckLists',
+            'deck',
+            'deckEditor',
+          ],
+          to: '/deckLists',
+        },
+        {
+          name: 'Search',
+          routeNames: [
+            'search',
+          ],
+          to: '/search',
+        },
+        {
+          name: 'Collection',
+          routeNames: [
+            'collection',
+          ],
+          to: '/collection',
+        },
+      ],
     };
   },
 };
@@ -105,9 +170,8 @@ nav {
   justify-content: space-between;
   height:95px;
 
-  background-color: rgb(107,38,63);
-  background-image:
-  linear-gradient(90deg, rgb(96, 35, 57) 0%, rgb(21, 24, 35) 100%);
+  border-bottom: 1px solid rgba($color: #fff, $alpha: 0.4);
+  margin: 0 5%;
 }
 
 .nav-item {
@@ -150,5 +214,9 @@ nav {
   &.margin-bottom {
     margin-bottom: 10px;
   }
+}
+
+.userAvatar {
+  cursor: pointer;
 }
 </style>

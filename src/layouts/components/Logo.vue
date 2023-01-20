@@ -1,7 +1,7 @@
 <template>
     <div class="logo-align">
       <img src="@/assets/images/logo.png" alt="logo" class="logo"/>
-      <div class="siteTitle">Kind of Magic</div>
+      <div class="siteTitle">KoM</div>
     </div>
 </template>
 
@@ -14,7 +14,8 @@
 
 .logo {
   padding: 15px;
-  height: 70px;
+  height: 60px;
+  width: 45px;
 }
 .siteTitle {
   font-family: 'Radley', serif;
