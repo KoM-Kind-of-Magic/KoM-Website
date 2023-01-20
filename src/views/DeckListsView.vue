@@ -39,11 +39,13 @@
                 alt="card's image"
                 :src="`https://api.scryfall.com/cards/${deck.representingCard.scryfallId}?format=image`"
                 v-if="deck.representingCard"
+                class="card-image"
               />
               <img
                 alt="card's image"
                 src="@/assets/images/MagicCardBack.png"
                 v-else
+                class="card-image"
               />
             </div>
           </div>
@@ -235,7 +237,6 @@ export default {
 
       & img {
         width: 100%;
-        border-radius: 5.584% / 4%;
         background-image: url('@/assets/images/MagicCardBack.png');
       }
     }

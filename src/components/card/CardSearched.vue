@@ -1,8 +1,8 @@
 <template>
   <div class="card">
     <img
-      :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image&version=border_crop`"
-      class="image"
+      :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image`"
+      class="image card-image"
       alt="image"
     />
     <div class="actions">
@@ -50,9 +50,6 @@ export default {
   padding: 0;
 
   position: relative;
-}
-.card img{
-  border-radius: 9px;
 }
 .card .actions {
   display: flex;

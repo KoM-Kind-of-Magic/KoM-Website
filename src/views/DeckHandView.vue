@@ -8,7 +8,7 @@
     <div class="cards-container" v-if="hand.length > 0">
       <div class="item" v-for="(card, i) in hand" :key="i">
         <img
-          alt="card's image"
+          alt="card's card-image"
           :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image`"
           v-if="card.scryfallId"
           style="width: 100%"

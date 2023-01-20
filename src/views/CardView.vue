@@ -2,7 +2,7 @@
   <div v-if="card.scryfallId" id="cardPage">
     <div class="cardInfosContainer">
       <img
-        class="cardImg"
+        class="cardImg card-image"
         :alt=card.name
         :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image&version=border_crop`"
       />
@@ -357,7 +357,6 @@ export default {
 .cardImg {
   width: 350px;
   margin: 0 20px 0 0;
-  border-radius: 10px;
   max-height: 500px;
 }
 .cardInfos {

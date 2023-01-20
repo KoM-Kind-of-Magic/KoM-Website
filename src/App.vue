@@ -107,4 +107,8 @@ input {
   margin: auto;
   width: 100%;
 }
+
+.card-image {
+  border-radius: 5.584% / 4%;
+}
 </style>
