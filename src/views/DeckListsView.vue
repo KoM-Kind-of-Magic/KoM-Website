@@ -11,11 +11,11 @@
         <el-col
           v-for="(deck, index) in deckList"
           :key="index"
-          :xs="8"
-          :sm="6"
-          :md="6"
+          :xs="12"
+          :sm="8"
+          :md="8"
           :lg="6"
-          :xl="6"
+          :xl="4"
         >
           <div class="deck-item" :style="`z-index: calc(9999 - ${index});`">
             <div
@@ -208,7 +208,7 @@ export default {
   .content {
     background: rgba(255, 255, 255, 0.1);
     padding: 8px;
-    max-width: 1122px;
+    width: 100%;
     margin: auto;
   }
   .el-row {
@@ -301,8 +301,6 @@ export default {
   .view-header {
     display: flex;
     justify-content: space-between;
-    max-width: 1080px;
-    margin: auto;
     margin-bottom: 20px;
 
     & .page-title {
