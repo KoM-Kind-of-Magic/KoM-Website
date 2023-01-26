@@ -140,6 +140,7 @@ export default {
             'deckLists',
             'deck',
             'deckEditor',
+            'deckHand',
           ],
           to: '/deckLists',
         },
