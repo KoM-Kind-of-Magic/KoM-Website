@@ -61,11 +61,6 @@ export default {
   height: 200px;
 }
 
-.container {
-  display: block;
-  width: 100%;
-  margin-right: 15px;
-}
 .card {
   background: rgb(39, 51, 89, 0.4);
   border-radius: 16px;

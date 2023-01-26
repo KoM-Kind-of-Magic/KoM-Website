@@ -13,6 +13,12 @@
           v-if="card.scryfallId"
           style="width: 100%"
         />
+        <div
+          v-show="(((i-hand.length)*-1)-defaultHandSize+mulliganCount) > 0"
+          class="card-position"
+        >
+          # {{((i-hand.length)*-1)-defaultHandSize+mulliganCount}}
+        </div>
       </div>
     </div>
   </div>
@@ -39,13 +45,16 @@ export default {
       library: [],
       hand: [],
       mulliganCount: 0,
+      cardsDrewAmount: 0,
+      defaultHandSize: 7,
     };
   },
   methods: {
-    newHand(numberOfCardsToDraw = 7) {
+    newHand(numberOfCardsToDraw = this.defaultHandSize) {
+      this.cardsDrewAmount = 0;
       this.library = this.shuffleArray(this.cards);
       this.hand = [];
-      if (numberOfCardsToDraw === 7) {
+      if (numberOfCardsToDraw === this.defaultHandSize) {
         this.mulliganCount = 0;
       }
       for (let i = 0; i < Math.min(numberOfCardsToDraw, this.library.length + 1); i += 1) {
@@ -53,9 +62,10 @@ export default {
       }
     },
     mulligan() {
-      this.mulliganCount += 1;
-      const numberOfCardsToDraw = Math.min(7, this.cards.length) - this.mulliganCount;
-      if (numberOfCardsToDraw > 0) {
+      if (this.mulliganCount + 1 < this.defaultHandSize) {
+        this.mulliganCount += 1;
+        const numberOfCardsToDraw = Math.min(this.defaultHandSize, this.cards.length)
+          - this.mulliganCount;
         this.newHand(numberOfCardsToDraw);
       } else {
         ElMessage({
@@ -79,8 +89,9 @@ export default {
     },
     drawCard(fromButton = false) {
       if (this.library.length > 0) {
-        this.hand.push(this.library[0]);
+        this.hand.unshift(this.library[0]);
         this.library.splice(0, 1);
+        this.cardsDrewAmount += 1;
       } else if (fromButton) {
         ElMessage({
           message: 'There are no more cards in the deck.',
@@ -95,27 +106,10 @@ export default {
 <style lang="scss" scoped>
 
   .cards-container {
-    display: grid;
-    gap: 12px;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  @media (min-width: 800px) {
-    .cards-container {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  @media (min-width: 1100px) {
-    .cards-container {
-      grid-template-columns: repeat(5, 1fr);
-    }
-  }
-
-  @media (min-width: 1550px) {
-    .cards-container {
-      grid-template-columns: repeat(7, 1fr);
-    }
+    display: flex;
+    // grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .item {
@@ -124,7 +118,33 @@ export default {
       width: 100%;
       border-radius: 15px;
     }
+    display: flex;
+    position: relative;
+    width: calc((100% / 2) - 12px);
+    margin: 6px;
   }
+
+  @media (min-width: 800px) {
+    .item {
+      grid-template-columns: repeat(3, 1fr);
+      width: calc((100% / 3) - 12px);
+    }
+  }
+
+  @media (min-width: 1100px) {
+    .item {
+      grid-template-columns: repeat(5, 1fr);
+      width: calc((100% / 5) - 12px);
+    }
+  }
+
+  @media (min-width: 1550px) {
+    .item {
+      grid-template-columns: repeat(7, 1fr);
+      width: calc((100% / 7) - 12px);
+    }
+  }
+
   .content {
     background: rgba(255, 255, 255, 0.1);
     padding: 12px;
@@ -163,6 +183,16 @@ export default {
       cursor: pointer;
       background: rgba(255, 255, 255, 0.35);
     }
+  }
+
+  .card-position {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    background-color: #1111118f;
+    padding: 6px;
+    font-size: 26px;
+    border-radius: 6px;
   }
 
 </style>
