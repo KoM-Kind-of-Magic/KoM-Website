@@ -168,10 +168,10 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height:95px;
-
-  border-bottom: 1px solid rgba($color: #fff, $alpha: 0.4);
-  margin: 0 5%;
+  height: 95px;
+  padding: 0 27.5px;
+  background: linear-gradient(90deg, rgb(96, 35, 57) 30%, #982b18 100%);
+  box-shadow: 0px 4px 7px 0px rgba(0,0,0,0.5);
 }
 
 .nav-item {
@@ -189,7 +189,7 @@ nav {
       display: flex;
       align-items: center;
       font-size: 18px;
-      color: white;
+      color: $text-color;
     }
 
     & .el-link {

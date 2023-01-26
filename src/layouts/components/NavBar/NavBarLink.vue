@@ -35,4 +35,9 @@ export default {
 .link.active {
   border-bottom: 1px solid white;
 }
+
+.link:hover {
+  background: rgba($color: #ffffff, $alpha: 0.15);
+
+}
 </style>

@@ -144,6 +144,7 @@ export default {
             ElMessage({
               message: 'Account created successfully !',
               type: 'success',
+              showClose: true,
             });
             this.$router.push({ name: 'login' });
           }
@@ -151,12 +152,14 @@ export default {
           ElMessage({
             message: error.response.data,
             type: 'error',
+            showClose: true,
           });
         });
       } else {
         ElMessage({
           message: 'Please complete all fields correctly to register.',
           type: 'error',
+          showClose: true,
         });
       }
     },
