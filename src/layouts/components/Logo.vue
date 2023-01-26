@@ -10,7 +10,6 @@
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=Radley&display=swap');
 
 .logo {
   padding: 15px 15px 15px 0;
@@ -21,6 +20,7 @@
   font-family: 'Ubuntu', serif;
   color: $text-color;
   font-size: 30px;
+  user-select: none;
 }
 .logo-align {
   display: inline-flex;
