@@ -65,10 +65,7 @@ body, html {
 body {
   margin: 0;
   font-family: "Ubuntu" !important;
-  background-color:#0f0e13;
-  background-image: linear-gradient(90deg, rgb(96, 35, 57) 0%, rgb(21, 24, 35) 100%);
-  // background-image: url("@/assets/images/background.png");
-  // background-size: cover;
+  background-color: $app-background-color;
 }
 
 body {
