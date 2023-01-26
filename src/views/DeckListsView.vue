@@ -11,11 +11,11 @@
         <el-col
           v-for="(deck, index) in deckList"
           :key="index"
-          :xs="8"
-          :sm="6"
-          :md="6"
+          :xs="12"
+          :sm="8"
+          :md="8"
           :lg="6"
-          :xl="6"
+          :xl="4"
         >
           <div class="deck-item" :style="`z-index: calc(9999 - ${index});`">
             <div
@@ -39,11 +39,13 @@
                 alt="card's image"
                 :src="`https://api.scryfall.com/cards/${deck.representingCard.scryfallId}?format=image`"
                 v-if="deck.representingCard"
+                class="card-image"
               />
               <img
                 alt="card's image"
                 src="@/assets/images/MagicCardBack.png"
                 v-else
+                class="card-image"
               />
             </div>
           </div>
@@ -211,7 +213,7 @@ export default {
   .content {
     background: rgba(255, 255, 255, 0.1);
     padding: 8px;
-    max-width: 1122px;
+    width: 100%;
     margin: auto;
   }
   .el-row {
@@ -238,7 +240,6 @@ export default {
 
       & img {
         width: 100%;
-        border-radius: 5.584% / 4%;
         background-image: url('@/assets/images/MagicCardBack.png');
       }
     }
@@ -304,8 +305,6 @@ export default {
   .view-header {
     display: flex;
     justify-content: space-between;
-    max-width: 1080px;
-    margin: auto;
     margin-bottom: 20px;
 
     & .page-title {

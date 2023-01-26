@@ -1,7 +1,7 @@
 <template>
   <div :class="(isLoginRoute ? 'center':'')+' space-items'">
     <NavBar v-if="!isLoginRoute" />
-    <router-view />
+    <router-view class="wrapped" />
   </div>
 </template>
 
@@ -68,6 +68,23 @@ body {
   background-color: $app-background-color;
 }
 
+body {
+  overflow: overlay;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #822a4a;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 input {
   font-family: inherit;
 }
@@ -79,5 +96,16 @@ input {
     height: inherit;
     align-items: center;
   }
+}
+
+.wrapped {
+  max-width: 1500px;
+  display: flow-root;
+  margin: auto;
+  width: 100%;
+}
+
+.card-image {
+  border-radius: 5.584% / 4%;
 }
 </style>

@@ -3,7 +3,9 @@ import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
 import DeckListsView from '../views/DeckListsView.vue';
+import DeckMainView from '../views/DeckMainView.vue';
 import DeckView from '../views/DeckView.vue';
+import DeckHandView from '../views/DeckHandView.vue';
 import DeckEditorView from '../views/DeckEditorView.vue';
 import CardView from '../views/CardView.vue';
 // import SearchView from '../views/SearchView.vue';
@@ -34,8 +36,19 @@ const routes = [
   },
   {
     path: '/deck/:id',
-    name: 'deck',
-    component: DeckView,
+    component: DeckMainView,
+    children: [
+      {
+        path: '',
+        name: 'deck',
+        component: DeckView,
+      },
+      {
+        path: 'hand',
+        name: 'deckHand',
+        component: DeckHandView,
+      },
+    ],
   },
   {
     path: '/deckEditor/:id',
