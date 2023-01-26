@@ -84,7 +84,6 @@ export default {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
       }
-      console.log(shuffledArray);
       return shuffledArray;
     },
     drawCard(fromButton = false) {
