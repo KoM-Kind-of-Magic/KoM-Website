@@ -142,6 +142,7 @@ export default {
           ElMessage({
             message: error.message,
             type: 'error',
+            showClose: true,
           });
         });
     },
@@ -174,6 +175,7 @@ export default {
             ElMessage({
               message: 'Deck created !',
               type: 'success',
+              showClose: true,
             });
             setTimeout(() => {
               this.$router.push({ name: 'deckEditor', params: { id: response.data.data.deck_id } });
@@ -184,6 +186,7 @@ export default {
             ElMessage({
               message: error.message,
               type: 'error',
+              showClose: true,
             });
           });
       }
