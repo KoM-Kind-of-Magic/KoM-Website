@@ -77,6 +77,10 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 import _ from 'lodash';
 
+import {
+  ElNotification,
+} from 'element-plus';
+
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
 import CardLine from '../components/card/CardLine.vue';
@@ -160,7 +164,23 @@ export default {
           description: this.deckDesc,
           cards: cardList,
         },
-      );
+      ).then((res) => {
+        ElNotification({
+          title: 'Succes',
+          message: 'Your deck has been modified.',
+          type: 'success',
+          position: 'bottom-right',
+        });
+        this.$router.push(`/deck/${this.deckId}`);
+      }).catch((err) => {
+        ElNotification({
+          title: 'Error',
+          message: 'There was a problem editing your deck.',
+          type: 'error',
+          position: 'bottom-right',
+        });
+        console.log(err);
+      });
     },
     setDeckName(deckName) {
       this.deckName = deckName;
@@ -353,7 +373,7 @@ export default {
 #deckEditor .desc_input .el-textarea__inner {
   box-shadow: none;
   color: $text-color;
-  max-height: 150px;
+  max-height: 140px;
 }
 #deckEditor .desc_input .el-textarea__inner::placeholder {
   color: $text-color;
