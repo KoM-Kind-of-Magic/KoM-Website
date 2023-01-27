@@ -47,6 +47,7 @@ export default {
   top: 0;
   z-index: 2;
   background: #00000044;
+  inset: 0;
 }
 
 #PopIn {
