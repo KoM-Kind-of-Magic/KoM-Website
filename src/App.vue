@@ -72,6 +72,39 @@ body {
   overflow: overlay;
 }
 
+.view-header {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 8px;
+  justify-content: space-between;
+
+  & .page-title {
+    font-size: 32px;
+  }
+  & .sub-btns-title {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    gap: 12px;
+    align-self: end;
+
+    & .button-title {
+      display: flex;
+      padding: 6px 12px;
+      border-radius: 16px;
+      color: white;
+      background: rgba(255, 255, 255, 0.3);
+      transition: 0.3s;
+      align-self: center;
+      &:hover {
+        cursor: pointer;
+        background: $strong-glass-background;
+      }
+    }
+  }
+}
+
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;

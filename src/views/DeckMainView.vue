@@ -9,23 +9,33 @@
         <div class="deck-desc" v-show="deck.format">{{deck.format}}</div>
       </div>
       <div class="right-side">
-        <div class="header-btns" @click="editDeck()" @keydown="c">
-          &#x270E;&nbsp;Edit
-        </div>
-        <div class="header-btns" @click="deleteModalShow = true" @keydown="c">
-          &#128465;&nbsp;Delete
-        </div>
       </div>
     </div>
-    <div class="view-tabs">
-      <div
-        :class="(tab.routeName === $route.name ? 'selected-tab' : '') + ' tab'"
-        v-for="(tab, i) in tabs"
-        :key="i"
-        @click="openTab(tab.routeName)"
-        @keydown="c"
-      >
-        {{tab.name}}
+    <div class="view-sub-header">
+      <div class="view-tabs">
+        <div
+          :class="(tab.routeName === $route.name ? 'selected-tab' : '') + ' tab'"
+          v-for="(tab, i) in tabs"
+          :key="i"
+          @click="openTab(tab.routeName)"
+          @keydown="c"
+        >
+          {{tab.name}}
+        </div>
+      </div>
+      <div class="right-btns">
+        <div class="view-side-btns" @click="editDeck()" @keydown="c">
+          <el-icon>
+            <Edit />
+          </el-icon>
+          &nbsp;Edit
+        </div>
+        <div class="view-side-btns" @click="deleteModalShow = true" @keydown="c">
+          <el-icon>
+            <Delete />
+          </el-icon>
+          &nbsp;Delete
+        </div>
       </div>
     </div>
     <router-view
@@ -57,10 +67,21 @@ import axios from 'axios';
 
 import PopIn from '@/components/PopIn.vue';
 
+import {
+  ElIcon,
+} from 'element-plus';
+import {
+  Edit,
+  Delete,
+} from '@element-plus/icons-vue';
+
 export default {
   name: 'DeckView',
   components: {
+    'el-icon': ElIcon,
     PopIn,
+    Edit,
+    Delete,
   },
   data() {
     return {
@@ -174,10 +195,6 @@ export default {
 
 <style lang="scss" scoped>
   .view-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-
     & .page-title {
       display: flex;
       align-items: baseline;
@@ -209,19 +226,44 @@ export default {
       }
     }
   }
-  .view-tabs {
+  .view-sub-header {
     display: flex;
-    justify-content: flex-start;
-    & .tab {
-      padding: 10px;
-      border-radius: 8px 8px 0px 0px;
-      cursor: pointer;
-      &:hover {
+    justify-content: space-between;
+
+    & .view-tabs {
+      display: flex;
+      justify-content: flex-start;
+      & .tab {
+        padding: 10px;
+        border-radius: 8px 8px 0px 0px;
+        cursor: pointer;
+        &:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+      }
+      & .selected-tab {
         background: rgba(255, 255, 255, 0.1);
       }
     }
-    & .selected-tab {
-      background: rgba(255, 255, 255, 0.1);
+    & .right-btns {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      margin-bottom: 8px;
+
+      & .view-side-btns {
+        display: flex;
+        padding: 6px 12px;
+        border-radius: 16px;
+        color: white;
+        background: rgba(255, 255, 255, 0.3);
+        transition: 0.3s;
+        align-self: center;
+        &:hover {
+          cursor: pointer;
+          background: $strong-glass-background;
+        }
+      }
     }
   }
   .v-enter-active,

@@ -2,8 +2,10 @@
   <div>
     <div class="view-header">
       <div class="page-title">Your decks</div>
-      <div class="createDeck" @click="createDeckModalShow = true" @keydown="c">
-        New deck
+      <div class="sub-btns-title">
+        <div class="button-title" @click="createDeckModalShow = true" @keydown="c">
+          New deck
+        </div>
       </div>
     </div>
     <div class="content">
@@ -215,7 +217,6 @@ export default {
 <style lang="scss" scoped>
   .content {
     background: rgba(255, 255, 255, 0.1);
-    padding: 8px;
     width: 100%;
     margin: auto;
   }
@@ -223,6 +224,7 @@ export default {
     margin: 0px !important;
     justify-content: center;
     display: flex;
+    padding: 12px;
   }
   .el-col {
     margin-bottom: 20px;
@@ -303,28 +305,6 @@ export default {
     100% {
       padding-left: 0%;
       z-index: 99999999;
-    }
-  }
-  .view-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-
-    & .page-title {
-      font-size: 32px;
-    }
-    & .createDeck {
-      display: flex;
-      padding: 6px 12px;
-      border-radius: 16px;
-      color: white;
-      background: rgba(255, 255, 255, 0.3);
-      transition: 0.3s;
-      align-self: center;
-      &:hover {
-        cursor: pointer;
-        background: $strong-glass-background;
-      }
     }
   }
   .modal-actions {
