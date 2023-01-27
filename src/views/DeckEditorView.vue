@@ -1,72 +1,78 @@
 <template>
-  <div id="deckEditor">
-    <div class="currentDeck">
-      <div class="title">
-        Cards in your deck
-      </div>
-      <div class="cardContainer">
-        <div class="cardTypeContainer" v-for="types in Object.keys(sortByTypes)" :key="types">
-          <div class="title">{{types}}</div>
-          <CardLine v-for="card in sortByTypes[types]"
-            :key="card.id"
-            :card="card"
-            appearence="edit"
-            @removeAllCards="removeAllCards"
-            @removeCard="removeCard"
-            @addCard="addCard"
-          />
-        </div>
-      </div>
+  <div>
+    <div class="view-header">
+      <div class="page-title">Deck editor</div>
     </div>
-    <div class="infos-search-container">
-      <div class="deckInfos">
+    <div class="deck-editor-container">
+      <div class="currentDeck">
         <div class="title">
-          Deck Informations
+          Cards in your deck
         </div>
-        <div class="deckInputContainer">
-          <Input
-            @getInputValue="setDeckName"
-            placeholder="Name"
-            class="name_input"
-            :value="this.deckName"
-          />
-          <v-select
-            class="select"
-            label="label"
-            :options="this.possibleFormats"
-            v-model="this.deckFormat">
-          </v-select>
-        </div>
-        <TextArea
-          placeholder="Description"
-          class="desc_input"
-          @getInputValue="setDeckDesc"
-          :value="this.deckDesc"
-        />
-        <div class="deckActions">
-          <Button class="updateDeck" @click="updateDeck()">Validate</Button>
+        <div class="cardContainer">
+          <div class="cardTypeContainer" v-for="types in Object.keys(sortByTypes)" :key="types">
+            <div class="title">{{types}}</div>
+            <CardLine v-for="card in sortByTypes[types]"
+              :key="card.id"
+              :card="card"
+              appearence="edit"
+              @removeAllCards="removeAllCards"
+              @removeCard="removeCard"
+              @addCard="addCard"
+            />
+          </div>
         </div>
       </div>
-      <div class="searchCards">
-        <div class="title">
-          Search for cards
-        </div>
-        <Input
-          @getInputValue="triggerSearch"
-          placeholder="Search"
-          class="search_input"
-          :value="this.mySearch"
-        />
-        <fa class="icon performSearch" icon="magnifying-glass" />
-
-        <div class="searchResult">
-          <CardSearched v-for=" card in cardsSearched"
-            :key="card.id"
-            :card="card"
-            @addCardFromSearch="addCardFromSearch"
-            @click="getList"
+      <div class="infos-search-container">
+        <div class="deckInfos">
+          <div class="title">
+            Deck Informations
+          </div>
+          <div class="deckInputContainer">
+            <Input
+              @getInputValue="setDeckName"
+              placeholder="Name"
+              class="name_input"
+              :value="this.deckName"
+            />
+            <v-select
+              class="select"
+              label="label"
+              :options="this.possibleFormats"
+              v-model="this.deckFormat">
+            </v-select>
+          </div>
+          <TextArea
+            placeholder="Description"
+            class="desc_input"
+            @getInputValue="setDeckDesc"
+            :value="this.deckDesc"
           />
+          <div class="deckActions">
+            <Button class="updateDeck" @click="updateDeck()">Validate</Button>
+          </div>
         </div>
+        <div class="searchCards">
+          <div class="title">
+            Search for cards
+          </div>
+          <Input
+            @getInputValue="triggerSearch"
+            placeholder="Search"
+            class="search_input"
+            :value="this.mySearch"
+          />
+          <fa class="icon performSearch" icon="magnifying-glass" />
+
+          <div class="searchResult">
+            <CardSearched v-for=" card in cardsSearched"
+              :key="card.id"
+              :card="card"
+              @addCardFromSearch="addCardFromSearch"
+              @click="getList"
+            />
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -245,27 +251,40 @@ export default {
 
 <style lang="scss">
 
-#deckEditor {
-  position: absolute;
-  top: 100px;
-  bottom: 0;
-  width: 100%;
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
 
+  & .page-title {
+    font-size: 32px;
+  }
+  & .createDeck {
+    display: flex;
+    padding: 6px 12px;
+    border-radius: 16px;
+    color: white;
+    background: rgba(255, 255, 255, 0.3);
+    transition: 0.3s;
+    align-self: center;
+    &:hover {
+      cursor: pointer;
+      background: $strong-glass-background;
+    }
+  }
+}
+
+.deck-editor-container {
   display: flex;
   flex-direction: row;
-  justify-content: center;
-
-  color: $text-color;
+  gap: 12px;
+  padding: 12px;
+  background: $light-glass-background;
 }
 
 .currentDeck {
-  width: 33%;
-  min-width: 400px;
-
   display: flex;
   flex-direction: column;
-
-  margin: 0 0 0 50px;
 }
 
 .currentDeck .title {
@@ -289,28 +308,20 @@ export default {
   min-width: 360px;
 }
 
-.currentDeck,
-.deckInfos,
-.searchCards {
-  background: $light-glass-background;
+.title {
+  text-align: center;
 }
 
 .infos-search-container {
   display: flex;
   flex-direction: column;
-  width: 66%;
-  margin: 0 50px 0 0;
+  flex: 2;
+  gap: 12px;
 }
 
 .deckInfos {
-  height: 300px;
   display: flex;
   flex-direction: column;
-}
-
-.title {
-  text-align: center;
-  margin: 20px 0 0 0;
 }
 
 .title::after {
@@ -323,16 +334,16 @@ export default {
   background: $title-underline-color;
 }
 
-#deckEditor .desc_input .el-textarea__inner{
+.deck-editor-container .desc_input .el-textarea__inner{
   background: $dark-background;
 }
 
-#deckEditor .desc_input .el-input__count {
+.deck-editor-container .desc_input .el-input__count {
   background: transparent;
 }
-#deckEditor .desc_input,
+.deck-editor-container .desc_input,
 .deckInfos .deckInputContainer,
-#deckEditor .updateDeck {
+.deck-editor-container .updateDeck {
   margin: 10px auto 0 auto;
   width: 80%;
 }
@@ -342,7 +353,7 @@ export default {
   justify-content: center
 }
 
-#deckEditor .formInput .el-input__wrapper {
+.deck-editor-container .formInput .el-input__wrapper {
   background: $dark-background;
   margin: 0 10px 0 0;
   max-width: 500px;
@@ -350,30 +361,30 @@ export default {
   min-width: 100px;
 }
 
-#deckEditor .desc_input .el-textarea__inner {
+.deck-editor-container .desc_input .el-textarea__inner {
   box-shadow: none;
   color: $text-color;
   max-height: 150px;
 }
-#deckEditor .desc_input .el-textarea__inner::placeholder {
+.deck-editor-container .desc_input .el-textarea__inner::placeholder {
   color: $text-color;
 }
 
-#deckEditor .select .el-input__wrapper {
+.deck-editor-container .select .el-input__wrapper {
   background: $dark-background;
 }
-#deckEditor .select .vs__dropdown-menu {
+.deck-editor-container .select .vs__dropdown-menu {
   background: $dark-background;
   color: $text-color;
 }
-#deckEditor .select .vs__dropdown-toggle {
+.deck-editor-container .select .vs__dropdown-toggle {
   background: $dark-background;
 }
-#deckEditor .select .vs__dropdown-menu li:hover {
+.deck-editor-container .select .vs__dropdown-menu li:hover {
   background: $light-glass-background-select;
 }
 
-#deckEditor .updateDeck {
+.deck-editor-container .updateDeck {
   position: initial;
   z-index: 1;
   display: flex;
@@ -388,20 +399,20 @@ export default {
   height: 100%;
 }
 
-#deckEditor .search_input {
+.deck-editor-container .search_input {
   height: 40px;
   margin: 10px auto 0 auto;
   width: 80%;
 }
-#deckEditor .search_input .el-input__wrapper {
+.deck-editor-container .search_input .el-input__wrapper {
   max-width: none;
   width: 100%;
   margin: 0;
 }
 
-#deckEditor .searchCards .performSearch {
+.deck-editor-container .searchCards .performSearch {
   position: absolute;
-  top: 65px;
+  top: 44px;
   z-index: 3;
   right: 10%;
   opacity: 0.7;
@@ -410,7 +421,7 @@ export default {
   padding: 10px;
 }
 
-#deckEditor .searchCards .performSearch:hover {
+.deck-editor-container .searchCards .performSearch:hover {
   opacity: 1;
 }
 
@@ -419,9 +430,11 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   flex: 1;
-  margin: 10px auto 0 auto;
-  width: 90%;
   overflow-y: scroll;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+  align-content: start;
 }
 
 .select {
