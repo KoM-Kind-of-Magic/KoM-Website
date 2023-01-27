@@ -72,6 +72,29 @@ body {
   overflow: overlay;
 }
 
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+
+  & .page-title {
+    font-size: 32px;
+  }
+  & .button-title {
+    display: flex;
+    padding: 6px 12px;
+    border-radius: 16px;
+    color: white;
+    background: rgba(255, 255, 255, 0.3);
+    transition: 0.3s;
+    align-self: center;
+    &:hover {
+      cursor: pointer;
+      background: $strong-glass-background;
+    }
+  }
+}
+
 ::-webkit-scrollbar {
   width: 4px;
   height: 4px;

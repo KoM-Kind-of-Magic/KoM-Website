@@ -2,7 +2,7 @@
   <div>
     <div class="view-header">
       <div class="page-title">Your decks</div>
-      <div class="createDeck" @click="createDeckModalShow = true" @keydown="c">
+      <div class="button-title" @click="createDeckModalShow = true" @keydown="c">
         New deck
       </div>
     </div>
@@ -303,28 +303,6 @@ export default {
     100% {
       padding-left: 0%;
       z-index: 99999999;
-    }
-  }
-  .view-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-
-    & .page-title {
-      font-size: 32px;
-    }
-    & .createDeck {
-      display: flex;
-      padding: 6px 12px;
-      border-radius: 16px;
-      color: white;
-      background: rgba(255, 255, 255, 0.3);
-      transition: 0.3s;
-      align-self: center;
-      &:hover {
-        cursor: pointer;
-        background: $strong-glass-background;
-      }
     }
   }
   .modal-actions {
