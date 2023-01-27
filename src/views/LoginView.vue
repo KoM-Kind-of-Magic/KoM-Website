@@ -58,7 +58,7 @@ import {
   ElCheckbox,
   ElLink,
   ElIcon,
-  ElMessage,
+  ElNotification,
 } from 'element-plus';
 import {
   Message,
@@ -95,10 +95,11 @@ export default {
           },
         ).then((response) => {
           if (response.status < 400) {
-            ElMessage({
-              message: 'Logged',
+            ElNotification({
+              title: 'Welcome back !',
+              message: 'You are now logged.',
               type: 'success',
-              showClose: true,
+              position: 'bottom-right',
             });
             const userInfo = {
               logged: true,
@@ -116,19 +117,22 @@ export default {
           }
         }).catch((error) => {
           if (error.response && error.response.data) {
-            ElMessage({
+            ElNotification({
+              title: 'Error',
               message: error.response.data,
               type: 'error',
-              showClose: true,
+              position: 'bottom-right',
             });
           } else {
             console.error(error);
           }
         });
       } else {
-        ElMessage({
+        ElNotification({
+          title: 'Error',
           message: 'Please complete all fields correctly to sign in.',
           type: 'error',
+          position: 'bottom-right',
         });
       }
     },

@@ -91,7 +91,7 @@ import {
   ElInput,
   ElLink,
   ElIcon,
-  ElMessage,
+  ElNotification,
 } from 'element-plus';
 import {
   User,
@@ -141,25 +141,28 @@ export default {
         ).then((response) => {
           console.log('register response', response);
           if (response.status < 400) {
-            ElMessage({
+            ElNotification({
+              title: 'Success',
               message: 'Account created successfully !',
               type: 'success',
-              showClose: true,
+              position: 'bottom-right',
             });
             this.$router.push({ name: 'login' });
           }
         }).catch((error) => {
-          ElMessage({
+          ElNotification({
+            title: 'Error',
             message: error.response.data,
             type: 'error',
-            showClose: true,
+            position: 'bottom-right',
           });
         });
       } else {
-        ElMessage({
+        ElNotification({
+          title: 'Error',
           message: 'Please complete all fields correctly to register.',
           type: 'error',
-          showClose: true,
+          position: 'bottom-right',
         });
       }
     },

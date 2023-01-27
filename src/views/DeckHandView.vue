@@ -26,7 +26,7 @@
 
 <script>
 import {
-  ElMessage,
+  ElNotification,
 } from 'element-plus';
 
 export default {
@@ -68,9 +68,11 @@ export default {
           - this.mulliganCount;
         this.newHand(numberOfCardsToDraw);
       } else {
-        ElMessage({
+        ElNotification({
+          title: 'Warning',
           message: 'No more mulligans possible!',
           type: 'warning',
+          position: 'bottom-right',
         });
       }
     },
@@ -92,9 +94,11 @@ export default {
         this.library.splice(0, 1);
         this.cardsDrewAmount += 1;
       } else if (fromButton) {
-        ElMessage({
+        ElNotification({
+          title: 'Warning',
           message: 'There are no more cards in the deck.',
           type: 'warning',
+          position: 'bottom-right',
         });
       }
     },
