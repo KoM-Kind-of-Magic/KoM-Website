@@ -109,7 +109,7 @@ import {
   ElCol,
   ElButton,
   ElInput,
-  ElMessage,
+  ElNotification,
 } from 'element-plus';
 
 export default {
@@ -141,10 +141,11 @@ export default {
         })
         .catch((error) => {
           console.error(error);
-          ElMessage({
+          ElNotification({
+            title: 'Error',
             message: error.message,
             type: 'error',
-            showClose: true,
+            position: 'bottom-right',
           });
         });
     },
@@ -174,10 +175,11 @@ export default {
       if (this.isCreateDeckValid) {
         axios.post(`${process.env.VUE_APP_API_URL}/deck`, this.newDeck)
           .then((response) => {
-            ElMessage({
+            ElNotification({
+              title: 'Success',
               message: 'Deck created !',
               type: 'success',
-              showClose: true,
+              position: 'bottom-right',
             });
             setTimeout(() => {
               this.$router.push({ name: 'deckEditor', params: { id: response.data.data.deck_id } });
@@ -185,10 +187,11 @@ export default {
           })
           .catch((error) => {
             console.error(error);
-            ElMessage({
+            ElNotification({
+              title: 'Error',
               message: error.message,
               type: 'error',
-              showClose: true,
+              position: 'bottom-right',
             });
           });
       }

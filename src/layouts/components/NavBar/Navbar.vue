@@ -68,7 +68,7 @@ import {
   ElDropdown,
   ElDropdownMenu,
   ElDropdownItem,
-  ElMessage,
+  ElNotification,
 } from 'element-plus';
 import {
   User,
@@ -115,10 +115,11 @@ export default {
     logout() {
       this.$store.dispatch('signOutUser');
       localStorage.removeItem('userInfo');
-      ElMessage({
-        message: 'Disconnected',
+      ElNotification({
+        title: 'Disconnected',
+        message: 'You have been disconnected.',
         type: 'success',
-        showClose: true,
+        position: 'bottom-right',
       });
       this.$router.push({ name: 'login' });
     },
