@@ -46,11 +46,43 @@
             class="desc_input"
             @getInputValue="setDeckDesc"
             :value="this.deckDesc"
+            :rows=4
           />
           <div class="deckActions">
+            <div>
+              <div class="importAction" @click="importModalShow = true" @keydown="c">Import</div>
+            </div>
             <Button class="updateDeck" @click="updateDeck()">Validate</Button>
           </div>
         </div>
+        <Transition>
+          <PopIn
+            v-show="importModalShow"
+            :title="`Import a deck list`"
+            @close="importModalShow = false"
+          >
+            <TextArea
+              placeholder=
+                "// Paste card list
+1 Sol Ring
+2 Forest
+                "
+              class="importInput"
+              @getInputValue="setImport"
+              maxlength="10000"
+              :value="this.deckImport"
+              :rows=15
+            />
+            <div class="modal-actions">
+              <div class="normal-btn" @click="importDeck()" @keydown="c">
+                Confirm import
+              </div>
+              <div class="normal-btn" @click="importModalShow = false" @keydown="c">
+                Cancel
+              </div>
+            </div>
+          </PopIn>
+        </Transition>
         <div class="searchCards">
           <div class="title">
             Search for cards
@@ -89,6 +121,7 @@ import {
 
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+import PopIn from '../components/PopIn.vue';
 import CardLine from '../components/card/CardLine.vue';
 import CardSearched from '../components/card/CardSearched.vue';
 import TextArea from '../components/TextArea.vue';
@@ -104,6 +137,7 @@ export default {
     TextArea,
     Input,
     Button,
+    PopIn,
   },
   created() {
     this.getDeckInfos();
@@ -213,6 +247,22 @@ export default {
         this.cardsSearched = [];
       }
     },
+    importDeck() {
+      console.log('Import deck axios');
+      console.log(this.deckImport);
+      ElNotification({
+        title: 'Succes',
+        message: 'Your card list has been imported.',
+        type: 'success',
+        position: 'bottom-right',
+      });
+
+      // Close the modal
+      this.importModalShow = false;
+    },
+    setImport(deckImport) {
+      this.deckImport = deckImport;
+    },
   },
   computed: {
     sortByTypes() {
@@ -264,6 +314,8 @@ export default {
       possibleFormats: [],
       cards: [],
       cardsSearched: [],
+      importModalShow: false,
+      deckImport: '',
     };
   },
 };
@@ -340,14 +392,27 @@ export default {
 }
 .deck-editor-container .desc_input,
 .deckInfos .deckInputContainer,
-.deck-editor-container .updateDeck {
+.deck-editor-container .deckActions {
   margin: 10px auto 0 auto;
   width: 80%;
+}
+.deck-editor-container .deckActions {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: baseline;
 }
 .deckInfos .deckInputContainer {
   display: flex;
   flex-direction: row;
   justify-content: center
+}
+
+.deckActions .importAction {
+  padding: 6px 12px;
+  border-radius: 16px;
+  color: white;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
 }
 
 .deck-editor-container .formInput .el-input__wrapper {
@@ -385,7 +450,7 @@ export default {
   position: initial;
   z-index: 1;
   display: flex;
-  flex-direction: row-reverse;
+  margin-left: auto;
 }
 
 .searchCards {
@@ -470,6 +535,35 @@ export default {
 
 .select .vs__dropdown-menu li:hover {
   background: $medium-glass-background-select;
+}
+
+.normal-btn {
+  padding: 4px 8px;
+  border-radius: 5px;
+
+  color: $text-color;
+  background: $medium-glass-background;
+  transition: 0.3s;
+  font-size: 18px;
+
+  &:hover {
+    cursor: pointer;
+    background: $strong-glass-background;
+  }
+  &.margin-bottom {
+    margin-bottom: 10px;
+  }
+}
+
+.modal-actions {
+  align-self: end;
+  display: inline-flex;
+  gap: 10px;
+  margin: 10px;
+}
+
+.importInput {
+  width: 80%;
 }
 
 </style>

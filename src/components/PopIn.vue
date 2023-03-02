@@ -56,7 +56,7 @@ export default {
   align-items: center;
 
   position: relative;
-  background: #151823;
+  background: $dark-background;
 
   border-radius: 10px;
 
@@ -70,7 +70,7 @@ export default {
     color: $text-color;
     text-align: center;
     width: fit-content;
-    margin: 15px 0 30px 0;
+    margin: 15px 0 15px 0;
     font-size: 18px;
     padding: 5px 10px;
     cursor: default;
