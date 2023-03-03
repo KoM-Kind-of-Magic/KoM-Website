@@ -6,6 +6,7 @@ import DeckListsView from '../views/DeckListsView.vue';
 import DeckMainView from '../views/DeckMainView.vue';
 import DeckView from '../views/DeckView.vue';
 import DeckHandView from '../views/DeckHandView.vue';
+import DeckStatView from '../views/DeckStatView.vue';
 import DeckEditorView from '../views/DeckEditorView.vue';
 import CardView from '../views/CardView.vue';
 // import SearchView from '../views/SearchView.vue';
@@ -42,6 +43,11 @@ const routes = [
         path: '',
         name: 'deck',
         component: DeckView,
+      },
+      {
+        path: 'stats',
+        name: 'deckStat',
+        component: DeckStatView,
       },
       {
         path: 'hand',

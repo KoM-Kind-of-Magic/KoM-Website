@@ -89,6 +89,9 @@ export default {
         name: 'Overview',
         routeName: 'deck',
       }, {
+        name: 'Details',
+        routeName: 'deckStat',
+      }, {
         name: 'Starting Hand',
         routeName: 'deckHand',
       },

@@ -141,6 +141,7 @@ export default {
             'deckLists',
             'deck',
             'deckEditor',
+            'deckStat',
             'deckHand',
           ],
           to: '/deckLists',
