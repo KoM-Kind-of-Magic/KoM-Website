@@ -137,7 +137,7 @@ export default {
   },
   methods: {
     getDeckList() {
-      axios.get('http://localhost:8081/deck')
+      axios.get(`${process.env.VUE_APP_API_URL}/deck`)
         .then((response) => {
           this.deckList = response.data.data;
         })

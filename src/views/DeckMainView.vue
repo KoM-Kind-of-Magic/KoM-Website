@@ -120,7 +120,7 @@ export default {
   },
   methods: {
     getDeck() {
-      axios.get(`http://localhost:8081/deck/${this.deckId}`)
+      axios.get(`${process.env.VUE_APP_API_URL}/deck/${this.deckId}`)
         .then((response) => {
           const deck = response.data.data;
           this.deck = {
@@ -147,7 +147,7 @@ export default {
       this.$router.push({ name: 'deckEditor', params: { id: this.deckId } });
     },
     DeleteDeck() {
-      axios.delete(`http://localhost:8081/deck/${this.deckId}`)
+      axios.delete(`${process.env.VUE_APP_API_URL}/deck/${this.deckId}`)
         .then((response) => {
           console.info(response.data.message);
           this.$router.push({ name: 'home' });
