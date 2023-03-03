@@ -24,6 +24,12 @@
         </div>
       </div>
       <div class="right-btns">
+        <div class="view-side-btns" @click="exportDeck()" @keydown="c">
+          <el-icon>
+            <Download />
+          </el-icon>
+          &nbsp;Export
+        </div>
         <div class="view-side-btns" @click="editDeck()" @keydown="c">
           <el-icon>
             <Edit />
@@ -73,6 +79,7 @@ import {
 import {
   Edit,
   Delete,
+  Download,
 } from '@element-plus/icons-vue';
 
 export default {
@@ -82,6 +89,7 @@ export default {
     PopIn,
     Edit,
     Delete,
+    Download,
   },
   data() {
     return {
@@ -150,6 +158,43 @@ export default {
     },
     openTab(routeName) {
       this.$router.push({ name: routeName, params: { id: this.deckId } });
+    },
+    exportDeck() {
+      const newCards = [];
+      this.deck.cards.forEach((card) => {
+        if (newCards.findIndex((nc) => nc.uuid === card.uuid) === -1) {
+          const obj = { ...card, ...{ number: 1 } };
+          newCards.push(obj);
+        } else {
+          newCards[newCards.findIndex((nc) => nc.uuid === card.uuid)].number += 1;
+        }
+      });
+      let text = '';
+      newCards.sort((a, b) => {
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+        return 0;
+      }).forEach((card) => {
+        text += `${card.number} ${card.name}\n`;
+      });
+      const filename = `${this.deck.name}.txt`;
+
+      const element = document.createElement('a');
+      element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`);
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
     },
   },
   computed: {
