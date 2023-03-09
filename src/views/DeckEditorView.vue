@@ -206,7 +206,7 @@ export default {
         },
       ).then((res) => {
         ElNotification({
-          title: 'Succes',
+          title: 'Success',
           message: 'Your deck has been modified.',
           type: 'success',
           position: 'bottom-right',
@@ -248,14 +248,35 @@ export default {
       }
     },
     importDeck() {
-      console.log('Import deck axios');
-      console.log(this.deckImport);
-      ElNotification({
-        title: 'Succes',
-        message: 'Your card list has been imported.',
-        type: 'success',
-        position: 'bottom-right',
-      });
+      axios.post(
+        `${process.env.VUE_APP_API_URL}/deck/import`,
+        {
+          cardList: this.deckImport,
+        },
+      )
+        .then((response) => {
+          this.cards = [...this.cards, ...response.data.data.cards];
+          response.data.data.valid_lines.forEach((vc) => {
+            setTimeout(() => {
+              ElNotification({
+                title: 'Success',
+                message: `${vc} : has been added to your deck`,
+                type: 'success',
+                position: 'bottom-right',
+              });
+            }, 50);
+          });
+          response.data.data.invalid_lines.forEach((ic) => {
+            setTimeout(() => {
+              ElNotification({
+                title: 'Error',
+                message: `${ic} : not found`,
+                type: 'error',
+                position: 'bottom-right',
+              });
+            }, 51);
+          });
+        });
 
       // Close the modal
       this.importModalShow = false;
