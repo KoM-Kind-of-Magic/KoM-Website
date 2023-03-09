@@ -4,10 +4,10 @@
     @input="sendInputValue"
     class="formInput"
     :placeholder="placeholder"
-    maxlength="140"
+    :maxlength="maxlength"
     show-word-limit
     type="textarea"
-    :rows='4'
+    :rows='rows'
     :value="value"
   />
 </template>
@@ -40,6 +40,14 @@ export default {
     size: {
       default: null,
       type: String,
+    },
+    maxlength: {
+      default: null,
+      type: String,
+    },
+    rows: {
+      default: null,
+      type: Number,
     },
   },
 

@@ -140,5 +140,6 @@ input {
 
 .card-image {
   border-radius: 5.584% / 4%;
+  width: 100%;
 }
 </style>

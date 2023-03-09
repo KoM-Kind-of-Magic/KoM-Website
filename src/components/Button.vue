@@ -1,12 +1,10 @@
 <template>
-  <div class="validateForm">
     <button>
       <slot />
       <div class="iconBackground">
         <fa class="icon" icon="arrow-right-long" />
       </div>
     </button>
-  </div>
 </template>
 
 <script>
@@ -44,12 +42,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.validateForm {
-  position: absolute;
-  bottom: 35px;
-}
-
-.validateForm button {
+ button {
   background: $primary-color;
   color: $text-color;
   padding: 7px 16px;
@@ -68,7 +61,7 @@ export default {
   outline: inherit;
 }
 
-.validateForm button .iconBackground {
+ button .iconBackground {
   background: $medium-glass-background;
   width: 25px;
   height: 25px;
@@ -80,18 +73,18 @@ export default {
   margin: 0 0 0 20px;
 }
 
-.validateForm button .icon {
+ button .icon {
   color: $text-color;
   margin: auto 0;
   transform: translateX(-8px);
   transition: 0.2s;
 }
 
-.validateForm button:hover .icon {
+ button:hover .icon {
   transform: translateY(0);
 }
 
-.validateForm button:hover {
+ button:hover {
   background: #822a4a;
 }
 
