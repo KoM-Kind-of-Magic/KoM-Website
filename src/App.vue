@@ -1,5 +1,6 @@
 <template>
-  <div :class="(isLoginRoute ? 'center':'')+' space-items'">
+  <!-- <div :class="(isLoginRoute ? 'center':'')+' space-items'"> -->
+  <div>
     <NavBar v-if="!isLoginRoute" />
     <router-view class="wrapped" />
   </div>
@@ -13,42 +14,42 @@ export default {
   components: {
     NavBar,
   },
-  data() {
-    return {
-      loginRoutes: ['login', 'register'],
-    };
-  },
-  computed: {
-    isLoginRoute() {
-      return this.loginRoutes.includes(this.$route.name);
-    },
-  },
-  watch: {
-    $route(to, from) {
-      // for now there is no route we can access when not logged
-      // so we redirect to login page when not logged
-      if (!this.isLoginRoute) {
-        this.checkLogin();
-      }
-    },
-  },
-  methods: {
-    checkLogin() {
-      if (localStorage.userInfo) {
-        const now = Date.now();
-        const user = JSON.parse(localStorage.userInfo);
-        // by default we keep user logged for 6 hours and reset for every route change
-        if (user.loginDate >= now - 21600000 || user.loginKeep) {
-          user.loginDate = now;
-          this.$store.dispatch('setUser', user);
-        } else {
-          this.$router.push({ name: 'login' });
-        }
-      } else {
-        this.$router.push({ name: 'login' });
-      }
-    },
-  },
+  // data() {
+  //   return {
+  //     loginRoutes: ['login', 'register'],
+  //   };
+  // },
+  // computed: {
+  //   isLoginRoute() {
+  //     return this.loginRoutes.includes(this.$route.name);
+  //   },
+  // },
+  // watch: {
+  //   $route(to, from) {
+  //     // for now there is no route we can access when not logged
+  //     // so we redirect to login page when not logged
+  //     if (!this.isLoginRoute) {
+  //       this.checkLogin();
+  //     }
+  //   },
+  // },
+  // methods: {
+  //   checkLogin() {
+  //     if (localStorage.userInfo) {
+  //       const now = Date.now();
+  //       const user = JSON.parse(localStorage.userInfo);
+  //       // by default we keep user logged for 6 hours and reset for every route change
+  //       if (user.loginDate >= now - 21600000 || user.loginKeep) {
+  //         user.loginDate = now;
+  //         this.$store.dispatch('setUser', user);
+  //       } else {
+  //         this.$router.push({ name: 'login' });
+  //       }
+  //     } else {
+  //       this.$router.push({ name: 'login' });
+  //     }
+  //   },
+  // },
 };
 </script>
 
