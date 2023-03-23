@@ -137,7 +137,14 @@ export default {
   },
   methods: {
     getDeckList() {
-      axios.get(`${process.env.VUE_APP_API_URL}/deck`)
+      axios.get(
+        `${process.env.VUE_APP_API_URL}/deck`,
+        {
+          headers: {
+            'x-access-token': this.$store.getters.getUserToken,
+          },
+        },
+      )
         .then((response) => {
           this.deckList = response.data.data;
         })
@@ -175,7 +182,15 @@ export default {
     },
     createDeck() {
       if (this.isCreateDeckValid) {
-        axios.post(`${process.env.VUE_APP_API_URL}/deck`, this.newDeck)
+        axios.post(
+          `${process.env.VUE_APP_API_URL}/deck`,
+          this.newDeck,
+          {
+            headers: {
+              'x-access-token': this.$store.getters.getUserToken,
+            },
+          },
+        )
           .then((response) => {
             ElNotification({
               title: 'Success',
@@ -206,6 +221,7 @@ export default {
         name: '',
         description: '',
         format: '',
+        uid: '',
       },
       possibleFormats: [],
       createDeckModalShow: false,
