@@ -52,7 +52,7 @@
             <div>
               <div class="importAction" @click="importModalShow = true" @keydown="c">Import</div>
             </div>
-            <Button class="updateDeck" @click="updateDeck()">Validate</Button>
+            <Button class="updateDeck" @click="updateDeck()">Save</Button>
           </div>
         </div>
         <Transition>
@@ -196,31 +196,47 @@ export default {
     updateDeck() {
       const cardList = this.cards.map((el) => el.uuid);
 
-      axios.patch(
-        `${process.env.VUE_APP_API_URL}/deck/${this.deckId}`,
-        {
-          name: this.deckName,
-          format: this.deckFormat.value,
-          description: this.deckDesc,
-          cards: cardList,
-        },
-      ).then((res) => {
-        ElNotification({
-          title: 'Success',
-          message: 'Your deck has been modified.',
-          type: 'success',
-          position: 'bottom-right',
-        });
-        this.$router.push(`/deck/${this.deckId}`);
-      }).catch((err) => {
+      if (!this.isCreateDeckNameValid) {
         ElNotification({
           title: 'Error',
-          message: 'There was a problem editing your deck.',
+          message: 'You must provide a name to the deck',
           type: 'error',
           position: 'bottom-right',
         });
-        console.log(err);
-      });
+      } else if (!this.isCreateDeckFormatValid) {
+        ElNotification({
+          title: 'Error',
+          message: 'You must provide a format to the deck',
+          type: 'error',
+          position: 'bottom-right',
+        });
+      } else {
+        axios.patch(
+          `${process.env.VUE_APP_API_URL}/deck/${this.deckId}`,
+          {
+            name: this.deckName,
+            format: this.deckFormat.value,
+            description: this.deckDesc,
+            cards: cardList,
+          },
+        ).then((res) => {
+          ElNotification({
+            title: 'Success',
+            message: 'Your deck has been modified.',
+            type: 'success',
+            position: 'bottom-right',
+          });
+          this.$router.push(`/deck/${this.deckId}`);
+        }).catch((err) => {
+          ElNotification({
+            title: 'Error',
+            message: 'There was a problem editing your deck.',
+            type: 'error',
+            position: 'bottom-right',
+          });
+          console.log(err);
+        });
+      }
     },
     setDeckName(deckName) {
       this.deckName = deckName;
@@ -318,6 +334,12 @@ export default {
         res[c.types.split(',')[c.types.split(',').length - 1]].push(c);
       });
       return res;
+    },
+    isCreateDeckNameValid() {
+      return this.deckName;
+    },
+    isCreateDeckFormatValid() {
+      return this.deckFormat;
     },
   },
   watch: {
