@@ -75,6 +75,7 @@ import PopIn from '@/components/PopIn.vue';
 
 import {
   ElIcon,
+  ElNotification,
 } from 'element-plus';
 import {
   Edit,
@@ -150,7 +151,13 @@ export default {
       axios.delete(`${process.env.VUE_APP_API_URL}/deck/${this.deckId}`)
         .then((response) => {
           console.info(response.data.message);
-          this.$router.push({ name: 'home' });
+          this.$router.push({ name: 'deckLists' });
+          ElNotification({
+            title: 'Success',
+            message: 'Deck has been deleted',
+            type: 'success',
+            position: 'bottom-right',
+          });
         })
         .catch((error) => {
           console.error(error);

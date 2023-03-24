@@ -125,8 +125,11 @@ export default {
     'el-input': ElInput,
   },
   computed: {
-    isCreateDeckValid() {
-      return this.newDeck.name && this.newDeck.format;
+    isCreateDeckNameValid() {
+      return this.newDeck.name;
+    },
+    isCreateDeckFormatValid() {
+      return this.newDeck.format;
     },
   },
   created() {
@@ -181,7 +184,7 @@ export default {
         });
     },
     createDeck() {
-      if (this.isCreateDeckValid) {
+      if (this.isCreateDeckNameValid && this.isCreateDeckFormatValid) {
         axios.post(
           `${process.env.VUE_APP_API_URL}/deck`,
           this.newDeck,
@@ -191,6 +194,22 @@ export default {
             },
           },
         )
+      } else if (!this.isCreateDeckNameValid) { 
+        ElNotification({
+          title: 'Error',
+          message: 'You must provide a name to the deck',
+          type: 'error',
+          position: 'bottom-right',
+        });
+      } else if (!this.isCreateDeckFormatValid) {
+        ElNotification({
+          title: 'Error',
+          message: 'You must provide a format to the deck',
+          type: 'error',
+          position: 'bottom-right',
+        });
+      } else {
+        axios.post(`${process.env.VUE_APP_API_URL}/deck`, this.newDeck)
           .then((response) => {
             ElNotification({
               title: 'Success',
