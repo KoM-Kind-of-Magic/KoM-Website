@@ -193,8 +193,8 @@ export default {
               'x-access-token': this.$store.getters.getUserToken,
             },
           },
-        )
-      } else if (!this.isCreateDeckNameValid) { 
+        );
+      } else if (!this.isCreateDeckNameValid) {
         ElNotification({
           title: 'Error',
           message: 'You must provide a name to the deck',
