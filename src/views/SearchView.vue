@@ -191,7 +191,7 @@ export default {
   mounted() {
     this.getSets().then(() => {
       if (this.$route.query && this.$route.query.query) {
-        const query = JSON.parse(window.atob(this.$route.query.query));
+        const query = JSON.parse(decodeURIComponent(window.atob(this.$route.query.query)));
         this.resultsPerPage = query.results ? query.results : this.resultsPerPage;
         this.page = query.page ? query.page : this.page;
         this.cardName = query.name ? query.name : this.cardName;
@@ -296,7 +296,7 @@ export default {
       window.history.pushState(
         {},
         null,
-        `${this.$route.path}?${new URLSearchParams({ query: window.btoa(JSON.stringify(params)) })}`,
+        `${this.$route.path}?${new URLSearchParams({ query: window.btoa(encodeURIComponent(JSON.stringify(params))) })}`,
       );
       axios.post(
         `${process.env.VUE_APP_API_URL}/cards/big-search`,
