@@ -22,7 +22,7 @@
 
     - name: Copy using inline content
       ansible.builtin.copy:
-        content: 'prefix=${HOME}/.npm-packages'
+        content: "prefix=${HOME}/.npm-packages"
         dest: /.npmrc
 
     - name: Install node modules
@@ -31,6 +31,8 @@
 
     - name: Build
       become_user: admin
+      environment:
+        VUE_APP_API_URL: api.skuareview.com
       shell: cd code && npm run build
 
     - name: copy the nginx config file and restart nginx
@@ -38,7 +40,7 @@
         src: ./nginx-site.cfg
         dest: /etc/nginx/sites-available/nginx-site.cfg
       become: yes
-      
+
     - name: create symlink
       file:
         src: /etc/nginx/sites-available/nginx-site.cfg
@@ -47,5 +49,5 @@
       become: yes
     - name: start nginx
       service:
-          name: nginx
-          state: restarted
+        name: nginx
+        state: restarted

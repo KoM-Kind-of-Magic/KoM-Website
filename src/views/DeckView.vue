@@ -8,6 +8,7 @@
             :key="card.id"
             :card="card"
             class="card-in-deck"
+            @click="openCard(card.uuid)"
           />
         </div>
       </div>
@@ -32,7 +33,12 @@ export default {
   data() {
     return {};
   },
-  methods: {},
+  methods: {
+    openCard(uuid) {
+      const redirect = this.$router.resolve({ name: 'cardPage', params: { uuid } });
+      window.open(redirect.href, '_blank');
+    },
+  },
 };
 </script>
 
@@ -95,6 +101,7 @@ export default {
 
   .card-in-deck {
     margin: 4px;
+    cursor: pointer;
   }
 
 </style>
