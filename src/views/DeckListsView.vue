@@ -193,23 +193,7 @@ export default {
               'x-access-token': this.$store.getters.getUserToken,
             },
           },
-        );
-      } else if (!this.isCreateDeckNameValid) {
-        ElNotification({
-          title: 'Error',
-          message: 'You must provide a name to the deck',
-          type: 'error',
-          position: 'bottom-right',
-        });
-      } else if (!this.isCreateDeckFormatValid) {
-        ElNotification({
-          title: 'Error',
-          message: 'You must provide a format to the deck',
-          type: 'error',
-          position: 'bottom-right',
-        });
-      } else {
-        axios.post(`${process.env.VUE_APP_API_URL}/deck`, this.newDeck)
+        )
           .then((response) => {
             ElNotification({
               title: 'Success',
@@ -230,6 +214,20 @@ export default {
               position: 'bottom-right',
             });
           });
+      } else if (!this.isCreateDeckNameValid) {
+        ElNotification({
+          title: 'Error',
+          message: 'You must provide a name to the deck',
+          type: 'error',
+          position: 'bottom-right',
+        });
+      } else if (!this.isCreateDeckFormatValid) {
+        ElNotification({
+          title: 'Error',
+          message: 'You must provide a format to the deck',
+          type: 'error',
+          position: 'bottom-right',
+        });
       }
     },
   },
