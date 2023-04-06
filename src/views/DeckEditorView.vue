@@ -46,11 +46,43 @@
             class="desc_input"
             @getInputValue="setDeckDesc"
             :value="this.deckDesc"
+            :rows=4
           />
           <div class="deckActions">
-            <Button class="updateDeck" @click="updateDeck()">Validate</Button>
+            <div>
+              <div class="importAction" @click="importModalShow = true" @keydown="c">Import</div>
+            </div>
+            <Button class="updateDeck" @click="updateDeck()">Save</Button>
           </div>
         </div>
+        <Transition>
+          <PopIn
+            v-show="importModalShow"
+            :title="`Import a deck list`"
+            @close="importModalShow = false"
+          >
+            <TextArea
+              placeholder=
+                "// Paste card list
+1 Sol Ring
+2 Forest
+                "
+              class="importInput"
+              @getInputValue="setImport"
+              maxlength="10000"
+              :value="this.deckImport"
+              :rows=15
+            />
+            <div class="modal-actions">
+              <div class="normal-btn" @click="importDeck()" @keydown="c">
+                Confirm import
+              </div>
+              <div class="normal-btn" @click="importModalShow = false" @keydown="c">
+                Cancel
+              </div>
+            </div>
+          </PopIn>
+        </Transition>
         <div class="searchCards">
           <div class="title">
             Search for cards
@@ -89,6 +121,7 @@ import {
 
 import vSelect from 'vue-select';
 import 'vue-select/dist/vue-select.css';
+import PopIn from '../components/PopIn.vue';
 import CardLine from '../components/card/CardLine.vue';
 import CardSearched from '../components/card/CardSearched.vue';
 import TextArea from '../components/TextArea.vue';
@@ -104,6 +137,7 @@ export default {
     TextArea,
     Input,
     Button,
+    PopIn,
   },
   created() {
     this.getDeckInfos();
@@ -162,31 +196,47 @@ export default {
     updateDeck() {
       const cardList = this.cards.map((el) => el.uuid);
 
-      axios.patch(
-        `${process.env.VUE_APP_API_URL}/deck/${this.deckId}`,
-        {
-          name: this.deckName,
-          format: this.deckFormat.value,
-          description: this.deckDesc,
-          cards: cardList,
-        },
-      ).then((res) => {
-        ElNotification({
-          title: 'Succes',
-          message: 'Your deck has been modified.',
-          type: 'success',
-          position: 'bottom-right',
-        });
-        this.$router.push(`/deck/${this.deckId}`);
-      }).catch((err) => {
+      if (!this.isCreateDeckNameValid) {
         ElNotification({
           title: 'Error',
-          message: 'There was a problem editing your deck.',
+          message: 'You must provide a name to the deck',
           type: 'error',
           position: 'bottom-right',
         });
-        console.log(err);
-      });
+      } else if (!this.isCreateDeckFormatValid) {
+        ElNotification({
+          title: 'Error',
+          message: 'You must provide a format to the deck',
+          type: 'error',
+          position: 'bottom-right',
+        });
+      } else {
+        axios.patch(
+          `${process.env.VUE_APP_API_URL}/deck/${this.deckId}`,
+          {
+            name: this.deckName,
+            format: this.deckFormat.value,
+            description: this.deckDesc,
+            cards: cardList,
+          },
+        ).then((res) => {
+          ElNotification({
+            title: 'Success',
+            message: 'Your deck has been modified.',
+            type: 'success',
+            position: 'bottom-right',
+          });
+          this.$router.push(`/deck/${this.deckId}`);
+        }).catch((err) => {
+          ElNotification({
+            title: 'Error',
+            message: 'There was a problem editing your deck.',
+            type: 'error',
+            position: 'bottom-right',
+          });
+          console.log(err);
+        });
+      }
     },
     setDeckName(deckName) {
       this.deckName = deckName;
@@ -212,6 +262,43 @@ export default {
       } else {
         this.cardsSearched = [];
       }
+    },
+    importDeck() {
+      axios.post(
+        `${process.env.VUE_APP_API_URL}/deck/import`,
+        {
+          cardList: this.deckImport,
+        },
+      )
+        .then((response) => {
+          this.cards = [...this.cards, ...response.data.data.cards];
+          response.data.data.valid_lines.forEach((vc) => {
+            setTimeout(() => {
+              ElNotification({
+                title: 'Success',
+                message: `${vc} : has been added to your deck`,
+                type: 'success',
+                position: 'bottom-right',
+              });
+            }, 50);
+          });
+          response.data.data.invalid_lines.forEach((ic) => {
+            setTimeout(() => {
+              ElNotification({
+                title: 'Error',
+                message: `${ic} : not found`,
+                type: 'error',
+                position: 'bottom-right',
+              });
+            }, 51);
+          });
+        });
+
+      // Close the modal
+      this.importModalShow = false;
+    },
+    setImport(deckImport) {
+      this.deckImport = deckImport;
     },
   },
   computed: {
@@ -248,6 +335,12 @@ export default {
       });
       return res;
     },
+    isCreateDeckNameValid() {
+      return this.deckName;
+    },
+    isCreateDeckFormatValid() {
+      return this.deckFormat;
+    },
   },
   watch: {
     sortByTypes() {
@@ -264,6 +357,8 @@ export default {
       possibleFormats: [],
       cards: [],
       cardsSearched: [],
+      importModalShow: false,
+      deckImport: '',
     };
   },
 };
@@ -340,14 +435,27 @@ export default {
 }
 .deck-editor-container .desc_input,
 .deckInfos .deckInputContainer,
-.deck-editor-container .updateDeck {
+.deck-editor-container .deckActions {
   margin: 10px auto 0 auto;
   width: 80%;
+}
+.deck-editor-container .deckActions {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: baseline;
 }
 .deckInfos .deckInputContainer {
   display: flex;
   flex-direction: row;
   justify-content: center
+}
+
+.deckActions .importAction {
+  padding: 6px 12px;
+  border-radius: 16px;
+  color: white;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
 }
 
 .deck-editor-container .formInput .el-input__wrapper {
@@ -385,7 +493,7 @@ export default {
   position: initial;
   z-index: 1;
   display: flex;
-  flex-direction: row-reverse;
+  margin-left: auto;
 }
 
 .searchCards {
@@ -470,6 +578,35 @@ export default {
 
 .select .vs__dropdown-menu li:hover {
   background: $medium-glass-background-select;
+}
+
+.normal-btn {
+  padding: 4px 8px;
+  border-radius: 5px;
+
+  color: $text-color;
+  background: $medium-glass-background;
+  transition: 0.3s;
+  font-size: 18px;
+
+  &:hover {
+    cursor: pointer;
+    background: $strong-glass-background;
+  }
+  &.margin-bottom {
+    margin-bottom: 10px;
+  }
+}
+
+.modal-actions {
+  align-self: end;
+  display: inline-flex;
+  gap: 10px;
+  margin: 10px;
+}
+
+.importInput {
+  width: 80%;
 }
 
 </style>

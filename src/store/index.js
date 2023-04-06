@@ -12,6 +12,9 @@ const storeInitialState = {
     },
   },
   getters: {
+    getUserToken(state) {
+      return state.user.token;
+    },
   },
   mutations: {
     UPDATE_USER(state, payload) {

@@ -24,6 +24,12 @@
         </div>
       </div>
       <div class="right-btns">
+        <div class="view-side-btns" @click="exportDeck()" @keydown="c">
+          <el-icon>
+            <Download />
+          </el-icon>
+          &nbsp;Export
+        </div>
         <div class="view-side-btns" @click="editDeck()" @keydown="c">
           <el-icon>
             <Edit />
@@ -69,10 +75,12 @@ import PopIn from '@/components/PopIn.vue';
 
 import {
   ElIcon,
+  ElNotification,
 } from 'element-plus';
 import {
   Edit,
   Delete,
+  Download,
 } from '@element-plus/icons-vue';
 
 export default {
@@ -82,6 +90,7 @@ export default {
     PopIn,
     Edit,
     Delete,
+    Download,
   },
   data() {
     return {
@@ -115,7 +124,7 @@ export default {
   },
   methods: {
     getDeck() {
-      axios.get(`http://localhost:8081/deck/${this.deckId}`)
+      axios.get(`${process.env.VUE_APP_API_URL}/deck/${this.deckId}`)
         .then((response) => {
           const deck = response.data.data;
           this.deck = {
@@ -142,10 +151,16 @@ export default {
       this.$router.push({ name: 'deckEditor', params: { id: this.deckId } });
     },
     DeleteDeck() {
-      axios.delete(`http://localhost:8081/deck/${this.deckId}`)
+      axios.delete(`${process.env.VUE_APP_API_URL}/deck/${this.deckId}`)
         .then((response) => {
           console.info(response.data.message);
-          this.$router.push({ name: 'home' });
+          this.$router.push({ name: 'deckLists' });
+          ElNotification({
+            title: 'Success',
+            message: 'Deck has been deleted',
+            type: 'success',
+            position: 'bottom-right',
+          });
         })
         .catch((error) => {
           console.error(error);
@@ -153,6 +168,43 @@ export default {
     },
     openTab(routeName) {
       this.$router.push({ name: routeName, params: { id: this.deckId } });
+    },
+    exportDeck() {
+      const newCards = [];
+      this.deck.cards.forEach((card) => {
+        if (newCards.findIndex((nc) => nc.uuid === card.uuid) === -1) {
+          const obj = { ...card, ...{ number: 1 } };
+          newCards.push(obj);
+        } else {
+          newCards[newCards.findIndex((nc) => nc.uuid === card.uuid)].number += 1;
+        }
+      });
+      let text = '';
+      newCards.sort((a, b) => {
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB) {
+          return -1;
+        }
+        if (nameA > nameB) {
+          return 1;
+        }
+        return 0;
+      }).forEach((card) => {
+        text += `${card.number} ${card.name}\n`;
+      });
+      const filename = `${this.deck.name}.txt`;
+
+      const element = document.createElement('a');
+      element.setAttribute('href', `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`);
+      element.setAttribute('download', filename);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+
+      element.click();
+
+      document.body.removeChild(element);
     },
   },
   computed: {

@@ -9,7 +9,7 @@ import DeckHandView from '../views/DeckHandView.vue';
 import DeckStatView from '../views/DeckStatView.vue';
 import DeckEditorView from '../views/DeckEditorView.vue';
 import CardView from '../views/CardView.vue';
-// import SearchView from '../views/SearchView.vue';
+import SearchView from '../views/SearchView.vue';
 
 import WorkInProgress from '../views/WorkInProgress.vue';
 import PageNotFound from '../views/PageNotFound.vue';
@@ -66,11 +66,11 @@ const routes = [
     name: 'cardPage',
     component: CardView,
   },
-  // {
-  //   path: '/search',
-  //   name: 'search',
-  //   component: SearchView,
-  // },
+  {
+    path: '/search',
+    name: 'search',
+    component: SearchView,
+  },
   {
     path: '/wip',
     name: 'wip',
