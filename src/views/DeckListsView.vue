@@ -152,7 +152,6 @@ export default {
           this.deckList = response.data.data;
         })
         .catch((error) => {
-          console.error(error);
           ElNotification({
             title: 'Error',
             message: error.message,
@@ -206,7 +205,6 @@ export default {
             }, 200);
           })
           .catch((error) => {
-            console.error(error);
             ElNotification({
               title: 'Error',
               message: error.message,

@@ -51,10 +51,9 @@
     </div>
     <div class="nav-item nav-user" v-else>
       <el-link @click="$router.push({ name: 'login' })">
-        <el-icon class="el-icon--left">
-          <UserFilled />
-        </el-icon>
-        Login
+        <span class="login-now">
+          Login
+        </span>
       </el-link>
     </div>
   </nav>
@@ -149,16 +148,18 @@ export default {
           name: 'Search',
           routeNames: [
             'search',
+            'cardPage',
           ],
           to: '/search',
         },
-        {
-          name: 'Collection',
-          routeNames: [
-            'collection',
-          ],
-          to: '/collection',
-        },
+        // TODO : Implement later
+        // {
+        //   name: 'Collection',
+        //   routeNames: [
+        //     'collection',
+        //   ],
+        //   to: '/collection',
+        // },
       ],
     };
   },
@@ -198,6 +199,9 @@ nav {
       --el-link-font-size: 18px;
     }
   }
+  &.nav-user a:hover::after {
+    border: none;
+  }
 }
 
 .normal-btn {
@@ -220,5 +224,17 @@ nav {
 
 .userAvatar {
   cursor: pointer;
+}
+
+.login-now {
+  background: $primary-color;
+  padding: 4px 8px;
+  border-radius: 5px;
+  transition: 0.3s;
+  text-decoration: none;
+}
+
+.login-now:hover {
+  background: $title-underline-color;
 }
 </style>

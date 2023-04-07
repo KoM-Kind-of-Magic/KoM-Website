@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import axios from 'axios';
 import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '../views/RegisterView.vue';
@@ -84,6 +85,35 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach(async (to, from) => {
+  const allowedRouted = [
+    'login',
+    'register',
+    'search',
+    'cardPage',
+  ];
+  if (allowedRouted.includes(to.name)) {
+    return;
+  }
+  const user = JSON.parse(localStorage.userInfo);
+  if (user.token != null) {
+    axios.get(
+      `${process.env.VUE_APP_API_URL}/auth/checkToken`,
+      {
+        headers: {
+          'x-access-token': user.token,
+        },
+      },
+    ).then((res) => {
+      console.log('ok');
+    }).catch((error) => {
+      router.push({ name: 'login' });
+    });
+  } else {
+    router.push({ name: 'login' });
+  }
 });
 
 export default router;

@@ -77,7 +77,7 @@
       </div>
       <div class="register-div">
         Already a member ?
-        <ElLink class="link-style" :underline="false" @click="redirectTologin()">login now</ElLink>
+        <ElLink class="link-style" :underline="false" @click="redirectTologin()">Login now</ElLink>
       </div>
     </div>
   </div>
