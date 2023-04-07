@@ -139,7 +139,6 @@ export default {
             username: this.username,
           },
         ).then((response) => {
-          console.log('register response', response);
           if (response.status < 400) {
             ElNotification({
               title: 'Success',

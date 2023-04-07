@@ -145,7 +145,6 @@ export default {
         `${process.env.VUE_APP_API_URL}/cards/${uuid}`,
       )
         .then((res) => {
-          console.log(res);
           this.card = res.data.data;
 
           // Add an attribute for the tag type to choose
@@ -209,7 +208,6 @@ export default {
             }
             return 1;
           });
-          console.log(res.data.data);
           this.relatedVersions = res.data.data;
         });
     },
@@ -218,7 +216,6 @@ export default {
         `${process.env.VUE_APP_API_URL}/rulings/${uuid}`,
       )
         .then((res) => {
-          console.log(res);
           this.cardRulings = res.data.data;
         });
     },
@@ -292,8 +289,6 @@ export default {
     },
     sagaWashingMachine(sc) {
       const iconSaga = sc.match(/.+?(?= —)/gs);
-      console.log(this.romanToInt(iconSaga[0]));
-
       return `<i class='ms ms-saga ms-saga-${this.romanToInt(iconSaga[0])} ms-2x'></i> -`;
     },
     romanToInt(s) {
