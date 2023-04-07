@@ -1,0 +1,24 @@
+// Sets icons
+@import url("//cdn.jsdelivr.net/npm/keyrune@latest/css/keyrune.css");
+
+// Mana icons
+@import url("//cdn.jsdelivr.net/npm/mana-font@latest/css/mana.css");
+
+$light-glass-background: rgba(255, 255, 255, 0.1);
+$medium-glass-background: rgba(255, 255, 255, 0.3);
+$strong-glass-background: rgba(255, 255, 255, 0.5);
+
+$light-glass-background-select: #2d3039;
+$medium-glass-background-select: #525562;
+
+$text-color: white;
+
+$title-underline-color: #822a4a;
+$primary-color: #6B263E;
+
+$dark-background: #151823;
+$app-background-color: #2b2a33;
+
+.ms-saga::before {
+  color: black;
+}
