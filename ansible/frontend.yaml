@@ -18,7 +18,7 @@
         repo: https://github.com/KoM-Kind-of-Magic/KoM-Website
         dest: code
         force: yes
-        version: dev
+        version: master
 
     - name: Copy using inline content
       ansible.builtin.copy:
