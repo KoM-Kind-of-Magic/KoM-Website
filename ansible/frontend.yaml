@@ -32,7 +32,7 @@
     - name: Build
       become_user: admin
       environment:
-        VUE_APP_API_URL: api.skuareview.com
+        VUE_APP_API_URL: ${{ secrets.VUE_APP_API_URL }}
       shell: cd code && npm run build
 
     - name: copy the nginx config file and restart nginx
