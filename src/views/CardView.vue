@@ -1,25 +1,25 @@
 <template>
-  <div v-if="card.scryfallId" id="cardPage">
+  <div v-if="cardScryfallId" id="cardPage">
     <div class="cardInfosContainer">
       <img
         class="cardImg card-image"
         :alt=card.name
-        :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image&version=border_crop`"
+        :src="`https://api.scryfall.com/cards/${cardScryfallId}?format=image&version=border_crop`"
       />
       <div class="cardInfos">
         <div class="cardName title">{{card.name}}</div>
         <div class="cardMainContainer">
           <div class="cardMainBadges">
             <div class="badge cardRarity">
-              {{card.rarity[0].toUpperCase() + card.rarity.slice(1)}}
+              {{card.rarity}}
             </div>
-            <div class="badge">{{card.types.replaceAll(',', ' ')}}</div>
+            <div class="badge">{{card.types}}</div>
             <div class="badge">
               <i
                 :class="
                 `cardExtIcon
                 ss
-                ss-${card.set.keyruneCode.toLowerCase()}`"
+                ss-${cardIconClass}`"
               >
               </i>
             </div>
@@ -27,7 +27,7 @@
           <div class="cardAttributes">
             <div class="attribute manaCost">
               Mana cost :<div class="manaIconContainer" v-html='card.manaCost'></div>
-              — CMC : {{card.convertedManaCost}}
+              — CMC : {{card.manaValue}}
             </div>
             <div v-if="card.power && card.toughness" class="attribute">
               Power / Toughness :
@@ -38,7 +38,7 @@
             </div>
             <div v-else class="attribute"></div>
             <div class="attribute">
-              Extention Name : {{card.set.name}}
+              Extention Name : {{cardSetName}}
             </div>
             <div class="attribute">
               Artist : {{card.artist}}
@@ -52,18 +52,18 @@
         <div class="cardLegalities">
           <div class="title">Legalities</div>
           <div class="legalitiesBadgeContainer">
-            <el-tooltip v-for="(item) in card.legalities"
+            <el-tooltip v-for="(value, key) in card.cardLegalities"
               placement="top"
-              :key="item.uuid"
+              :key="key"
               effect="light"
             >
-              <template #content>{{item.status}}</template>
+              <template #content>{{value != null ? value : 'Banned'}}</template>
               <el-tag
                 class="legalityTag"
-                :type="item.type"
+                :type="cardLegalityTooltip(value)"
                 effect="light"
               >
-                {{item.format[0].toUpperCase() + item.format.slice(1)}}
+                {{key.charAt(0).toUpperCase() + key.slice(1)}}
               </el-tag>
             </el-tooltip>
           </div>
@@ -131,6 +131,9 @@ export default {
       card: {},
       relatedVersions: [],
       cardRulings: [],
+      cardScryfallId: '',
+      cardSetName: '',
+      cardIconClass: '',
     };
   },
   mounted() {
@@ -146,21 +149,12 @@ export default {
       )
         .then((res) => {
           this.card = res.data.data;
+          const [tempLegalities] = this.card.cardLegalities;
+          this.card.cardLegalities = tempLegalities;
 
-          // Add an attribute for the tag type to choose
-          this.card.legalities.forEach((elem) => {
-            if (elem.status === 'Legal') {
-              // eslint-disable-next-line
-              elem.type = 'success';
-            } else if (elem.status === 'Restricted') {
-              // eslint-disable-next-line
-              elem.type = 'warning';
-            } else {
-              // eslint-disable-next-line
-              elem.type = 'error';
-            }
-            // this.relatedVersions
-          });
+          this.cardScryfallId = this.card.cardIdentifier.scryfallId;
+          this.cardSetName = this.card.set.name;
+          this.cardIconClass = this.card.set.keyruneCode.toLocaleLowerCase();
 
           if (this.card.text != null) {
             this.card.text = this.cardTextWashingMachine(
@@ -180,7 +174,7 @@ export default {
           }
         })
         .then(() => {
-          const setCodeList = this.card.printings.split(',');
+          const setCodeList = this.card.printings.split(', ');
 
           const index = setCodeList.indexOf(this.card.setCode);
           if (index > -1) { // only splice array when item is found
@@ -290,6 +284,18 @@ export default {
     sagaWashingMachine(sc) {
       const iconSaga = sc.match(/.+?(?= —)/gs);
       return `<i class='ms ms-saga ms-saga-${this.romanToInt(iconSaga[0])} ms-2x'></i> -`;
+    },
+    cardLegalityTooltip(input) {
+      let res = '';
+      if (input === 'Legal') {
+        res = 'success';
+      } else if (input === 'Restricted') {
+        res = 'warning';
+      } else {
+        res = 'error';
+      }
+
+      return res;
     },
     romanToInt(s) {
       const romanHash = {
@@ -407,6 +413,10 @@ export default {
   margin: 5px auto;
 
   background: $strong-glass-background;
+}
+
+.badge.cardRarity::first-letter {
+  text-transform: capitalize;
 }
 
 .cardExtIcon {

@@ -2,7 +2,7 @@ import { createStore } from 'vuex';
 
 const storeInitialState = {
   state: {
-    user: {
+    user: JSON.parse(localStorage.getItem('userInfo')) || {
       logged: false,
       loginDate: '',
       loginKeep: false,

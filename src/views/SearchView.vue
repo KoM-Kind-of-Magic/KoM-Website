@@ -142,7 +142,7 @@
             class="card"
           >
             <img
-              :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image`"
+              :src="`https://api.scryfall.com/cards/${card.cardIdentifier.scryfallId}?format=image`"
               class="image card-image pointer"
               alt="image"
               @click="openCard(card.uuid)"

@@ -39,7 +39,7 @@
             <div class="deck-image">
               <img
                 alt="card's image"
-                :src="`https://api.scryfall.com/cards/${deck.representingCard.scryfallId}?format=image`"
+                :src="`https://api.scryfall.com/cards/${deck.representingCard.cardIdentifier.scryfallId}?format=image`"
                 v-if="deck.representingCard"
                 class="card-image"
               />
@@ -163,7 +163,7 @@ export default {
     getCardImageUrl(data) {
       let url = '';
       if (data) {
-        url = `https://api.scryfall.com/cards/${data.scryfallId}?format=image`;
+        url = `https://api.scryfall.com/cards/${data.cardIdentifier.scryfallId}?format=image`;
       } else {
         url = '@/assets/images/MagicCardBack.png';
       }

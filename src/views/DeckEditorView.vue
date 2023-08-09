@@ -258,6 +258,7 @@ export default {
         )
           .then((response) => {
             this.cardsSearched = response.data.data;
+            console.log(this.cardsSearched);
           });
       } else {
         this.cardsSearched = [];

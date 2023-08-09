@@ -38,9 +38,9 @@
       </div>
     </div>
     <img
-      :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image`"
+      :src="`https://api.scryfall.com/cards/${card.cardIdentifier.scryfallId}?format=image`"
       class="image card-image"
-      v-show="cardHovered && mouseX>0 && mouseY>0 && card.scryfallId"
+      v-show="cardHovered && mouseX>0 && mouseY>0 && card.cardIdentifier.scryfallId"
       alt="card's image"
       ref="cardImage"
       :style="`left: ${mouseX}px; top: ${mouseY}px;`"

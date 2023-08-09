@@ -9,8 +9,8 @@
       <div class="item" v-for="(card, i) in hand" :key="i">
         <img
           alt="card's card-image"
-          :src="`https://api.scryfall.com/cards/${card.scryfallId}?format=image`"
-          v-if="card.scryfallId"
+          :src="`https://api.scryfall.com/cards/${card.cardIdentifier.scryfallId}?format=image`"
+          v-if="card.cardIdentifier.scryfallId"
           style="width: 100%"
         />
         <div

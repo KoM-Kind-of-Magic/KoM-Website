@@ -94,9 +94,14 @@ router.beforeEach(async (to, from) => {
     'search',
     'cardPage',
   ];
+
   if (allowedRouted.includes(to.name)) {
     return;
   }
+  if (!localStorage.userInfo) {
+    router.push({ name: 'login' });
+  }
+
   const user = JSON.parse(localStorage.userInfo);
   if (user.token != null) {
     axios.get(
