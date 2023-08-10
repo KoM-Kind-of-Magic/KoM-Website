@@ -10,20 +10,16 @@
         v-for="tab in tabs"
         :key="tab.name"
       >
-        <el-icon v-if="tab.name == 'Home'">
-          <House />
-        </el-icon>
-        <el-icon v-else-if="tab.name == 'Decks'">
-          <Files />
-        </el-icon>
-        <el-icon v-else-if="tab.name == 'Search'">
-          <Search />
-        </el-icon>
-        <el-icon v-else-if="tab.name == 'Collection'">
-          <Collection />
-        </el-icon>
         {{tab.name}}
       </NavBarLink>
+    </div>
+    <div class="nav-item nav-search">
+      <label for="nav-search">
+        <input type="text" name="nav-search" id="nav-search" placeholder="Search a card...">
+        <el-icon>
+          <Search />
+        </el-icon>
+      </label>
     </div>
     <div class="nav-item nav-user" v-if="$store.state.user.logged">
       <el-dropdown trigger="click">
@@ -52,7 +48,7 @@
     <div class="nav-item nav-user" v-else>
       <el-link @click="$router.push({ name: 'login' })">
         <span class="login-now">
-          Login
+          Register/Login
         </span>
       </el-link>
     </div>
@@ -71,10 +67,10 @@ import {
 } from 'element-plus';
 import {
   User,
-  Files,
-  House,
+  // Files,
+  // House,
   Search,
-  Collection,
+  // Collection,
   Plus,
 } from '@element-plus/icons-vue';
 import NavBarLink from './NavBarLink.vue';
@@ -92,10 +88,10 @@ export default {
     'el-dropdown-menu': ElDropdownMenu,
     'el-dropdown-item': ElDropdownItem,
     User,
-    Files,
-    House,
+    // Files,
+    // House,
     Search,
-    Collection,
+    // Collection,
   },
   computed: {
     userName() {
@@ -152,14 +148,13 @@ export default {
           ],
           to: '/search',
         },
-        // TODO : Implement later
-        // {
-        //   name: 'Collection',
-        //   routeNames: [
-        //     'collection',
-        //   ],
-        //   to: '/collection',
-        // },
+        {
+          name: 'Collection',
+          routeNames: [
+            'collection',
+          ],
+          to: '/collection',
+        },
       ],
     };
   },
@@ -170,23 +165,23 @@ export default {
 nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  height: 95px;
-  padding: 0 27.5px;
-  background: linear-gradient(90deg, rgb(96, 35, 57) 30%, #982b18 100%);
+  height: 80px;
+  padding: 15px 20px;
+  box-sizing: border-box;
+  background: #602040;
   box-shadow: 0px 4px 7px 0px rgba(0,0,0,0.5);
 }
 
 .nav-item {
-  display: inline-flex;
-  flex: 1;
-  align-items: center;
+  display: flex;
 
   &.nav-menu {
-    justify-content: center;
+    margin-left: 80px;
+    display: flex;
+    flex-direction: row;
+    gap: 60px;
   }
   &.nav-user {
-    justify-content: end;
 
     & span {
       display: flex;
@@ -201,6 +196,23 @@ nav {
   }
   &.nav-user a:hover::after {
     border: none;
+  }
+  &.nav-search {
+    margin: 0 0 0 auto;
+  }
+  &.nav-search label {
+    display: flex;
+    flex-direction: row;
+
+    height: 50px;
+    width: 500px;
+    transform: translateX(40px);
+  }
+  &.nav-search label .el-icon {
+    font-size: 25px;
+    margin: auto 15px auto 0;
+    transform: translateX(-50px);
+    cursor: pointer;
   }
 }
 
@@ -217,24 +229,54 @@ nav {
     cursor: pointer;
     background: $strong-glass-background;
   }
-  &.margin-bottom {
-    margin-bottom: 10px;
-  }
+}
+
+#nav-search {
+  background: transparent;
+  border: none;
+  width: 100%;
+  padding-left: 20px;
+  font-size: 18px;
+
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  margin: 0 15px 0 auto;
+
+  transition: 0.3s;
+}
+#nav-search:focus  {
+  background: transparent;
+  border: none;
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+#nav-search::placeholder {
+  opacity: 0.8;
+  margin-left: 10px;
+  font-size: 14px;
 }
 
 .userAvatar {
   cursor: pointer;
 }
+.userAvatar .el-avatar {
+  height: 45px;
+  width: 45px;
+  background: $primary-color;
+}
 
 .login-now {
   background: $primary-color;
-  padding: 4px 8px;
+  height: 50px;
+  width: 180px;
   border-radius: 5px;
   transition: 0.3s;
   text-decoration: none;
+  text-align: center;
+  justify-content: center;
 }
 
 .login-now:hover {
-  background: $title-underline-color;
+  background: $primary-color-hover;
 }
 </style>

@@ -27,17 +27,5 @@ export default {
   padding: 10px;
 
   white-space: nowrap;
-  gap: 10px;
-
-  border: 1px solid transparent ;
-}
-
-.link.active {
-  border-bottom: 1px solid white;
-}
-
-.link:hover {
-  background: rgba($color: #ffffff, $alpha: 0.15);
-
 }
 </style>

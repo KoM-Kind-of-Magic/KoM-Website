@@ -1,6 +1,5 @@
 <template>
     <div class="logo-align">
-      <img src="@/assets/images/logo.png" alt="logo" class="logo"/>
       <div class="siteTitle">Kind of Magic</div>
     </div>
 </template>
