@@ -7,46 +7,37 @@
         :src="`https://api.scryfall.com/cards/${cardScryfallId}?format=image&version=border_crop`"
       />
       <div class="cardInfos">
-        <div class="cardName title">{{card.name}}</div>
-        <div class="cardMainContainer">
-          <div class="cardMainBadges">
-            <div class="badge cardRarity">
-              {{card.rarity}}
+        <div class="primaryInfos">
+          <div class="cardName title">
+            {{card.name}}
+            <span v-if="card.manaCost" class="manaIconContainer" v-html='card.manaCost'></span>
+          </div>
+          <div class="cardSubTypes subTitle">{{card.type}}</div>
+          <div v-if="card.text" class="cardText" v-html="card.text"></div>
+          <div class="bottomInfos">
+            <div v-if="card.flavorText" class="cardFlavorText" v-html="card.flavorText"></div>
+
+            <div v-if="card.power && card.toughness" class="cardPT title">
+              {{card.power}}/{{card.toughness}}
             </div>
-            <div class="badge">{{card.types}}</div>
-            <div class="badge">
-              <i
-                :class="
-                `cardExtIcon
-                ss
-                ss-${cardIconClass}`"
-              >
-              </i>
+            <div v-else-if="card.types === 'Planeswalker'" class="cardPT title">
+              <i :class="`ms ms-2x ms-loyalty-start ms-loyalty-${card.loyalty}`"></i>
+            </div>
+            <div v-else-if="card.types === 'Battle'" class="cardPT title">
+              <i :class="`ms ms-defense ms-defense-print ms-defense-${card.defense}`"></i>
             </div>
           </div>
-          <div class="cardAttributes">
-            <div class="attribute manaCost">
-              Mana cost :<div class="manaIconContainer" v-html='card.manaCost'></div>
-              — CMC : {{card.manaValue}}
-            </div>
-            <div v-if="card.power && card.toughness" class="attribute">
-              Power / Toughness :
-              <strong>{{card.power}}</strong> / <strong>{{card.toughness}}</strong>
-            </div>
-            <div v-else-if="card.types === 'Planeswalker'" class="attribute loyalty">
-              Loyalty :  <i :class="`ms ms-3x ms-loyalty-start ms-loyalty-${card.loyalty}`"></i>
-            </div>
-            <div v-else class="attribute"></div>
-            <div class="attribute">
-              Extention Name : {{cardSetName}}
-            </div>
-            <div class="attribute">
-              Artist : {{card.artist}}
-            </div>
+        </div>
+        <div class="secondaryInfos">
+          <div class="cardSetName title">
+            <span>{{cardSetName}} ({{card.set.keyruneCode}})</span>
+            <i :class="`setIcon ss ss-${cardIconClass} ss-${card.rarity}`"></i>
           </div>
-          <div class="cardTextContainer">
-            <div class="cardText" v-html="card.text"></div>
-            <div class="cardText" v-html="card.flavorText"></div>
+          <div class="cardRarity subTitle">{{card.rarity}}</div>
+          <div class="cardReleaseDate subTitle">{{card.set.releaseDate}}</div>
+          <div class="bottomInfos">
+            <div class="cardArtist">Artist: {{card.artist}}</div>
+            <div class="cardSerialNumber subTitle">#{{card.number}}</div>
           </div>
         </div>
         <div class="cardLegalities">
@@ -70,37 +61,80 @@
         </div>
       </div>
     </div>
-    <div class="cardSideInfos">
-      <div class="cardOtherVersions">
-        <div class="otherVersionTitle">
-          Alternate versions
-        </div>
+    <div class="cardTables">
+      <div class="cardPrintings">
+        <div class="title">Printings</div>
         <div class="versionTable">
-          <el-table :data="relatedVersions" max-height="500" empty-text="No other versions">
-            <el-table-column fixed="left" align="center" label="Icon" width="60">
+          <el-table
+            :data="printingsData"
+            max-height="350"
+            empty-text="No other versions"
+            border
+            :row-class-name="tableRowClassName"
+            @row-click="openCard($event.uuid)">
+            <el-table-column
+              fixed="left"
+              align="center"
+              label="Icon"
+              width="60"
+              :resizable="false">
               <template #default="scope">
                 <i
                   :class="
                   `cardExtIcon
                   ss
-                  ss-${scope.row.keyruneCode.toLowerCase()}`"
+                  ss-${scope.row.keyruneCode === 'ARCHIE' ?
+                  'j20' : scope.row.keyruneCode.toLowerCase()}`"
                 >
                 </i>
               </template>
             </el-table-column>
-            <el-table-column prop="code" align="center" label="Set code"  width="100"/>
-            <el-table-column prop="name" label="Set name" />
+            <el-table-column
+              prop="code"
+              align="center"
+              label="Set code"
+              width="100"
+              :resizable="false"/>
+            <el-table-column
+              prop="name"
+              align="center"
+              label="Set name"
+              :resizable="false"/>
+            <el-table-column
+              prop="releaseDate"
+              align="center"
+              label="Release date"
+              width="130"
+              :resizable="false"/>
+            <el-table-column
+              prop="uuid"
+              align="center"
+              label="UUID"
+              width="300"
+              :resizable="false"/>
           </el-table>
         </div>
       </div>
       <div class="cardRulings">
-        <div class="rulingsTitle">
-          Card rulings
-        </div>
+        <div class="title">Rulings</div>
         <div class="rulingsTable">
-          <el-table :data="cardRulings" max-height="500" empty-text="No rules">
-            <el-table-column prop="date" align="center" label="Date"  width="150"/>
-            <el-table-column prop="text" align="left" label="Rules" :fit="true"/>
+          <el-table
+            :data="cardRulings"
+            max-height="350"
+            empty-text="No rules"
+            border
+            :row-class-name="tableRowClassName">
+            <el-table-column
+              prop="date"
+              align="center"
+              label="Date"
+              width="100"
+              :resizable="false"/>
+            <el-table-column
+              prop="text"
+              align="left"
+              label="Rules"
+              :resizable="false"/>
           </el-table>
         </div>
       </div>
@@ -129,7 +163,7 @@ export default {
   data() {
     return {
       card: {},
-      relatedVersions: [],
+      printingsData: [],
       cardRulings: [],
       cardScryfallId: '',
       cardSetName: '',
@@ -154,7 +188,7 @@ export default {
 
           this.cardScryfallId = this.card.cardIdentifier.scryfallId;
           this.cardSetName = this.card.set.name;
-          this.cardIconClass = this.card.set.keyruneCode.toLocaleLowerCase();
+          this.cardIconClass = this.card.set.keyruneCode === 'ARCHIE' ? 'j20' : this.card.set.keyruneCode.toLocaleLowerCase();
 
           if (this.card.text != null) {
             this.card.text = this.cardTextWashingMachine(
@@ -169,32 +203,39 @@ export default {
           if (this.card.manaCost != null) {
             this.card.manaCost = this.cardManaCostWashingMachnine(
               this.card.manaCost,
-              true,
+              false,
             );
           }
         })
         .then(() => {
           const setCodeList = this.card.printings.split(', ');
-
-          const index = setCodeList.indexOf(this.card.setCode);
-          if (index > -1) { // only splice array when item is found
-            setCodeList.splice(index, 1); // 2nd parameter means remove one item only
-          }
-          this.getCardRelatedSets(setCodeList);
+          this.getOtherPrintings(setCodeList);
         })
         .catch((e) => {
           console.log(e);
         });
     },
-    getCardRelatedSets(setCodeList) {
-      axios.post(
-        `${process.env.VUE_APP_API_URL}/sets/codes`,
-        {
-          codes: setCodeList,
-        },
-      )
-        .then((res) => {
-          res.data.data.sort((a, b) => {
+    getOtherPrintings(setCodeList) {
+      axios.all([
+        axios.post(
+          `${process.env.VUE_APP_API_URL}/sets/codes`,
+          {
+            codes: setCodeList,
+          },
+        ),
+        axios.post(
+          `${process.env.VUE_APP_API_URL}/cards/getPrintings`,
+          {
+            codes: setCodeList,
+            cardName: this.card.name,
+          },
+        ),
+      ])
+        .then(axios.spread((data1, data2) => {
+          const setsInfos = data1.data.data;
+          const cardPrintings = data2.data.data;
+
+          setsInfos.sort((a, b) => {
             const dateA = new Date(a.releaseDate);
             const dateB = new Date(b.releaseDate);
             if (dateB < dateA) {
@@ -202,8 +243,20 @@ export default {
             }
             return 1;
           });
-          this.relatedVersions = res.data.data;
-        });
+
+          const mergedList = [];
+          cardPrintings.forEach((printing) => {
+            const setCodeKey = setsInfos.find((setInfo) => setInfo.code === printing.setCode);
+            if (setCodeKey) {
+              const mergedObj = { ...printing, ...setCodeKey };
+              mergedList.push(mergedObj);
+            }
+          });
+
+          // Remove current shown card
+          this.printingsData = mergedList.filter((o) => o.uuid !== this.card.uuid);
+          console.log(this.card);
+        }));
     },
     getCardRulings(uuid) {
       axios.get(
@@ -259,7 +312,7 @@ export default {
       let iconMc = mc.match(/\{(.*?)\}/gs);
       const shadowClass = shadow ? 'ms-shadow' : '';
 
-      iconMc = iconMc.map((icon) => `<i class='ms ms-${icon.replace('{', '').replace('}', '').replace('/', '').toLowerCase()} ms-cost ${shadowClass}'> </i> `).join('');
+      iconMc = iconMc.map((icon) => `<i class='ms ms-${icon.replace('{', '').replace('}', '').replace('/', '').toLowerCase()} ms-cost ${shadowClass}'> </i>`).join('');
 
       return iconMc;
     },
@@ -334,113 +387,175 @@ export default {
       }
       return accumulator;
     },
+    tableRowClassName() {
+      return 'tableColor';
+    },
+    openCard(uuid) {
+      const redirect = this.$router.resolve({ name: 'cardPage', params: { uuid } });
+      window.open(redirect.href, '_blank');
+    },
   },
 };
 </script>
 
 <style lang="scss" scoped>
+
 #cardPage {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
 
   color: $text-color;
-  margin: 50px 0 0 0;
-  padding: 0 10%;
 }
 
+.title {
+  font-size: 30px;
+  font-weight: bold;
+}
+.title:after {
+  display: none;
+}
+.subTitle {
+  color: rgba($color: #ccc, $alpha: 0.7);
+  font-size: 17px;
+}
+.primaryInfos {
+  display: flex;
+  flex-direction: column;
+  height: 250px;
+}
+.secondaryInfos {
+  display: flex;
+  flex-direction: column;
+}
+.primaryInfos::after,
+.secondaryInfos::after {
+  content: '';
+  width: 840px;
+  display: block;
+  margin-top: 10px;
+  border-bottom: 1px solid $app-background-color;
+  transform: translate(-15px);
+}
 .cardInfosContainer {
   display: flex;
   flex-direction: row;
-  width: 100%;
 }
-
 .cardImg {
-  width: 350px;
+  width: 410px;
   margin: 0 20px 0 0;
-  max-height: 500px;
+  height: 575px;
 }
 .cardInfos {
   display: flex;
   flex-direction: column;
-  align-content: center;
 
-  background: $light-glass-background;
-  width: inherit;
-  text-align: center;
-
+  background: #2A2A35;
   border-radius: 10px;
-}
+  width: 100%;
+  width: 840px;
 
-.cardName {
-  font-size: 20px;
+  padding: 10px 15px;
+  box-sizing: border-box;
 }
-
-.cardMainContainer {
-  margin: 10px;
-  flex: 1;
-  padding: 15px 0;
-  border-radius: 5px;
-  background: transparent;
-  display: flex;
-  flex-direction: column;
-
-}
-.cardMainBadges {
+.cardInfos .cardName {
+  text-align: left;
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-content: space-between;
+  align-items: baseline;
 }
-.badge {
-  flex: 1;
-  height: 25px;
-
-  vertical-align: middle;
-  line-height: 25px;
-  max-width: 200px;
-  margin: 0 15px;
-}
-.badge:nth-child(2) {
-  margin: 0;
-}
-
-.badge::after {
-  content: '';
-  width: 50px;
-  height: 3px;
-  display: block;
-  margin: 5px auto;
-
-  background: $strong-glass-background;
-}
-
-.badge.cardRarity::first-letter {
-  text-transform: capitalize;
-}
-
-.cardExtIcon {
-  margin: auto;
-  font-size: 30px;
-  color: black;
-}
-
-.cardTextContainer {
+.cardInfos .manaIconContainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
 
-  margin: auto auto 0 auto;
-  width: 80%;
-  padding: 15px 15px 0 15px;
-  gap: 15px;
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  gap: 5px;
+  margin-left: 10px;
 }
 .cardText {
   text-align: left;
+  margin-top: 25px;
+  font-size: 17px;
+}
+.bottomInfos {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  flex: 1;
+}
+.cardFlavorText {
+  color: rgba($color: #ccc, $alpha: 0.7);
+}
+.cardPT {
+  text-align: right;
+  margin-left: auto;
+}
+.cardPT i {
+  margin-left: auto;
+}
+.cardSetName {
+  text-align: left;
+}
+.setIcon {
+  margin-left: 10px;
+}
+.cardRarity::first-letter {
+  text-transform: capitalize;
+}
+.cardReleaseDate {
+  margin-top: 50px;
+}
+.cardArtist {
+  font-size: 18px;
+}
+.cardSerialNumber {
+  margin-left: auto;
+}
+
+.cardTables {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-top: 20px;
+  width: 1700px;
+}
+
+@media screen and (max-width: 1740px) {
+  .cardTables {
+    flex-direction: column;
+    width: 840px;
+  }
+}
+
+.cardPrintings,
+.cardRulings {
+  background: #2A2A35;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.versionTable,
+.rulingsTable {
+  width: 100%;
+  margin-top: 10px;
+}
+.versionTable > div,
+.rulingsTable > div {
+  border-radius: 10px;
+}
+.versionTable .cardExtIcon {
+  font-size: 30px;
 }
 
 .cardLegalities {
-  margin: auto 0 30px 0;
+  margin: auto 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -450,7 +565,7 @@ export default {
   margin-top: 0;
 }
 .legalitiesBadgeContainer {
-  max-width: 500px;
+  max-width: 700px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -458,47 +573,5 @@ export default {
 }
 .legalityTag {
   cursor: pointer;
-}
-
-.cardSideInfos {
-  display: flex;
-  flex-direction: row;
-  margin-top: 20px;
-  gap: 20px;
-  width: 100%;
-}
-.cardOtherVersions {
-  width: 350px;
-}
-.cardRulings {
-  flex: 1;
-}
-
-.otherVersionTitle,
-.rulingsTitle {
-  text-align: center;
-  margin-bottom: 5px;
-}
-
-.versionTable,
-.rulingsTable {
-  background: #141414;
-}
-.versionTable .cardExtIcon {
-  color: #a3a6ad;
-}
-
-.cardAttributes {
-  text-align: left;
-  margin: 20px auto;
-  line-height: 24px;
-  width: 80%;
-}
-.cardAttributes .attribute.manaCost {
-  display: flex;
-  flex-direction: row;
-}
-.manaIconContainer {
-  margin: 0 5px;
 }
 </style>

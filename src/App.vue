@@ -111,10 +111,10 @@ input {
 }
 
 .wrapped {
-  max-width: 1500px;
   display: flow-root;
-  margin: auto;
-  width: 100%;
+  // margin: auto;
+  width: auto;
+  // padding: 0 350px;
 }
 
 .card-image {

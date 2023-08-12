@@ -19,8 +19,64 @@ $primary-color: #9A2A2A;
 $primary-color-hover: #b33333;
 
 $dark-background: #151823;
-$app-background-color: #2b2a33;
+$app-background-color: #1F1A25;
 
 .ms-saga::before {
   color: black;
+}
+
+#cardPage .cardInfos .manaIconContainer .ms-cost {
+  width: 25px;
+  height: 25px;
+  font-size: 19px;
+}
+
+#cardPage .cardText .ms-cost {
+  width: 20px;
+  height: 20px;
+  font-size: 0.87em;
+  margin-right: 3px;
+}
+
+#cardPage .cardPT .ms-loyalty-start {
+  font-size: 50px;
+  transform: translateY(8px);
+}
+
+#cardPage .cardPT .ms-defense-print {
+  font-size: 40px;
+}
+
+.cardTables {
+  .tableColor td{
+    background: #3A3A4F !important;
+    border: none;
+  }
+
+  .tableColor.hover-row td {
+    background: #4a4a64 !important;
+    cursor: pointer;
+  }
+
+  th {
+    background: #3A3A4F !important;
+  }
+  
+  .el-table td.el-table__cell,
+  .el-table th.el-table__cell.is-leaf {
+    border: 1px solid #2A2A35;
+  }
+
+  .el-table {
+    --el-table-border-color: none;
+  }
+
+  .el-table--enable-row-hover .el-table__body tr:hover > td.el-table__cell {
+    background: #4a4a64 !important;
+    cursor: default;
+  }
+
+  thead .cell {
+    color: $text-color;
+  }
 }
