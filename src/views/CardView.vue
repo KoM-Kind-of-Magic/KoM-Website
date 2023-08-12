@@ -226,7 +226,6 @@ export default {
         axios.post(
           `${process.env.VUE_APP_API_URL}/cards/getPrintings`,
           {
-            codes: setCodeList,
             cardName: this.card.name,
           },
         ),
