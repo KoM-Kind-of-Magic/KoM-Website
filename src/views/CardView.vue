@@ -1,21 +1,78 @@
 <template>
-  <div v-if="cardScryfallId" id="cardPage">
-    <div class="cardInfosContainer">
-      <img
-        class="cardImg card-image"
-        :alt=card.name
-        :src="`https://api.scryfall.com/cards/${cardScryfallId}?format=image&version=border_crop`"
-      />
-      <div class="cardInfos">
-        <div class="primaryInfos">
+  <div v-if="card.uuid" id="cardPage">
+    <div class="cardInfosContainer" :class="{flipped: isFlipped}">
+      <div class="cardImgFlipBox"
+        :style="
+        {
+          '--image-url-front': `url(${cardImageUrlFront}`,
+          '--image-url-back': `url(${cardImageUrlBack}`
+        }"
+        :class="
+        {
+          battle: isBattle,
+          battleBack: isBattleBack,
+        }">
+      </div>
+      <div
+        class="cardInfos"
+        :class="
+        {
+          battle: isBattle,
+          battleBack: isBattleBack,
+        }">
+        <span v-if="canFlip" class="flip" @click="flipCard" @keydown="c">
+          <fa icon="fa-solid fa-rotate-left" />
+        </span>
+        <!-- Back of the card -->
+        <div v-if="isFlipped" class="primaryInfos">
           <div class="cardName title">
-            {{card.name}}
-            <span v-if="card.manaCost" class="manaIconContainer" v-html='card.manaCost'></span>
+            {{cardBack.faceName}}
+            <span v-if="cardBack.manaCost" class="manaIconContainer" v-html='cardBack.manaCost'>
+            </span>
+          </div>
+          <div class="cardSubTypes subTitle">{{cardBack.type}}</div>
+          <div
+            v-if="cardBack.text"
+            class="cardText"
+            v-html="cardBack.text">
+          </div>
+          <div class="bottomInfos">
+            <div
+              v-if="cardBack.flavorText"
+              class="cardFlavorText"
+              v-html="cardBack.flavorText">
+            </div>
+
+            <div v-if="cardBack.power && cardBack.toughness" class="cardPT title">
+              {{cardBack.power}}/{{cardBack.toughness}}
+            </div>
+            <div v-else-if="cardBack.types === 'Planeswalker'" class="cardPT title">
+              <i :class="`ms ms-2x ms-loyalty-start ms-loyalty-${cardBack.loyalty}`"></i>
+            </div>
+            <div v-else-if="cardBack.types === 'Battle'" class="cardPT title">
+              <i :class="`ms ms-defense ms-defense-print ms-defense-${cardBack.defense}`"></i>
+            </div>
+          </div>
+        </div>
+        <!-- Front of the card -->
+        <div v-else class="primaryInfos">
+          <div class="cardName title">
+            {{card.faceName ? card.faceName : card.name}}
+            <span v-if="card.manaCost" class="manaIconContainer" v-html='card.manaCost'>
+            </span>
           </div>
           <div class="cardSubTypes subTitle">{{card.type}}</div>
-          <div v-if="card.text" class="cardText" v-html="card.text"></div>
+          <div
+            v-if="card.text"
+            class="cardText"
+            v-html="card.text">
+          </div>
           <div class="bottomInfos">
-            <div v-if="card.flavorText" class="cardFlavorText" v-html="card.flavorText"></div>
+            <div
+              v-if="card.flavorText"
+              class="cardFlavorText"
+              v-html="card.flavorText">
+            </div>
 
             <div v-if="card.power && card.toughness" class="cardPT title">
               {{card.power}}/{{card.toughness}}
@@ -28,6 +85,7 @@
             </div>
           </div>
         </div>
+
         <div class="secondaryInfos">
           <div class="cardSetName title">
             <span>{{cardSetName}} ({{card.set.keyruneCode}})</span>
@@ -163,11 +221,17 @@ export default {
   data() {
     return {
       card: {},
+      cardBack: {},
       printingsData: [],
       cardRulings: [],
-      cardScryfallId: '',
       cardSetName: '',
       cardIconClass: '',
+      cardImageUrlFront: '',
+      cardImageUrlBack: '',
+      canFlip: false,
+      isFlipped: false,
+      isBattle: false,
+      isBattleBack: false,
     };
   },
   mounted() {
@@ -186,9 +250,21 @@ export default {
           const [tempLegalities] = this.card.cardLegalities;
           this.card.cardLegalities = tempLegalities;
 
-          this.cardScryfallId = this.card.cardIdentifier.scryfallId;
           this.cardSetName = this.card.set.name;
           this.cardIconClass = this.card.set.keyruneCode === 'ARCHIE' ? 'j20' : this.card.set.keyruneCode.toLocaleLowerCase();
+          this.isBattle = this.card.types === 'Battle';
+
+          this.canFlip = ['modal_dfc', 'transform', 'flip', 'reversible_card'].includes(this.card.layout);
+
+          this.cardImageUrlFront = `https://api.scryfall.com/cards/${this.card.cardIdentifier.scryfallId}?format=image&version=border_crop`;
+          if (this.canFlip) {
+            if (this.card.side === 'b') {
+              this.cardImageUrlBack = this.cardImageUrlFront;
+              this.cardImageUrlFront = `https://api.scryfall.com/cards/${this.card.cardIdentifier.scryfallId}?format=image&version=border_crop&face=back`;
+            } else {
+              this.cardImageUrlBack = `https://api.scryfall.com/cards/${this.card.cardIdentifier.scryfallId}?format=image&version=border_crop&face=back`;
+            }
+          }
 
           if (this.card.text != null) {
             this.card.text = this.cardTextWashingMachine(
@@ -210,6 +286,10 @@ export default {
         .then(() => {
           const setCodeList = this.card.printings.split(', ');
           this.getOtherPrintings(setCodeList);
+
+          if (this.card.otherFaceIds !== null && this.canFlip) {
+            this.getOtherFaceInfos(this.card.otherFaceIds);
+          }
         })
         .catch((e) => {
           console.log(e);
@@ -264,6 +344,32 @@ export default {
         .then((res) => {
           this.cardRulings = res.data.data;
         });
+    },
+    getOtherFaceInfos(uuid) {
+      console.log(uuid);
+      axios.get(
+        `${process.env.VUE_APP_API_URL}/cards/${uuid}`,
+      ).then((res) => {
+        this.cardBack = res.data.data;
+        this.isBattleBack = this.cardBack.types === 'Battle';
+
+        if (this.cardBack.text != null) {
+          this.cardBack.text = this.cardTextWashingMachine(
+            this.cardBack.text,
+          );
+        }
+        if (this.cardBack.flavorText != null) {
+          this.cardBack.flavorText = this.flavorTextWashingMachine(
+            this.cardBack.flavorText,
+          );
+        }
+        if (this.cardBack.manaCost != null) {
+          this.cardBack.manaCost = this.cardManaCostWashingMachnine(
+            this.cardBack.manaCost,
+            false,
+          );
+        }
+      });
     },
     cardTextWashingMachine(text) {
       let newText = text.replaceAll(/\r|\n/g, '<br/>')
@@ -393,6 +499,9 @@ export default {
       const redirect = this.$router.resolve({ name: 'cardPage', params: { uuid } });
       window.open(redirect.href, '_blank');
     },
+    flipCard() {
+      this.isFlipped = !this.isFlipped;
+    },
   },
 };
 </script>
@@ -440,15 +549,109 @@ export default {
 .cardInfosContainer {
   display: flex;
   flex-direction: row;
+  gap: 20px;
 }
 .cardImg {
   width: 410px;
   margin: 0 20px 0 0;
   height: 575px;
 }
+
+.cardImgFlipBox {
+  width: 410px;
+  height: 575px;
+  position: relative;
+  transform: rotate3d(-1, -1, 0, 0);
+  transition: all 500ms ease;
+  transform-style: preserve-3d;
+}
+.cardImgFlipBox.battle {
+  transform: rotate(90deg) translateY(85px);
+}
+.flipped .cardImgFlipBox.battleBack {
+  transform: rotate3d(-1, 1, 0, 180deg) translateY(85px);
+}
+.flipped .cardImgFlipBox {
+  transform: rotate3d(0, 1, 0, 180deg);
+}
+.cardImgFlipBox::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  z-index: 2;
+
+  background-image: var(--image-url-front);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 15px;
+}
+.cardImgFlipBox::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  transform: rotateY(180deg);
+
+  background-image: var(--image-url-back);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border-radius: 15px;
+}
+button {
+  transform: translateY(150px);
+}
+
+.flip {
+  z-index: 5;
+
+  background: #2a2a35;
+  width: 40px;
+  height: 40px;
+  font-size: 30px;
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  bottom: -10px;
+  left: -50px;
+
+  position: absolute;
+  transition: all 0.5s ease-in-out;
+
+  cursor: pointer;
+  color: white;
+}
+.flip:hover {
+  background: #3a3a4f;
+}
+.battle .flip,
+.flipped .battleBack .flip {
+  bottom: 75px;
+  left: -50px;
+}
+.flipped .flip{
+  transform: rotate(-180deg);
+  z-index: 5;
+  position: absolute;
+
+  bottom: -10px;
+  left: -50px;
+}
 .cardInfos {
   display: flex;
   flex-direction: column;
+  position: relative;
 
   background: #2A2A35;
   border-radius: 10px;
