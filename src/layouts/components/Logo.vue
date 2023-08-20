@@ -20,6 +20,7 @@
   color: $text-color;
   font-size: 30px;
   user-select: none;
+  white-space: nowrap;
 }
 .logo-align {
   display: inline-flex;
