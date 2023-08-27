@@ -350,8 +350,11 @@ export default {
             }
           });
 
-          // Remove current shown card
-          this.printingsData = mergedList.filter((o) => o.uuid !== this.card.uuid);
+          // Remove current shown card remove duplicates/cards back from the list
+          this.printingsData = mergedList.filter(
+            (o) => (o.uuid !== this.card.uuid && o.faceName === this.card.faceName),
+          );
+
           console.log('Printings', this.printingsData);
         }));
     },
