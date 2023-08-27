@@ -84,6 +84,20 @@
               <i :class="`ms ms-defense ms-defense-print ms-defense-${card.defense}`"></i>
             </div>
           </div>
+
+          <div v-if="this.isSplit" class="frontFace-b">
+            <div class="cardName title">
+              {{cardBack.faceName ? cardBack.faceName : cardBack.name}}
+              <span v-if="cardBack.manaCost" class="manaIconContainer" v-html='cardBack.manaCost'>
+              </span>
+            </div>
+            <div class="cardSubTypes subTitle">{{cardBack.type}}</div>
+            <div
+              v-if="cardBack.text"
+              class="cardText"
+              v-html="cardBack.text">
+            </div>
+          </div>
         </div>
 
         <div class="secondaryInfos">
@@ -229,6 +243,7 @@ export default {
       cardImageUrlFront: '',
       cardImageUrlBack: '',
       canFlip: false,
+      isSplit: false,
       isFlipped: false,
       isBattle: false,
       isBattleBack: false,
@@ -255,6 +270,7 @@ export default {
           this.isBattle = this.card.types === 'Battle';
 
           this.canFlip = ['modal_dfc', 'transform', 'flip', 'reversible_card'].includes(this.card.layout);
+          this.isSplit = ['adventure', 'split'].includes(this.card.layout);
 
           this.cardImageUrlFront = `https://api.scryfall.com/cards/${this.card.cardIdentifier.scryfallId}?format=image&version=border_crop`;
           if (this.canFlip) {
@@ -287,9 +303,11 @@ export default {
           const setCodeList = this.card.printings.split(', ');
           this.getOtherPrintings(setCodeList);
 
-          if (this.card.otherFaceIds !== null && this.canFlip) {
+          if ((this.card.otherFaceIds !== null && this.canFlip) || this.isSplit) {
             this.getOtherFaceInfos(this.card.otherFaceIds);
           }
+
+          console.log('The card', this.card);
         })
         .catch((e) => {
           console.log(e);
@@ -334,7 +352,7 @@ export default {
 
           // Remove current shown card
           this.printingsData = mergedList.filter((o) => o.uuid !== this.card.uuid);
-          console.log(this.card);
+          console.log('Printings', this.printingsData);
         }));
     },
     getCardRulings(uuid) {
@@ -528,14 +546,24 @@ export default {
   color: rgba($color: #ccc, $alpha: 0.7);
   font-size: 17px;
 }
+.frontFace-b::before {
+  content: '';
+  width: 820px;
+  display: block;
+  margin: 7px 0 3px 0;
+  border-bottom: 2px solid $app-background-color;
+  transform: translate(-5px);
+}
 .primaryInfos {
   display: flex;
   flex-direction: column;
-  height: 250px;
 }
 .secondaryInfos {
   display: flex;
   flex-direction: column;
+  height: auto;
+  flex: 1;
+  margin: 5px 0 0 0;
 }
 .primaryInfos::after,
 .secondaryInfos::after {
@@ -543,7 +571,7 @@ export default {
   width: 840px;
   display: block;
   margin-top: 10px;
-  border-bottom: 1px solid $app-background-color;
+  border-bottom: 2px solid $app-background-color;
   transform: translate(-15px);
 }
 .cardInfosContainer {
@@ -685,10 +713,10 @@ button {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  flex: 1;
 }
 .cardFlavorText {
   color: rgba($color: #ccc, $alpha: 0.7);
+  margin-top: 15px;
 }
 .cardPT {
   text-align: right;
@@ -699,6 +727,7 @@ button {
 }
 .cardSetName {
   text-align: left;
+  font-size: 30px;
 }
 .setIcon {
   margin-left: 10px;
@@ -707,7 +736,7 @@ button {
   text-transform: capitalize;
 }
 .cardReleaseDate {
-  margin-top: 50px;
+  margin-top: auto;
 }
 .cardArtist {
   font-size: 18px;
@@ -757,7 +786,7 @@ button {
 }
 
 .cardLegalities {
-  margin: auto 0;
+  margin: 10px 0;
   display: flex;
   flex-direction: column;
   align-items: center;
