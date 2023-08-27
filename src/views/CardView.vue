@@ -165,7 +165,7 @@
               prop="code"
               align="center"
               label="Set code"
-              width="100"
+              width="90"
               :resizable="false"/>
             <el-table-column
               prop="name"
