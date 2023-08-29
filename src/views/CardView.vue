@@ -270,7 +270,7 @@ export default {
           this.isBattle = this.card.types === 'Battle';
 
           this.canFlip = ['modal_dfc', 'transform', 'flip', 'reversible_card'].includes(this.card.layout);
-          this.isSplit = ['adventure', 'split'].includes(this.card.layout);
+          this.isSplit = ['adventure', 'split', 'aftermath'].includes(this.card.layout);
 
           this.cardImageUrlFront = `https://api.scryfall.com/cards/${this.card.cardIdentifier.scryfallId}?format=image&version=border_crop`;
           if (this.canFlip) {
