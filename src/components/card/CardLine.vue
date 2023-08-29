@@ -15,7 +15,11 @@
         {{card.number}}
       </div>
       <div class="cardName">
-        {{card.name}}
+        <!-- We want names with '//' only in specific card layouts -->
+        {{
+          card.faceName && !['split', 'aftermath'].includes(this.card.layout) ?
+            card.faceName : card.name
+        }}
       </div>
     </div>
     <div
