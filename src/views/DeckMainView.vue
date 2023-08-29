@@ -223,8 +223,8 @@ export default {
         if (nameA > nameB) { return 1; }
         return 0;
       });
-      const cardTypes = [...new Set(newCards.map((c) => c.types.split(',')[c.types.split(',').length - 1]))];
-      //
+
+      const cardTypes = [...new Set(newCards.map((c) => c.types.split(', ')[c.types.split(', ').length - 1]))];
       cardTypes.sort((a, b) => {
         if (a < b) { return -1; }
         if (a > b) { return 1; }
@@ -234,8 +234,9 @@ export default {
         res[t] = [];
       });
       newCards.forEach((c) => {
-        res[c.types.split(',')[c.types.split(',').length - 1]].push(c);
+        res[c.types.split(', ')[c.types.split(', ').length - 1]].push(c);
       });
+
       return res;
     },
     deckId() {
