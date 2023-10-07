@@ -417,11 +417,11 @@ export default {
         }
       }
 
-      const sagaIcons = newText.match(/I{1,3} —|IV —/gs);
+      const sagaIcons = newText.match(/I{1,3} —|IV —|V —|VI —|VII —|VIII —|IX —|X —|I{1,3},|IV,|V,|VI,|VII,|VIII,|IX,|X,/gs);
       if (sagaIcons != null) {
         sagaIcons.forEach((si) => {
-          const trueSaga = this.sagaWashingMachine(si);
-          newText = newText.replace(si, trueSaga);
+          const sagaWithIcons = this.sagaWashingMachine(si);
+          newText = newText.replace(si, sagaWithIcons);
         });
       }
 
@@ -461,7 +461,7 @@ export default {
       return iconLc;
     },
     sagaWashingMachine(sc) {
-      const iconSaga = sc.match(/.+?(?= —)/gs);
+      const iconSaga = sc.match(/.+?(?= —)|.+?(?=,)/gs);
       return `<i class='ms ms-saga ms-saga-${this.romanToInt(iconSaga[0])} ms-2x'></i> -`;
     },
     cardLegalityTooltip(input) {
