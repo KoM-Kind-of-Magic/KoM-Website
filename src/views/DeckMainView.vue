@@ -154,7 +154,7 @@ export default {
           this.$router.push({ name: 'deckLists' });
           ElNotification({
             title: 'Success',
-            message: 'Deck has been deleted',
+            message: response.data.message,
             type: 'success',
             position: 'bottom-right',
           });

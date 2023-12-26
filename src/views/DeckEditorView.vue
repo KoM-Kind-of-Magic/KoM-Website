@@ -195,6 +195,25 @@ export default {
     },
     updateDeck() {
       const cardList = this.cards.map((el) => el.uuid);
+      let deckColors = [];
+
+      this.cards.forEach((card) => {
+        deckColors.push(card.colors.split(', '));
+      });
+      deckColors = deckColors.filter(
+        (item, pos) => (deckColors.indexOf(item) === pos),
+      );
+      deckColors = deckColors.reduce((acc, liste) => acc.concat(liste), [])
+        .filter((value, index, self) => self.indexOf(value) === index && value !== '');
+
+      // We want deck colors to be sorted in WUBRG order
+      const sortOrder = {
+        W: 1, U: 2, B: 3, R: 4, G: 5,
+      };
+      deckColors.sort((a, b) => (sortOrder[a] || 0) - (sortOrder[b] || 0));
+
+      const deckColorsString = deckColors.map((item) => `{${item}}`).join('');
+      console.log('deck colors', deckColorsString);
 
       if (!this.isCreateDeckNameValid) {
         ElNotification({
@@ -218,6 +237,7 @@ export default {
             format: this.deckFormat.value,
             description: this.deckDesc,
             cards: cardList,
+            colors: deckColorsString,
           },
         ).then((res) => {
           ElNotification({
@@ -354,6 +374,7 @@ export default {
       deckName: '',
       deckFormat: {},
       deckDesc: '',
+      deckColors: '',
       mySearch: '',
       possibleFormats: [],
       cards: [],

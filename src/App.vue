@@ -57,6 +57,7 @@ body {
   flex-direction: row;
   margin-bottom: 8px;
   justify-content: space-between;
+  width: 1700px;
 
   & .page-title {
     font-size: 32px;
@@ -70,15 +71,15 @@ body {
 
     & .button-title {
       display: flex;
-      padding: 6px 12px;
-      border-radius: 16px;
+      padding: 8px 16px;
+      border-radius: 5px;
       color: white;
-      background: rgba(255, 255, 255, 0.3);
+      background: $primary-color;
       transition: 0.3s;
       align-self: center;
       &:hover {
         cursor: pointer;
-        background: $strong-glass-background;
+        background: $primary-color-hover;
       }
     }
   }

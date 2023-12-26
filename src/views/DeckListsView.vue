@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="deckLists">
     <div class="view-header">
       <div class="page-title">Your decks</div>
       <div class="sub-btns-title">
@@ -26,13 +26,19 @@
                 @keydown="c"
               >
               <div class="deck-infos">
-                <div class="name">{{ deck.name }}</div>
+                <div class="name">{{ deck.name }}
+                  <span v-if="deck.colors" class="manaIconContainer" v-html='deck.colors'>
+                  </span>
+                </div>
                 <div class="format">{{ deck.format }}</div>
                 <div class="description">{{ deck.description }}</div>
-                <div class="edit">
-                  <el-button text class="button" @click.stop="editDeck(deck.deck_id)">
-                    &nbsp;Edit&nbsp;
-                  </el-button>
+                <div class="deckActions">
+                  <div class="edit" @click.stop="editDeck(deck.deck_id)" @keydown="c">
+                    Edit
+                  </div>
+                  <div class="delete" @click.stop="deleteDeck(deck.deck_id)" @keydown="c">
+                    Delete
+                  </div>
                 </div>
               </div>
             </div>
@@ -109,7 +115,7 @@ import 'vue-select/dist/vue-select.css';
 import {
   ElRow,
   ElCol,
-  ElButton,
+  // ElButton,
   ElInput,
   ElNotification,
 } from 'element-plus';
@@ -121,7 +127,7 @@ export default {
     PopIn,
     'el-row': ElRow,
     'el-col': ElCol,
-    'el-button': ElButton,
+    // 'el-button': ElButton,
     'el-input': ElInput,
   },
   computed: {
@@ -150,6 +156,17 @@ export default {
       )
         .then((response) => {
           this.deckList = response.data.data;
+
+          this.deckList.forEach((deck, index, array) => {
+            // Clone the 'colors' array using the spread operator
+            const colorsIcons = this.deckColorWashingMachnine(deck.colors, false);
+
+            // Create a new object with the cloned 'colors' array
+            const updatedDeck = { ...deck, colors: colorsIcons };
+
+            // Assign the updated object back to the array
+            this.deckList[index] = updatedDeck;
+          });
         })
         .catch((error) => {
           ElNotification({
@@ -228,10 +245,35 @@ export default {
         });
       }
     },
+    deleteDeck(deckId) {
+      axios.delete(`${process.env.VUE_APP_API_URL}/deck/${deckId}`)
+        .then((response) => {
+          ElNotification({
+            title: 'Success',
+            message: response.data.message,
+            type: 'success',
+            position: 'bottom-right',
+          });
+
+          const index = this.deckList.findIndex((deck) => deck.id === deckId);
+          this.deckList.splice(index, 1);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    deckColorWashingMachnine(mc, shadow = false) {
+      let iconMc = mc.match(/\{(.*?)\}/gs);
+      const shadowClass = shadow ? 'ms-shadow' : '';
+
+      iconMc = iconMc.map((icon) => `<i class='ms ms-${icon.replace('{', '').replace('}', '').replace('/', '').toLowerCase()} ms-cost ${shadowClass}'> </i>`).join('');
+
+      return iconMc;
+    },
   },
   data() {
     return {
-      deckList: [],
+      deckList: [], // My array of decks
       newDeck: {
         name: '',
         description: '',
@@ -246,10 +288,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .deckLists {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+  }
   .content {
-    background: rgba(255, 255, 255, 0.1);
-    width: 100%;
+    background: #2A2A35;
+    width: 1700px;
     margin: auto;
+    border-radius: 10px;
   }
   .el-row {
     margin: 0px !important;
@@ -296,32 +346,72 @@ export default {
         background-size: cover;
         color: white;
         border-radius: 5.584% / 4%;
-        height: calc(100% - 16px);
+        height: calc(100% - 40px);
         word-break: break-all;
+        padding: 20px;
 
-        & div {
-          padding: 8px;
-        }
         & .name {
-          font-size: larger;
-          text-decoration: underline;
-          text-underline-position: under;
-          text-decoration-color: #822a4a;
-          text-decoration-thickness: 3px;
+          text-align: left;
+          display: flex;
+          flex-direction: row;
+          align-items: baseline;
+
+          font-weight: bold;
+          font-size: 25px;
+
+          & .manaIconContainer {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            width: fit-content;
+
+            gap: 5px;
+            margin-left: 10px;
+          }
         }
         & .format {
-          font-size: small;
+          color: rgba($color: #ccc, $alpha: 0.7);
           font-style: italic;
-          color: lightgrey;
+        }
+        & .format::first-letter {
+          text-transform: capitalize;
         }
         & .description {
-          font-size: medium;
+          font-size: 18px;
           flex: 1;
+          margin-top: 30px;
         }
-        & .edit {
+
+        & .deckActions {
           display: flex;
           align-self: end;
-          justify-content: end;
+          gap: 15px;
+          & .edit {
+            display: flex;
+            justify-content: center;
+            background: #3A3A4F;
+            width: 80px;
+            height: 30px;
+            border-radius: 5px;
+            line-height:30px;
+            transition: 0.3s;
+          }
+          & .edit:hover {
+            background: #454555;
+          }
+          & .delete {
+            display: flex;
+            justify-content: center;
+            background: $primary-color;
+            width: 80px;
+            height: 30px;
+            border-radius: 5px;
+            line-height:30px;
+            transition: 0.3s;
+          }
+          & .delete:hover {
+            background: $primary-color-hover;
+          }
         }
       }
     }

@@ -25,7 +25,8 @@ $app-background-color: #1F1A25;
   color: black;
 }
 
-#cardPage .cardInfos .manaIconContainer .ms-cost {
+#cardPage .cardInfos .manaIconContainer .ms-cost,
+#deckLists .deck-infos .manaIconContainer .ms-cost {
   width: 25px;
   height: 25px;
   font-size: 19px;
